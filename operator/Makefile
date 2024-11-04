@@ -168,15 +168,15 @@ build-installer: manifests generate kustomize ## Build consolidated installer YA
 	$(KUSTOMIZE) build config/default > dist/install.yaml
 
 ##@ Helm Chart - Deployment
-.PHONY: build-crds
-build-crds: manifests kustomize helmify ## Build CRDs using helmify.
+.PHONY: prepare-crd-chart
+prepare-crd-chart: manifests kustomize helmify ## Build CRDs using helmify.
 	$(KUSTOMIZE) build config/default | $(HELMIFY) ${CHART_PATH_CRD}
 	find ${CHART_PATH_CRD}/templates/ -type f ! \( -name '*-crd.yaml' -o -name '_helpers.tpl' \) -exec rm -f {} +
 	rm -f ${CHART_PATH_CRD}/values.yaml
 	touch ${CHART_PATH_CRD}/values.yaml
 
 .PHONY: install-crds
-install-crds: build-crds ## Install CRDs using Helm.
+install-crds: prepare-crd-chart ## Install CRDs using Helm.
 	$(HELM) upgrade --install ${CHART_NAME_CRD} ${CHART_PATH_CRD}
 
 .PHONY: uninstall-crds
@@ -187,10 +187,14 @@ uninstall-crds: ## Uninstall CRDs.
 helm-template: ## Install operator using Helm.
 	$(HELM) template ${CHART_NAME_OPERATOR} ${CHART_PATH_OPERATOR} --set operator.namespace=${NAMESPACE} 
 
+.PHONY: prepare-operator-chart
+prepare-operator-chart: ## Copy samples to the Helm chart.
+	cp config/samples/core_v1* charts/paladin-operator/templates/samples/
+	cp config/samples/cert* charts/paladin-operator/templates/samples/
+
+
 .PHONY: helm-install
 helm-install: ## Install operator using Helm.
-	$(KUBECTL) create namespace cert-manager || true
-	$(KUBECTL) create namespace prometheus || true
 	$(HELM) dependency build ${CHART_PATH_OPERATOR} || true
 	$(HELM) upgrade --install ${CHART_NAME_OPERATOR} ${CHART_PATH_OPERATOR} \
 		-n ${NAMESPACE} --create-namespace \
@@ -264,7 +268,7 @@ delete-node:
 ##@ Cleanup
 DELETE_CLUSTER ?= false
 .PHONY: clean
-clean: delete-node helm-uninstall uninstall-crds ## Clean up all resources.
+clean: helm-uninstall uninstall-crds ## Clean up all resources.
 	@if [ "$(DELETE_CLUSTER)" = "true" ]; then \
 		$(MAKE) kind-delete; \
 	else \
