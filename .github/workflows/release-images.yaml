@@ -1,0 +1,63 @@
+name: Release Image
+
+on:
+  release:
+    types: [released, prereleased]
+
+jobs:
+  image-tags:
+    runs-on: ubuntu-latest
+    env:
+      LATEST_TAG: ""
+    steps:
+      - name: Get the latest tag
+        run: |
+          git fetch --tags
+          latest_tag=$(git tag -l | sort -V | tail -n 1)
+          echo "latest tag: $latest_tag"
+          echo "LATEST_TAG=$latest_tag" >> $GITHUB_ENV
+ 
+      - name: Set release tag
+        run: |
+          echo "TAGS=${{ github.ref_name }}" >> $GITHUB_ENV
+  
+      - name: Set latest tag
+        if: github.event.action == 'released' && github.ref_name == env.LATEST_TAG
+        run: |
+          echo "TAGS=${{ env.TAGS }},latest" >> $GITHUB_ENV
+
+      - name: Set alpha tag
+        if: github.event.action == 'prereleased' && contains(github.ref, 'alpha')
+        run: |
+          echo "TAGS=${{ env.TAGS }},alpha" >> $GITHUB_ENV
+
+      - name: Set beta tag
+        if: github.event.action == 'prereleased' && contains(github.ref, 'beta')
+        run: |
+          echo "TAGS=${{ env.TAGS }},beta" >> $GITHUB_ENV
+
+      - name: Set rc tag
+        if: github.event.action == 'prereleased' && contains(github.ref, 'rc')
+        run: |
+          echo "TAGS=${{ env.TAGS }},rc" >> $GITHUB_ENV
+          
+  jobs:
+    push-to-dockerhub:
+      uses: ./.github/workflows/build-images.yaml
+      with:
+        registry: docker.io
+        repository: ${{ github.repository_owner }}
+        image_tag: ${{ github.ref_name }} 
+        # image_tag: ${{ env.TAGS }} # TODO: Support multiple tags
+      secrets:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    push-to-ghcr:
+      uses: ./.github/workflows/build-images.yaml
+      with:
+        registry: ghcr.io
+        repository: ${{ github.repository_owner }}
+        image_tag: ${{ github.ref_name }}
+      secrets:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}

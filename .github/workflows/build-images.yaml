@@ -1,0 +1,87 @@
+name: Build core and operator images
+
+on:
+  workflow_call:
+    inputs:
+      registry:
+        required: true
+        type: string
+      repository:
+        required: true
+        type: string
+      image_tag:
+        required: true
+        type: string
+      push:
+        required: false
+        type: boolean
+        default: true
+    secrets:
+      username:
+        required: false
+      password:
+        required: false
+
+jobs:
+  core-macos:
+    uses: ./.github/workflows/build-image-job.yaml
+    with:
+      dockerfile: ./Dockerfile
+      registry: ${{ inputs.registry }}
+      image: ${{ inputs.repository }}/paladin
+      image_tag: "arm64-${{ inputs.image_tag }}"
+      push: ${{ inputs.push }}
+      platforms: linux/arm64
+      runs-on: macos-latest
+      # runs-on: ubuntu-latest
+    secrets:
+      username: ${{ secrets.username }}
+      password: ${{ secrets.password }}
+
+  core-ubuntu:
+    uses: ./.github/workflows/build-image-job.yaml
+    with:
+      dockerfile: ./Dockerfile
+      registry: ${{ inputs.registry }}
+      image: ${{ inputs.repository }}/paladin
+      image_tag: "amd64-${{ inputs.image_tag }}"
+      push: ${{ inputs.push }}
+      platforms: linux/amd64
+      runs-on: ubuntu-latest
+    secrets:
+      username: ${{ secrets.username }}
+      password: ${{ secrets.password }}
+
+  operator:
+    uses: ./.github/workflows/build-image-job.yaml
+    with:
+      dockerfile: ./operator/Dockerfile
+      registry: ${{ inputs.registry }}
+      image: ${{ inputs.repository }}/paladin-operator
+      image_tag: ${{ inputs.image_tag }}
+      push: ${{ inputs.push }}
+      platforms: linux/amd64,linux/arm64
+      runs-on: ubuntu-latest
+    secrets:
+      username: ${{ secrets.username }}
+      password: ${{ secrets.password }}
+
+  docker-manifest:
+    if: ${{ inputs.push }}
+    needs: [core-macos, core-ubuntu]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Docker registry login
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ inputs.registry }}
+          username: ${{ secrets.username }}
+          password: ${{ secrets.password }}
+
+      - name: Create and push Docker manifest
+        run: |
+          docker manifest create \
+            ${{ inputs.repository }}/paladin:${{ inputs.image_tag }} \
+            --amend ${{ inputs.repository }}/paladin:arm64-${{ inputs.image_tag }} \
+            --amend ${{ inputs.repository }}/paladin:amd64-${{ inputs.image_tag }}
+          docker manifest push ${{ inputs.repository }}/paladin:${{ inputs.image_tag }}
