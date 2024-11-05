@@ -1,4 +1,4 @@
-name: CRDs chart release
+name: Helm Chart release
 
 on:
   push:
@@ -27,32 +27,28 @@ jobs:
           go-version: '1.22'
           check-latest: true
 
-      - name: git status
-        run: git status
+      - name: Install Helm
+        uses: azure/setup-helm@v4
 
       - name: Configure Git
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
       
-      # - name: Create Kubernetes Kind Cluster
-      #   uses: helm/kind-action@v1
-      #   with:
-      #     install_only: true # only install kind, the cluster creation is managed by the deploy step
-      #     ignore_failed_clean: true
-
-      - name: Prepare chart
+      - name: Prepare CRD chart
         working-directory: operator
         run: gradle prepareCRDsChart
 
-      - name: Install Helm
-        uses: azure/setup-helm@v4
+      - name: Prepare operator chart
+        working-directory: operator
+        run: gradle prepareOperatorChart
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         with:
           mark_as_latest: ${{ inputs.latest }}
-          charts_dir: "operator/charts/paladin-operator-crd"
+          charts_dir: "operator/charts"
+
           skip_existing: true
         env: 
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
