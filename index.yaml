@@ -1,0 +1,70 @@
+apiVersion: v1
+entries:
+  cert-manager-namespace:
+  - apiVersion: v2
+    appVersion: 0.0.0
+    created: "2024-11-05T03:56:43.458753143Z"
+    description: A chart that pre-creates the cert-manager namespace for the Paladin
+      Operator dependencies
+    digest: 7df1e4da99f2c40b549195d5af50fd22b7e7af3178beb30962cb300687aa99df
+    name: cert-manager-namespace
+    type: application
+    urls:
+    - https://github.com/dwertent/paladin/releases/download/cert-manager-namespace-0.0.0/cert-manager-namespace-0.0.0.tgz
+    version: 0.0.0
+  paladin-operator:
+  - apiVersion: v2
+    appVersion: 0.0.0
+    created: "2024-11-05T03:56:43.583318645Z"
+    dependencies:
+    - condition: installCRDs
+      name: paladin-operator-crd
+      repository: file://../paladin-operator-crd/
+      version: 0.0.0
+    - condition: cert-manager.enabled
+      name: cert-manager-namespace
+      repository: file://../cert-manager-namespace/
+      version: 0.0.0
+    - condition: cert-manager.enabled
+      name: cert-manager
+      repository: https://charts.jetstack.io
+      version: v1.16.1
+    - condition: prometheus.enabled
+      name: prometheus-namespace
+      repository: file://../prometheus-namespace/
+      version: 0.0.0
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 15.8.0
+    description: A Helm chart for Kubernetes
+    digest: d80dfb5c921b6ac8d3855c85e864e89bef07fd1bfa5e3882a67465f09b00799e
+    name: paladin-operator
+    type: application
+    urls:
+    - https://github.com/dwertent/paladin/releases/download/paladin-operator-0.0.0/paladin-operator-0.0.0.tgz
+    version: 0.0.0
+  paladin-operator-crd:
+  - apiVersion: v2
+    appVersion: 0.0.0
+    created: "2024-11-05T03:56:43.684160127Z"
+    description: A Helm chart for Kubernetes
+    digest: 107d061ddacadf53c0797c43dcb4be01e14d1b42dc90fd9f46a8db60315b9144
+    name: paladin-operator-crd
+    type: application
+    urls:
+    - https://github.com/dwertent/paladin/releases/download/paladin-operator-crd-0.0.0/paladin-operator-crd-0.0.0.tgz
+    version: 0.0.0
+  prometheus-namespace:
+  - apiVersion: v2
+    appVersion: 0.0.0
+    created: "2024-11-05T03:56:43.791124275Z"
+    description: A chart that pre-creates the prometheus namespace for the Paladin
+      Operator dependencies
+    digest: 9b776086b7b48dd10624749824a65c1a5128a4d407f623bdd6476d31df8627d8
+    name: prometheus-namespace
+    type: application
+    urls:
+    - https://github.com/dwertent/paladin/releases/download/prometheus-namespace-0.0.0/prometheus-namespace-0.0.0.tgz
+    version: 0.0.0
+generated: "2024-11-05T03:56:43.791155543Z"
