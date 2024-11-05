@@ -190,6 +190,7 @@ helm-template: ## Install operator using Helm.
 
 .PHONY: prepare-operator-chart
 prepare-operator-chart: ## Copy samples to the Helm chart.
+	mkdir -p charts/paladin-operator/templates/samples
 	cp config/samples/core_v1* charts/paladin-operator/templates/samples/
 	cp config/samples/cert* charts/paladin-operator/templates/samples/
 	ls -la charts/paladin-operator/templates/samples
