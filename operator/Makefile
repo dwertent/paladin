@@ -174,6 +174,7 @@ prepare-crd-chart: manifests kustomize helmify ## Build CRDs using helmify.
 	find ${CHART_PATH_CRD}/templates/ -type f ! \( -name '*-crd.yaml' -o -name '_helpers.tpl' \) -exec rm -f {} +
 	rm -f ${CHART_PATH_CRD}/values.yaml
 	touch ${CHART_PATH_CRD}/values.yaml
+	ls -la charts/paladin-operator-crd/templates
 
 .PHONY: install-crds
 install-crds: prepare-crd-chart ## Install CRDs using Helm.
@@ -191,7 +192,7 @@ helm-template: ## Install operator using Helm.
 prepare-operator-chart: ## Copy samples to the Helm chart.
 	cp config/samples/core_v1* charts/paladin-operator/templates/samples/
 	cp config/samples/cert* charts/paladin-operator/templates/samples/
-
+	ls -la charts/paladin-operator/templates/samples
 
 .PHONY: helm-install
 helm-install: ## Install operator using Helm.
