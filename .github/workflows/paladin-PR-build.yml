@@ -83,8 +83,8 @@ jobs:
         path: paladin-image.tar
 
   image-release:
-    # run only on pushes to main
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # run only on pushes to main or manual triggers
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
     uses: ./.github/workflows/cross-build-images.yaml
     with:
       registry: ghcr.io
