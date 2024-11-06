@@ -2,6 +2,7 @@ name: Cross build paladin and operator images
 permissions:
   packages: write
 
+
 on:
   workflow_call:
     inputs:
