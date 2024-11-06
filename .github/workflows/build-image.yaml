@@ -117,5 +117,5 @@ jobs:
             commit=${{ github.sha }}
             build_date=${{ steps.build_tag_generator.outputs.BUILD_DATE }}
             tag=${{ steps.build_tag_generator.outputs.BUILD_TAG }}
-          cache-from: type=gha,ref=${{ env.IMAGE_LC }}:buildcache
-          cache-to: type=gha,mode=max,ref=${{ env.IMAGE_LC }}:buildcache
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

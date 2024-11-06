@@ -1,4 +1,4 @@
-name: Paladin Core Build
+name: Paladin Build
 
 on:
   push:
@@ -49,7 +49,7 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew -PcomposeLogs=true -PverboseTests=true --no-daemon --parallel --max-workers=5 build
   
-  image-build:
+  core-image-build:
     # run only on PRs
     if: github.event_name == 'pull_request'
     uses: ./.github/workflows/build-image.yaml
@@ -61,6 +61,19 @@ jobs:
       push: false
       platforms: linux/amd64
       runs-on: ubuntu-latest
+
+  operator-image-build:
+      # run only on PRs
+      if: github.event_name == 'pull_request'
+      uses: ./.github/workflows/build-image.yaml
+      with:
+        dockerfile: ./operator/Dockerfile
+        registry: paladin.io
+        image: paladin-operator
+        image_tag: test
+        push: false
+        platforms: linux/amd64
+        runs-on: ubuntu-latest
 
   image-release:
     # run only on pushes to main or manual triggers
