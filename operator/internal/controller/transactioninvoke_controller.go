@@ -111,13 +111,13 @@ func (r *TransactionInvokeReconciler) updateStatusAndRequeue(ctx context.Context
 	return ctrl.Result{Requeue: true}, nil // Run again immediately to submit
 }
 
-func (r *TransactionInvokeReconciler) buildDeployTransaction(txi *corev1alpha1.TransactionInvoke) (bool, *pldapi.TransactionInput, error) {
+func (rw *TransactionInvokeReconciler) buildDeployTransaction(txi *corev1alpha1.TransactionInvoke) (bool, *pldapi.TransactionInput, error) {
 
-	toTemplate, err := template.New("").Option("missingkey=error").Funcs(sprig.FuncMap()).Parse(txi.Spec.ToTemplate)
+	toTemplate, err := template.New("").Option("missingkey=error").Funcs(sprig.FuncMap()).Parse(adjustTemplatePlaceholders(txi.Spec.ToTemplate))
 	if err != nil {
 		return false, nil, fmt.Errorf("toTemplate invalid: %s", err)
 	}
-	paramsTemplate, err := template.New("").Option("missingkey=error").Funcs(sprig.FuncMap()).Parse(txi.Spec.ParamsJSONTemplate)
+	paramsTemplate, err := template.New("").Option("missingkey=error").Funcs(sprig.FuncMap()).Parse(adjustTemplatePlaceholders(txi.Spec.ParamsJSONTemplate))
 	if err != nil {
 		return false, nil, fmt.Errorf("paramsJSONTemplate invalid: %s", err)
 	}
