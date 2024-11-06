@@ -59,7 +59,7 @@ jobs:
       IMAGE_TAG: ${{ github.sha }}
     steps:
     - name: build image
-      uses: ./.github/actions/build-image.yaml
+      uses: ./.github/workflows/build-image.yaml
       with:
         dockerfile: ./Dockerfile
         registry: ${{ env.REGISTRY }}
@@ -81,7 +81,7 @@ jobs:
   image-release:
     # run only on pushes to main
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    uses: ./.github/actions/cross-build-images.yaml
+    uses: ./.github/workflows/cross-build-images.yaml
     with:
       registry: ghcr.io
       repository: ${{ github.repository_owner }}

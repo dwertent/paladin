@@ -24,7 +24,7 @@ on:
 
 jobs:
   core-macos:
-    uses: ./.github/actions/build-image.yaml
+    uses: ./.github/workflows/build-image.yaml
     with:
       dockerfile: ./Dockerfile
       registry: ${{ inputs.registry }}
@@ -38,7 +38,7 @@ jobs:
       password: ${{ secrets.password }}
 
   core-ubuntu:
-    uses: ./.github/actions/build-image.yaml
+    uses: ./.github/workflows/build-image.yaml
     with:
       dockerfile: ./Dockerfile
       registry: ${{ inputs.registry }}
@@ -52,7 +52,7 @@ jobs:
       password: ${{ secrets.password }}
 
   operator:
-    uses: ./.github/actions/build-image.yaml
+    uses: ./.github/workflows/build-image.yaml
     with:
       dockerfile: ./operator/Dockerfile
       registry: ${{ inputs.registry }}
