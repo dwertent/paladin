@@ -1,4 +1,6 @@
 name: Cross build paladin and operator images
+permissions:
+  packages: write
 
 on:
   workflow_call:
@@ -31,7 +33,7 @@ jobs:
       image: ${{ inputs.repository }}/paladin
       image_tag: "arm64-${{ inputs.image_tag }}"
       push: ${{ inputs.push }}
-      platforms: linux/arm64
+      platforms: linux/amd64
       runs-on: ubuntu-latest
     secrets:
       username: ${{ secrets.username }}
