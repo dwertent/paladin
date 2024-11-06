@@ -52,35 +52,15 @@ jobs:
   image-build:
     # run only on PRs
     if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    env:
-      IMAGE: paladin
-      REGISTRY: paladin.io
-      IMAGE_TAG: ${{ github.sha }}
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        submodules: recursive
-    - name: build image
-      uses: ./.github/workflows/build-image.yaml
-      with:
-        dockerfile: ./Dockerfile
-        registry: ${{ env.REGISTRY }}
-        image: ${{ env.IMAGE }}
-        image_tag: ${{ env.IMAGE_TAG }}
-        push: false
-        platforms: linux/amd64
-        runs-on: ubuntu-latest
-    - name: Save Docker image as artifact
-      run: docker save ${{ env.REGISTRY }}/${{ env.IMAGE }} -o paladin-image.tar
-
-    # This will allow using the image in other jobs
-    - name: Upload Docker image artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: paladin-image
-        path: paladin-image.tar
+    uses: ./.github/workflows/build-image.yaml
+    with:
+      dockerfile: ./Dockerfile
+      registry: paladin.io
+      image: paladin
+      image_tag: test
+      push: false
+      platforms: linux/amd64
+      runs-on: ubuntu-latest
 
   image-release:
     # run only on pushes to main or manual triggers
