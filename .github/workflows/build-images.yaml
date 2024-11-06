@@ -32,8 +32,7 @@ jobs:
       image_tag: "arm64-${{ inputs.image_tag }}"
       push: ${{ inputs.push }}
       platforms: linux/arm64
-      runs-on: macos-latest
-      # runs-on: ubuntu-latest
+      runs-on: ubuntu-latest
     secrets:
       username: ${{ secrets.username }}
       password: ${{ secrets.password }}
