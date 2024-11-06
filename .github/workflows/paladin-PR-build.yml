@@ -1,4 +1,4 @@
-name: Paladin CI build
+name: Paladin Core Build
 
 on:
   push:
@@ -50,54 +50,43 @@ jobs:
         run: ./gradlew -PcomposeLogs=true -PverboseTests=true --no-daemon --parallel --max-workers=5 build
   
   image-build:
+    # run only on PRs
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     env:
-      IMAGE_REGISTRY: kaleido.io  # just a placeholder
-      IMAGE_NAME: paladin
-      IMAGE_TAG: test  # just a placeholder, we should replace this with the workflow run number
-      BUILD_PLATFORM: linux/amd64
+      IMAGE: paladin
+      REGISTRY: paladin.io
+      IMAGE_TAG: ${{ github.sha }}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          submodules: recursive
+    - name: build image
+      uses: ./.github/actions/build-image.yaml
+      with:
+        dockerfile: ./Dockerfile
+        registry: ${{ env.REGISTRY }}
+        image: ${{ env.IMAGE }}
+        image_tag: ${{ env.IMAGE_TAG }}
+        push: false
+        platforms: linux/amd64
+        runs-on: ubuntu-latest
+    - name: Save Docker image as artifact
+      run: docker save ${{ env.REGISTRY }}/${{ env.IMAGE }} -o paladin-image.tar
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+    # This will allow using the image in other jobs
+    - name: Upload Docker image artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: paladin-image
+        path: paladin-image.tar
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-
-    # TODO: Setup docker registry
-    #   - name: Login to Docker registry
-    #     if: ${{ env.IMAGE_REGISTRY != '' }}
-    #     uses: docker/login-action@v3
-    #     with:
-    #       registry: ${{ env.IMAGE_REGISTRY }}
-    #       username: ${{ secrets.REGISTRY_USERNAME }}
-    #       password: ${{ secrets.REGISTRY_PASSWORD }}
-
-      - name: Build
-        uses: docker/build-push-action@v3
-        with:
-          sbom: true
-          file: Dockerfile
-          tags: ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-          platforms: ${{ env.BUILD_PLATFORM }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          push: false
-      
-      # TODO: Run a basic test to make sure the image was built correctly
-      # This is just a placeholder, we should replace this with a real test
-      # - name: Test the image
-      #   run: |
-      #     docker run -d -p <>:<> --name paladin-test \
-      #     -v <path to config file on host>:<path to config file> \
-      #     ${{ env.IMAGE_REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
-      #     -Djna.library.path=/app \
-      #     -jar paladin.jar <path to config file> <node name>
-      #     sleep 5
-      #     docker logs paladin-test | grep 'Started PaladinApplication' && echo 'Test passed' || echo 'Test failed'
-      #   timeout-minutes: 5
+  image-release:
+    # run only on pushes to main
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    uses: ./.github/actions/cross-build-images.yaml
+    with:
+      registry: ghcr.io
+      repository: ${{ github.repository_owner }}
+      image_tag: ${{ github.ref_name }}
+    secrets:
+      username: ${{ github.actor }}
+      password: ${{ secrets.GITHUB_TOKEN }}
       

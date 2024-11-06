@@ -1,4 +1,4 @@
-name: Release Image
+name: Release
 
 on:
   release:
@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       LATEST_TAG: ""
+      TAGS: ${{ github.ref_name }}
     steps:
     - name: Get the latest tag
       run: |
@@ -16,10 +17,6 @@ jobs:
         latest_tag=$(git tag -l | sort -V | tail -n 1)
         echo "latest tag: $latest_tag"
         echo "LATEST_TAG=$latest_tag" >> $GITHUB_ENV
-
-    - name: Set release tag
-      run: |
-        echo "TAGS=${{ github.ref_name }}" >> $GITHUB_ENV
 
     - name: Set latest tag
       if: github.event.action == 'released' && github.ref_name == env.LATEST_TAG
@@ -41,7 +38,7 @@ jobs:
       run: |
         echo "TAGS=${{ env.TAGS }},rc" >> $GITHUB_ENV
   push-to-dockerhub:
-    uses: ./.github/workflows/build-images.yaml
+    uses: ./.github/actions/cross-build-images.yaml
     needs: image-tags
     with:
       registry: docker.io
@@ -52,7 +49,7 @@ jobs:
       username: ${{ secrets.DOCKERHUB_USERNAME }}
       password: ${{ secrets.DOCKERHUB_TOKEN }}
   push-to-ghcr:
-    uses: ./.github/workflows/build-images.yaml
+    uses: ./.github/actions/cross-build-images.yaml
     needs: image-tags
     with:
       registry: ghcr.io

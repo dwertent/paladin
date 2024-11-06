@@ -23,8 +23,7 @@ on:
         type: string
       registry:
         description: 'Docker registry to push to'
-        required: false
-        default: 'docker.io'
+        required: true
         type: string
       image:
         description: 'Name of the image'
@@ -76,13 +75,6 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      
-      # docker is not installed on MacOS - https://github.com/actions/runner-images/issues/2150 
-      - name: Setup docker (missing on MacOS)
-        if: runner.os == 'macos'
-        run: |
-          brew install docker colima
-          colima start
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -124,5 +116,5 @@ jobs:
             commit=${{ github.sha }}
             build_date=${{ steps.build_tag_generator.outputs.BUILD_DATE }}
             tag=${{ steps.build_tag_generator.outputs.BUILD_TAG }}
-          cache-from: type=registry,ref=${{ env.IMAGE_LC }}:buildcache
-          cache-to: type=registry,ref=${{ env.IMAGE_LC }}:buildcache,mode=max
+          cache-from: type=gha,ref=${{ env.IMAGE_LC }}:buildcache
+          cache-to: type=gha,mode=max,ref=${{ env.IMAGE_LC }}:buildcache
