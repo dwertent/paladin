@@ -2733,15 +2733,12 @@ documentation for any issues with these tools.</p>
 </code></pre></div>
 <h3 id="step-2-install-cert-manager-crds">Step 2: Install cert-manager CRDs<a class="headerlink" href="#step-2-install-cert-manager-crds" title="Permanent link">&para;</a></h3>
 <p>Install the <a href="https://artifacthub.io/packages/helm/cert-manager/cert-manager">cert-manager</a> CRDs:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>kubectl<span class="w"> </span>apply<span class="w"> </span>-f<span class="w"> </span>https://github.com/cert-manager/cert-manager/releases/download/v1.16.1/cert-manager.crds.yaml
-<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>jetstack<span class="w"> </span>https://charts.jetstack.io<span class="w"> </span>--force-update
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>helm<span class="w"> </span>install<span class="w"> </span>cert-manager<span class="w"> </span>--namespace<span class="w"> </span>cert-manager<span class="w"> </span>--version<span class="w"> </span>v1.16.1<span class="w"> </span>jetstack/cert-manager<span class="w"> </span>--create-namespace
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>helm<span class="w"> </span>repo<span class="w"> </span>add<span class="w"> </span>jetstack<span class="w"> </span>https://charts.jetstack.io<span class="w"> </span>--force-update
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>helm<span class="w"> </span>install<span class="w"> </span>cert-manager<span class="w"> </span>--namespace<span class="w"> </span>cert-manager<span class="w"> </span>--version<span class="w"> </span>v1.16.1<span class="w"> </span>jetstack/cert-manager<span class="w"> </span>--create-namespace<span class="w"> </span>--set<span class="w"> </span>crds.enabled<span class="o">=</span><span class="nb">true</span>
 </code></pre></div>
 <h3 id="step-3-install-the-paladin-operator-chart">Step 3: Install the Paladin Operator Chart<a class="headerlink" href="#step-3-install-the-paladin-operator-chart" title="Permanent link">&para;</a></h3>
 <p>Install the Paladin operator chart:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>--install<span class="w"> </span>paladin<span class="w"> </span>paladin/paladin-operator<span class="w"> </span>-n<span class="w"> </span>paladin<span class="w"> </span>--create-namespace<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span>--set<span class="w"> </span>paladin.namespace<span class="o">=</span>paladin<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span>--set<span class="w"> </span>cert-manager.enabled<span class="o">=</span><span class="nb">false</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>helm<span class="w"> </span>upgrade<span class="w"> </span>--install<span class="w"> </span>paladin<span class="w"> </span>paladin/paladin-operator<span class="w"> </span>-n<span class="w"> </span>paladin<span class="w"> </span>--create-namespace
 </code></pre></div>
 <h3 id="outcome">Outcome<a class="headerlink" href="#outcome" title="Permanent link">&para;</a></h3>
 <p>This process will:</p>
