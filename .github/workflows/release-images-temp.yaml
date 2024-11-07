@@ -1,0 +1,43 @@
+name: Release
+
+permissions:
+  actions: read
+  checks: read
+  contents: write
+  deployments: read
+  discussions: read
+  id-token: write
+  issues: read
+  packages: write
+  pages: read
+  pull-requests: read
+  repository-projects: read
+  statuses: read
+  security-events: read
+  
+on:
+  push:
+    branches: [release]
+
+jobs:
+   
+  push-to-dockerhub:
+    uses: ./.github/workflows/cross-build-images.yaml
+    with:
+      registry: docker.io
+      repository: kaleidoinc
+      image_tag: ${{ github.ref_name }} 
+      # image_tag: ${{ needs.image-tags.env.TAGS }} # TODO: Support multiple tags
+    secrets:
+      username: ${{ secrets.DOCKERHUB_USERNAME }}
+      password: ${{ secrets.DOCKERHUB_TOKEN }}
+  # push-to-ghcr:
+  #   uses: ./.github/workflows/cross-build-images.yaml
+  #   with:
+  #     registry: ghcr.io
+  #     repository: ${{ github.repository_owner }}
+  #     image_tag: ${{ github.ref_name }}
+  #     # image_tag: ${{ needs.image-tags.env.TAGS }} # TODO: Support multiple tags
+  #   secrets:
+  #     username: ${{ github.actor }}
+  #     password: ${{ secrets.GITHUB_TOKEN }}
