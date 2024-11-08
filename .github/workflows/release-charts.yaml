@@ -66,7 +66,7 @@ jobs:
 
       - name: Prepare operator chart
         run: ./gradlew prepareOperatorChart
-      
+            
       # build and release images
       - name: Build and release images
         uses: ./.github/workflows/release-images.yaml
@@ -101,6 +101,10 @@ jobs:
           updates: |
             version: ${{ inputs.tag }}
             appVersion: ${{ inputs.tag }}
+
+      - name: Confirm Helm temapltes
+        working-directory: operator/charts/paladin-operator
+        run: helm template .
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
