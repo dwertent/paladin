@@ -7,6 +7,10 @@ on:
         required: false
         type: boolean
         default: false
+      tag:
+        required: true
+        type: string
+        description: 'The tag to release the chart and images with'
 
 jobs:
   helm-chart-release:

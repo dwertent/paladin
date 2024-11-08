@@ -16,6 +16,13 @@ permissions:
   security-events: read
   
 on:
+  workflow_call:
+    inputs:
+      tag:
+        required: false
+        type: string
+        default: ${{ github.ref_name }}
+        description: 'The tag to release the images with'
   release:
     types: [released, prereleased]
 
@@ -24,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       LATEST_TAG: ""
-      TAGS: ${{ github.ref_name }}
+      TAGS: ${{ inputs.tag }}
     steps:
     - name: Get the latest tag
       run: |
@@ -52,14 +59,14 @@ jobs:
       if: github.event.action == 'prereleased' && contains(github.ref, 'rc')
       run: |
         echo "TAGS=${{ env.TAGS }},rc" >> $GITHUB_ENV
+
   push-to-dockerhub:
     uses: ./.github/workflows/cross-build-images.yaml
     needs: image-tags
     with:
       registry: docker.io
       repository: ${{ github.repository_owner }}
-      image_tag: ${{ github.ref_name }} 
-      # image_tag: ${{ needs.image-tags.env.TAGS }} # TODO: Support multiple tags
+      image_tags: ${{ needs.image-tags.env.TAGS }} # TODO: Support multiple tags
     secrets:
       username: ${{ secrets.DOCKERHUB_USERNAME }}
       password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -69,7 +76,7 @@ jobs:
     with:
       registry: ghcr.io
       repository: ${{ github.repository_owner }}
-      image_tag: ${{ github.ref_name }}
+      image_tags: ${{ github.ref_name }}
       # image_tag: ${{ needs.image-tags.env.TAGS }} # TODO: Support multiple tags
     secrets:
       username: ${{ github.actor }}
