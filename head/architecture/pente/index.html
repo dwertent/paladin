@@ -485,7 +485,11 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="../.." title="Paladin" class="md-nav__button md-logo" aria-label="Paladin" data-md-component="logo">
+    <a href="../.."
+    title="Paladin"
+    class="md-header__button md-logo"
+    aria-label="Paladin"
+    data-md-component="logo">
       <!--
   Copyright (c) 2016-2024 Martin Donath <martin.donath@squidfunk.com>
 
@@ -1320,6 +1324,8 @@
       
         
       
+        
+      
     
     
       
@@ -1375,6 +1381,27 @@
   
   <span class="md-ellipsis">
     Bond Issuance
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/zkp-cbdc/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Wholesale CBDC
   </span>
   
 
@@ -2824,8 +2851,8 @@
 <p>This model was evolved through a number of updates over the years, most significantly:</p>
 <ul>
 <li>The re-building of the Haskell private state management runtime in Java</li>
-<li><a href="https://github.com/connsensys/orion">Orion</a>: Started in 2019, abandoned in Sep 2021</li>
-<li><a href="https://github.com/connsensys/tessera">Tessera</a>: Started in 2018, still maintained in 2024</li>
+<li><a href="https://github.com/consensys/orion">Orion</a>: Started in 2019, abandoned in Sep 2021</li>
+<li><a href="https://github.com/consensys/tessera">Tessera</a>: Started in 2018, still maintained in 2024</li>
 <li>Support for private smart contract submission in Hyperledger Besu (additional to Quorum)</li>
 <li>The modification to the base EVM was reduced, by avoiding modification of the <code>V</code> value of transactions, and rather using a special pre-compiled smart contract address</li>
 <li>A different approach to Private transaction nonce management was adopted in Besu, where a separate nonce is managed in each privacy group</li>

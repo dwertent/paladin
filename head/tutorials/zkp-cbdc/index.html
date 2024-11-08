@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../..">
+        <link rel="prev" href="../bond-issuance/">
       
       
-        <link rel="next" href="../private_evm/">
+        <link rel="next" href="../../reference/apis/bidx/">
       
       
       <link rel="icon" href="../../assets/paladin-icon-light.png">
@@ -20,7 +20,7 @@
     
     
       
-        <title>Privacy Preserving Tokens - Paladin</title>
+        <title>Wholesale CBDC - Paladin</title>
       
     
     
@@ -84,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#tokens-standards-on-evm" class="md-skip">
+        <a href="#cbdc-tokens-based-on-zeto" class="md-skip">
           Skip to content
         </a>
       
@@ -196,7 +196,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Privacy Preserving Tokens
+              Wholesale CBDC
             
           </span>
         </div>
@@ -295,12 +295,10 @@
         
   
   
-    
-  
   
     
     
-      <li class="md-tabs__item md-tabs__item--active">
+      <li class="md-tabs__item">
         <a href="../.." class="md-tabs__link">
           
   
@@ -357,11 +355,13 @@
         
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../../tutorials/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../" class="md-tabs__link">
           
   
     
@@ -537,8 +537,6 @@
       
   
   
-    
-  
   
   
     
@@ -563,17 +561,16 @@
     
     
       
-        
-        
-      
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_1" >
         
           
           
@@ -589,13 +586,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_1" id="__nav_1_label" tabindex="">
+              <label class="md-nav__link " for="__nav_1" id="__nav_1_label" tabindex="0">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_1">
             <span class="md-nav__icon md-icon"></span>
             Introduction
@@ -608,28 +605,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  <span class="md-ellipsis">
-    Privacy Preserving Tokens
-  </span>
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../concepts/tokens/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -638,126 +617,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#tokens-standards-on-evm" class="md-nav__link">
-    <span class="md-ellipsis">
-      Tokens standards on EVM
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-privacy-requirements" class="md-nav__link">
-    <span class="md-ellipsis">
-      The privacy requirements
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="The privacy requirements">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#the-token-itself" class="md-nav__link">
-    <span class="md-ellipsis">
-      The token itself
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#token-and-token-holder-data" class="md-nav__link">
-    <span class="md-ellipsis">
-      Token and token holder data
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#transaction-scoped-data" class="md-nav__link">
-    <span class="md-ellipsis">
-      Transaction scoped data
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-paladin-approach" class="md-nav__link">
-    <span class="md-ellipsis">
-      The Paladin approach
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="The Paladin approach">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#built-on-evm-and-providing-programmability-through-evm" class="md-nav__link">
-    <span class="md-ellipsis">
-      Built on EVM, and providing programmability through EVM
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#the-building-blocks" class="md-nav__link">
-    <span class="md-ellipsis">
-      The building blocks
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#the-missing-link-programmability" class="md-nav__link">
-    <span class="md-ellipsis">
-      The missing link - programmability
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#paladin-tokens" class="md-nav__link">
-    <span class="md-ellipsis">
-      Paladin tokens
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -770,7 +629,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../private_evm/" class="md-nav__link">
+      <a href="../../concepts/private_evm/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -791,7 +650,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../advanced_crypto/" class="md-nav__link">
+      <a href="../../concepts/advanced_crypto/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -812,7 +671,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../atomic_programmability/" class="md-nav__link">
+      <a href="../../concepts/atomic_programmability/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -833,7 +692,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../full_stack/" class="md-nav__link">
+      <a href="../../concepts/full_stack/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -854,7 +713,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../cloud_native/" class="md-nav__link">
+      <a href="../../concepts/cloud_native/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1276,6 +1135,8 @@
       
   
   
+    
+  
   
   
     
@@ -1292,21 +1153,22 @@
     
     
       
+        
+        
+      
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
           
           <div class="md-nav__link md-nav__container">
-            <a href="../../tutorials/" class="md-nav__link ">
+            <a href="../" class="md-nav__link ">
               
   
   <span class="md-ellipsis">
@@ -1317,13 +1179,13 @@
             </a>
             
               
-              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="">
                 <span class="md-nav__icon md-icon"></span>
               </label>
             
           </div>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             Tutorials
@@ -1339,7 +1201,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../tutorials/bond-issuance/" class="md-nav__link">
+      <a href="../bond-issuance/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
@@ -1357,10 +1219,30 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../tutorials/zkp-cbdc/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Wholesale CBDC
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   <span class="md-ellipsis">
@@ -1369,6 +1251,77 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#running-the-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      Running the example
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#explanation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Explanation
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Explanation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-cbdc-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create CBDC token
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#issue-cash" class="md-nav__link">
+    <span class="md-ellipsis">
+      Issue cash
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bank1-transfers-tokens-to-bank2-as-payment" class="md-nav__link">
+    <span class="md-ellipsis">
+      Bank1 transfers tokens to bank2 as payment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -2629,6 +2582,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -2637,46 +2592,46 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#tokens-standards-on-evm" class="md-nav__link">
+  <a href="#running-the-example" class="md-nav__link">
     <span class="md-ellipsis">
-      Tokens standards on EVM
+      Running the example
     </span>
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-privacy-requirements" class="md-nav__link">
+  <a href="#explanation" class="md-nav__link">
     <span class="md-ellipsis">
-      The privacy requirements
+      Explanation
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="The privacy requirements">
+    <nav class="md-nav" aria-label="Explanation">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#the-token-itself" class="md-nav__link">
+  <a href="#create-cbdc-token" class="md-nav__link">
     <span class="md-ellipsis">
-      The token itself
+      Create CBDC token
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#token-and-token-holder-data" class="md-nav__link">
+  <a href="#issue-cash" class="md-nav__link">
     <span class="md-ellipsis">
-      Token and token holder data
+      Issue cash
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#transaction-scoped-data" class="md-nav__link">
+  <a href="#bank1-transfers-tokens-to-bank2-as-payment" class="md-nav__link">
     <span class="md-ellipsis">
-      Transaction scoped data
+      Bank1 transfers tokens to bank2 as payment
     </span>
   </a>
   
@@ -2684,57 +2639,6 @@
         
       </ul>
     </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-paladin-approach" class="md-nav__link">
-    <span class="md-ellipsis">
-      The Paladin approach
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="The Paladin approach">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#built-on-evm-and-providing-programmability-through-evm" class="md-nav__link">
-    <span class="md-ellipsis">
-      Built on EVM, and providing programmability through EVM
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#the-building-blocks" class="md-nav__link">
-    <span class="md-ellipsis">
-      The building blocks
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#the-missing-link-programmability" class="md-nav__link">
-    <span class="md-ellipsis">
-      The missing link - programmability
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#paladin-tokens" class="md-nav__link">
-    <span class="md-ellipsis">
-      Paladin tokens
-    </span>
-  </a>
   
 </li>
       
@@ -2756,103 +2660,53 @@
   
 
 
-  <h1>Privacy Preserving Tokens</h1>
-
-<p><img alt="Transformation of Tokens" src="../../images/paladin_tokens.svg" /></p>
-<p>Tokens are the foundation on which blockchain and DLT use cases are built.</p>
-<p>A token is a digital record of the existence and ownership of something of value.</p>
-<p>The ability to refer to and transfer ownership of a token as part of an <em>atomic transaction</em>, is what makes Web3 (Blockchain and DLT) technologies fundamentally different to the API driven world of Web2.</p>
-<h2 id="tokens-standards-on-evm">Tokens standards on EVM<a class="headerlink" href="#tokens-standards-on-evm" title="Permanent link">&para;</a></h2>
-<p>EVM has established really important standards for interoperability of tokens.</p>
-<ul>
-<li>ERC-20 and related standards like ERC-777<ul>
-<li>These provide an interoperability standard for <code>fungible</code> tokens, where value is divisible and interchangeable within the pool of value represented by the token</li>
-</ul>
-</li>
-<li>ERC-721 and related standards like ERC-1155<ul>
-<li>These provide an interoperability standard for <code>non-fungible</code> tokens, representing a unique item with a unique identity</li>
-<li>In the case of ERC-1155 the ability to blur the lines between fungible and non-fungible use cases</li>
-</ul>
-</li>
-<li>ERC-1400 (ERC-14xx), ERC-3643 (T-Rex) and related standards<ul>
-<li>These provide various levels of reference and standardization for the more complex realities of business use cases</li>
-<li>Implementors might use these as an accelerator for building real-world enterprise uses cases using tokens, although none provide a one-size-fits-all solution</li>
-<li>Generally tokens still conform to ERC-20/ERC-721/ERC-1155 when encompassing more complex standards, as that is where the most interoperability and programmability comes from</li>
-</ul>
-</li>
-</ul>
-<blockquote>
-<p>None of these standards address privacy, because these tokens requires complete visibility into the transaction history to trust the value.</p>
-</blockquote>
-<h2 id="the-privacy-requirements">The privacy requirements<a class="headerlink" href="#the-privacy-requirements" title="Permanent link">&para;</a></h2>
-<p>To build enterprise use cases meaningfully that use tokens, the data must be segregated in a way that allows each party to see and be in control of an appropriate subset of data in the transaction.</p>
-<h3 id="the-token-itself">The token itself<a class="headerlink" href="#the-token-itself" title="Permanent link">&para;</a></h3>
-<p>The token itself needs to have a wide reach, to be a provably unique record of ownership across the whole ledger/blockchain. This is what makes a token so powerful.</p>
-<p>In a privacy preserving use case, it is necessary to avoid the history of ownership of a token being directly or indirectly available to those with access to the chain. However, it must still be true that when I receive a token that I can trust the legitimacy of the token within the scope of the ledger.</p>
-<p>As such the existing open models of ERC-20 and ERC-721 derived standards to not fit a privacy preserving use cases, as these tokens require access to the token account state to validate the token, and this account state is a product of all previous transactions that occurred for that token. So I need complete historical visibility to trust the authenticity of any token I receive.</p>
-<p>Alternative approaches described below using issuer-private data, or zero-knowledge proofs, are required to protect the confidentiality and anonymity of the parties transacting. These approaches are of course not new to EVM, but they do not currently have the same standardization, programmability or interoperability of ERC-20 / ERC-721, and that is something the Paladin project aims to address.</p>
-<h3 id="token-and-token-holder-data">Token and token holder data<a class="headerlink" href="#token-and-token-holder-data" title="Permanent link">&para;</a></h3>
-<p>There are often strong anonymity requirements that mean participants in the ecosystem cannot directly know, or indirectly infer through inspecting transaction patterns, who owns a token at any given point in time.</p>
-<p>Conversely, it is necessary for the holder of a token to be able to prove information about the token, and ownership of that token, when required to complete a transaction.</p>
-<p>The issuer of a token might need to hold data about every holder of a token, and prove they have performed KYC/AML checks against it. This data is usually subject to legal requirements on its retention, including the ability to delete it.</p>
-<h3 id="transaction-scoped-data">Transaction scoped data<a class="headerlink" href="#transaction-scoped-data" title="Permanent link">&para;</a></h3>
-<p>Data placed directly on a base ledger is immutable, and visible to all. Whereas the data involved in a transaction between parties is often scoped only to the execution of that one business transaction. There might be many steps involved, and those steps need to be enforced through a smart contact.</p>
-<p>This transaction scoped data is commonly also not allowed to be disclosed to the issuers of the tokens that are being exchanged.</p>
-<h2 id="the-paladin-approach">The Paladin approach<a class="headerlink" href="#the-paladin-approach" title="Permanent link">&para;</a></h2>
-<p>Paladin is designed to combine technologies, allowing the partitioning of data to those with a right to have access to it, while allowing atomic settlement across overall business transactions where different parties have access to different subsets of the data.</p>
-<p>The EVM is uniquely powerful in supporting this form of interoperability, as the ledger itself is so programmable supporting layering of multiple technologies on top of it.</p>
-<h3 id="built-on-evm-and-providing-programmability-through-evm">Built on EVM, and providing programmability through EVM<a class="headerlink" href="#built-on-evm-and-providing-programmability-through-evm" title="Permanent link">&para;</a></h3>
-<p>EVM is the place where the most innovation is happening on privacy technologies. EVM based ledgers provide all the tools needed to build layers of privacy on top, and most importantly to make those private worlds interoperable with other worlds on the same ledger.</p>
-<p>Paladin is designed to unleash the innovation and talent of the EVM ecosystem, for enterprise use cases that have a fundamental requirement for privacy.</p>
-<p>Paladin not only uses EVM as the base ledger it runs against (it is compatible with any EVM), but it allows programmability through EVM.</p>
-<h3 id="the-building-blocks">The building blocks<a class="headerlink" href="#the-building-blocks" title="Permanent link">&para;</a></h3>
-<p>Constructing a tokenization use case has historically meant choosing between three very different approaches to maintaining privacy:</p>
-<ol>
-<li>Zero-knowledge proof (ZKP) based tokens<ul>
-<li>These obey the purest principals of decentralization, where mathematics enforces the rules of the token. No individual party is required to be involved in any processing, and by the nature of that no party can prevent a valid transaction from executing.</li>
-<li>Cash tokens, including Central Bank Digital Currencies (CBDCs), are driving enterprise adoption of this form of token due to the simple mathematical nature of the tokens. Control points are often still required such as KYC/AML checks on the governance of parties authorized to trade, and activities that affect overall supply.</li>
-<li>The overhead of the cryptography is comparatively high with this set of technologies, so there is rapid evolution in the toolkits and approaches to reduce the overhead and increase efficiency.</li>
-</ul>
-</li>
-<li>Issuer-backed tokens / Private Oracles / Notarized tokens<ul>
-<li>These do not execute entirely in the open, but instead require some centralization of control - most commonly because the legal framework they operate in require it. The fact there is a single party means that anonymity and confidentiality between trading parties can be established by inclusion of the operator/issuer in each transaction, and trusting that operator to maintain the private date they are legally required to hold. That party controls what data is shared with whom.</li>
-<li>Regulated securities such as Bonds and Funds almost always fall into this category, where existing legal frameworks for the governance of ownership records mean that some set of legal entities must be involved in any transfer, and must have full details of that transfer.</li>
-</ul>
-</li>
-<li>Private smart contracts<ul>
-<li>The power of an smart contract, EVM or otherwise, is that every party involves knows the same logic is being executed against the same data, in the same order. Previous projects, including ones with significant adoption in the enterprise EVM community such as <a href="https://github.com/Consensys/tessera">Tessera</a>, have aimed to provide this same benefit within <strong>privacy groups</strong> sharing a common ledger.</li>
-<li>Because data inside a privacy group can only be proved to those within the privacy group, this has primarily been adopted for time-bound processing, or processing that is known to be very constrained to a specific set of parties. General use tokens do not fit "inside" a privacy group, because by their nature the tokens needs to be tradable and exchangeable across these privacy groups (or they are not really tokens).</li>
-</ul>
-</li>
-</ol>
-<h3 id="the-missing-link-programmability">The missing link - programmability<a class="headerlink" href="#the-missing-link-programmability" title="Permanent link">&para;</a></h3>
-<p>Rather than picking any one of these approaches in isolation, Paladin embraces <strong>all of these approaches</strong> and the ability to program across them.</p>
-<p>This is based on the principal that the success of the EVM community, and existing ERC token standards, is the ability for use case to be programmed against them that are beyond the original design of the token itself.</p>
-<h2 id="paladin-tokens">Paladin tokens<a class="headerlink" href="#paladin-tokens" title="Permanent link">&para;</a></h2>
-<p>Paladin tackles deficiencies in previous generations of technology for tokens head on, by providing:</p>
-<ul>
-<li>EVM native, modern, robust implementations of each token type<ul>
-<li>ZKP backed tokens (Zeto)</li>
-<li>Notarized / issuer-backed tokens (Noto)</li>
-</ul>
-</li>
-<li>Programmability for the private transaction workflows between tokens<ul>
-<li>Private EVM execution in privacy groups (Pente)</li>
-</ul>
-</li>
-<li>The extensibility to add new implementations as technologies as they evolve<ul>
-<li>New cryptography</li>
-<li>New programmability</li>
-<li>New business requirements</li>
-</ul>
-</li>
-<li>Atomic programmability across all types of system<ul>
-<li>With true single-ledger, single-transaction atomicity</li>
-<li>Without the need for time-lock or 3<sup>rd</sup> party based escrow</li>
-<li>Bringing us towards a "ZRC-20" standard of interoperability</li>
-</ul>
-</li>
-</ul>
+<h1 id="cbdc-tokens-based-on-zeto">CBDC Tokens based on Zeto<a class="headerlink" href="#cbdc-tokens-based-on-zeto" title="Permanent link">&para;</a></h1>
+<p>The code for this tutorial can be found in <a href="https://github.com/LF-Decentralized-Trust-labs/paladin/blob/main/example/zeto">example/zeto</a>.</p>
+<p>This shows how to leverage the <a href="../../architecture/zeto/">Zeto</a> in order to build a wholesale CBDC with privacy, illustrating multiple aspects of Paladin's privacy capabilities.</p>
+<h2 id="running-the-example">Running the example<a class="headerlink" href="#running-the-example" title="Permanent link">&para;</a></h2>
+<p>Follow the <a href="../../getting-started/installation/">Getting Started</a> instructions to set up a Paldin environment, and
+then follow the example <a href="https://github.com/LF-Decentralized-Trust-labs/paladin/blob/main/example/zeto/README.md">README</a>
+to run the code.</p>
+<h2 id="explanation">Explanation<a class="headerlink" href="#explanation" title="Permanent link">&para;</a></h2>
+<p>Below is a walkthrough of each step in the example, with an explanation of what it does.</p>
+<h3 id="create-cbdc-token">Create CBDC token<a class="headerlink" href="#create-cbdc-token" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kd">const</span><span class="w"> </span><span class="nx">zetoFactory</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">ZetoFactory</span><span class="p">(</span><span class="nx">paladin3</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;zeto&#39;</span><span class="p">);</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kd">const</span><span class="w"> </span><span class="nx">zetoCBDC</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">zetoFactory</span><span class="p">.</span><span class="nx">newZeto</span><span class="p">(</span><span class="nx">cbdcIssuer</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="w">  </span><span class="nx">tokenName</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;Zeto_AnonNullifier&#39;</span><span class="p">,</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="p">});</span>
+</code></pre></div>
+<p>This creates a new instance of the Zeto domain, using the <a href="https://github.com/hyperledger-labs/zeto/tree/main?tab=readme-ov-file#zeto_anonnullifier">Zeto_AnonNullifier</a> contract.
+This results in a new cloned contract on the base ledger, with a new unique address. This Zeto token contract will be used to represent
+tokenized cash/CBDC.</p>
+<p>The token will be minted by the central bank/CBDC issuer party. Minting is restricted to be requested only by the central bank, the
+deployer account of the contract.</p>
+<h3 id="issue-cash">Issue cash<a class="headerlink" href="#issue-cash" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kd">let</span><span class="w"> </span><span class="nx">receipt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">zetoCBDC</span><span class="p">.</span><span class="nx">mint</span><span class="p">(</span><span class="nx">cbdcIssuer</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">  </span><span class="nx">mints</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">      </span><span class="nx">to</span><span class="o">:</span><span class="w"> </span><span class="kt">bank1</span><span class="p">,</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">      </span><span class="nx">amount</span><span class="o">:</span><span class="w"> </span><span class="kt">100000</span><span class="p">,</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">      </span><span class="nx">to</span><span class="o">:</span><span class="w"> </span><span class="kt">bank2</span><span class="p">,</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">      </span><span class="nx">amount</span><span class="o">:</span><span class="w"> </span><span class="kt">100000</span><span class="p">,</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">  </span><span class="p">],</span>
+<a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="p">});</span>
+</code></pre></div>
+<p>The cash issuer mints cash to the commercial banks, <code>bank1</code> and <code>bank2</code>.</p>
+<h3 id="bank1-transfers-tokens-to-bank2-as-payment">Bank1 transfers tokens to bank2 as payment<a class="headerlink" href="#bank1-transfers-tokens-to-bank2-as-payment" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nx">receipt</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">zetoCBDC</span><span class="p">.</span><span class="nx">using</span><span class="p">(</span><span class="nx">paladin1</span><span class="p">).</span><span class="nx">transfer</span><span class="p">(</span><span class="nx">bank1</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">  </span><span class="nx">transfers</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span><span class="p">{</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="w">      </span><span class="nx">to</span><span class="o">:</span><span class="w"> </span><span class="kt">bank2</span><span class="p">,</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">      </span><span class="nx">amount</span><span class="o">:</span><span class="w"> </span><span class="kt">1000</span><span class="p">,</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span><span class="p">},</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">  </span><span class="p">],</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">});</span>
+</code></pre></div>
+<p>Bank1 can call the <code>transfer</code> function to transfer zeto tokens to multiple parties, up to 10. Note that the identity <code>bank1</code> exists on the <code>paladin1</code> instance,
+therefore it must use that instance to send the transfer transction (<code>.using(paladin1)</code>).</p>
 
 
 
@@ -2884,7 +2738,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../.." class="md-footer__link md-footer__link--prev" aria-label="Previous: Introduction">
+          <a href="../bond-issuance/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Bond Issuance">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -2894,20 +2748,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                Introduction
+                Bond Issuance
               </div>
             </div>
           </a>
         
         
           
-          <a href="../private_evm/" class="md-footer__link md-footer__link--next" aria-label="Next: Private EVM Smart Contracts">
+          <a href="../../reference/apis/bidx/" class="md-footer__link md-footer__link--next" aria-label="Next: bidx_*">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                Private EVM Smart Contracts
+                bidx_*
               </div>
             </div>
             <div class="md-footer__button md-icon">
