@@ -17,9 +17,10 @@ on:
         type: string
         description: 'The helm chart tag to release the chart'
     secrets:
-      GITHUB_TOKEN:
+      CR_TOKEN:
         description: 'The GitHub token to use for the helm chart release'
         required: true
+
   workflow_dispatch:
     inputs:
       latest:
@@ -107,6 +108,16 @@ jobs:
           helm template .
           rm -rf charts
           rm Chart.lock
+      
+      # set CR_TOKEN env with the GitHub token secret when it is workflow_dispatch action
+      - name: Set CR_TOKEN
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" == 'workflow_call' ]; then
+            echo "CR_TOKEN=${{ secrets.CR_TOKEN }}" >> $GITHUB_ENV
+          else
+            echo "CR_TOKEN=${{ secrets.GITHUB_TOKEN }}" >> $GITHUB_ENV
+          fi
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
@@ -115,4 +126,4 @@ jobs:
           charts_dir: "operator/charts"
           skip_existing: true
         env: 
-          CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          CR_TOKEN: "${{ env.CR_TOKEN }}"

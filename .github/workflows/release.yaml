@@ -15,7 +15,7 @@ on:
         required: true
         type: string
         description: 'The tag to release the chart and images with'
-
+        
 jobs:
   set-variables:
     runs-on: ubuntu-latest
@@ -61,7 +61,7 @@ jobs:
       images_tag: ${{ needs.set-variables.outputs.tag }}
       latest: ${{ needs.set-variables.outputs.latest }}
     secrets:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   release-cli-sdk:
     needs: [set-variables, release-charts]
