@@ -1389,6 +1389,8 @@
       
         
       
+        
+      
     
     
       
@@ -2356,6 +2358,79 @@
   
   
   
+    
+    
+      
+        
+      
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_3" id="__nav_5_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Kubernetes CRDs
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_3">
+            <span class="md-nav__icon md-icon"></span>
+            Kubernetes CRDs
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/crds/core.paladin.io/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    core.paladin.io
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
       <a href="../../reference/architecture/" class="md-nav__link">
         
@@ -2745,7 +2820,8 @@ provides a lightweight way to run a local Kubernetes cluster on your machine. Th
 <a href="https://github.com/LF-Decentralized-Trust-labs/paladin/blob/main/operator/paladin-kind.yaml">starter config file</a>
 for kind which will open up the container ports used by the Paladin charts below.</p>
 <p>You can create a new cluster with:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>kind<span class="w"> </span>create<span class="w"> </span>cluster<span class="w"> </span>--name<span class="w"> </span>paladin<span class="w"> </span>--config<span class="w"> </span>operator/paladin-kind.yaml
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>curl<span class="w"> </span>https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/paladin/refs/heads/main/operator/paladin-kind.yaml<span class="w"> </span>-L<span class="w"> </span>-O
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>kind<span class="w"> </span>create<span class="w"> </span>cluster<span class="w"> </span>--name<span class="w"> </span>paladin<span class="w"> </span>--config<span class="w"> </span>paladin-kind.yaml
 </code></pre></div>
 <p>If you need to start over, you can delete the cluster with:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>kind<span class="w"> </span>delete<span class="w"> </span>cluster<span class="w"> </span>--name<span class="w"> </span>paladin
@@ -2863,6 +2939,7 @@ documentation for any issues with these tools.</p>
 <li><a href="http://localhost:31648/ui">http://localhost:31648/ui</a></li>
 <li><a href="http://localhost:31748/ui">http://localhost:31748/ui</a></li>
 </ul>
+<p>Learn about interacting with the <a href="../user-interface/">UI</a>, and try out the <a href="../../tutorials/">Tutorials</a>.</p>
 <h2 id="uninstall">Uninstall<a class="headerlink" href="#uninstall" title="Permanent link">&para;</a></h2>
 <p>To remove the Paladin operator and related resources, run the following commands:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>helm<span class="w"> </span>uninstall<span class="w"> </span>paladin<span class="w"> </span>-n<span class="w"> </span>paladin
