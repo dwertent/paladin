@@ -53,7 +53,6 @@ jobs:
     uses: ./.github/workflows/release-images.yaml
     with:
       tag: ${{ needs.set-variables.outputs.tag }}
-      # latest: ${{ needs.set-variables.outputs.latest }}
       latest: '${{ fromJSON(needs.set-variables.outputs.latest) }}'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -65,15 +64,12 @@ jobs:
     with:
       chart_tag: ${{ needs.set-variables.outputs.tag }}
       images_tag: ${{ needs.set-variables.outputs.tag }}
-      # latest: ${{ needs.set-variables.outputs.latest }}
       latest: '${{ fromJSON(needs.set-variables.outputs.latest) }}'
     secrets:
       CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   release-cli-sdk:
-    needs: [set-variables, release-charts]
+    needs: release-charts
     uses: ./.github/workflows/release-cli-sdk.yaml
-    with:
-      tag: ${{ needs.set-variables.outputs.tag }}
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
