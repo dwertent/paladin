@@ -7,7 +7,6 @@ on:
         required: false
         type: boolean
         default: false
-        description: 'Whether to also tag the images with "latest"'
       images_tag:
         required: true
         type: string
@@ -15,7 +14,7 @@ on:
       chart_tag:
         required: true
         type: string
-        description: 'The helm chart tag to release the chart'
+        description: 'Chart release tag'
     secrets:
       CR_TOKEN:
         description: 'The GitHub token to use for the helm chart release'

@@ -10,11 +10,10 @@ on:
         required: false
         type: boolean
         default: false
-        description: 'Whether to also tag the images with "latest"'
       tag:
         required: true
         type: string
-        description: 'The tag to release the chart and images with'
+        description: 'Release tag (chart and images)'
         
 jobs:
   set-variables:
@@ -54,7 +53,8 @@ jobs:
     uses: ./.github/workflows/release-images.yaml
     with:
       tag: ${{ needs.set-variables.outputs.tag }}
-      latest: ${{ needs.set-variables.outputs.latest }}
+      # latest: ${{ needs.set-variables.outputs.latest }}
+      latest: '${{ fromJSON(needs.set-variables.outputs.latest) }}'
     secrets:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -65,7 +65,8 @@ jobs:
     with:
       chart_tag: ${{ needs.set-variables.outputs.tag }}
       images_tag: ${{ needs.set-variables.outputs.tag }}
-      latest: ${{ needs.set-variables.outputs.latest }}
+      # latest: ${{ needs.set-variables.outputs.latest }}
+      latest: '${{ fromJSON(needs.set-variables.outputs.latest) }}'
     secrets:
       CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
