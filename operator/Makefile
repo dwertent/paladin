@@ -3,6 +3,7 @@ NAMESPACE ?= default
 
 OPERATOR_IMG_NAME ?= paladin-operator
 OPERATOR_IMG_TAG ?= test
+OPERATOR_IMG ?= ${OPERATOR_IMG_NAME}:${OPERATOR_IMG_TAG}
 PALADIN_IMG_NAME ?= paladin
 PALADIN_IMG_TAG ?= test 
 
