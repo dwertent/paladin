@@ -31,14 +31,19 @@ jobs:
           INPUT_TAG: ${{ github.event.inputs.tag }}
           INPUT_LATEST: ${{ github.event.inputs.latest }}
         run: |
-          if [[ "$EVENT_NAME" == "push" && "$REF" == refs/tags/v* ]]; then
+          if [[ "$EVENT_NAME" == "push" && "$REF" == refs/tags/v*" ]]; then
             echo "Tag push event"
-            TAG=${REF##*/}
-            LATEST=true
+            TAG="${REF##*/}"
+            LATEST="true"
           else
             echo "Workflow dispatch or other event"
             TAG="$INPUT_TAG"
-            LATEST=$INPUT_LATEST
+            # Ensure INPUT_LATEST is 'true' or 'false' string
+            if [[ "$INPUT_LATEST" == "true" ]]; then
+              LATEST="true"
+            else
+              LATEST="false"
+            fi
           fi
           echo "tag=$TAG" >> $GITHUB_OUTPUT
           echo "latest=$LATEST" >> $GITHUB_OUTPUT

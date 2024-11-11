@@ -109,6 +109,8 @@ jobs:
           rm -rf charts
           rm Chart.lock
       
+      # TODO: Add e2e tests for the helm chart
+
       # set CR_TOKEN env with the GitHub token secret when it is workflow_dispatch action
       - name: Set CR_TOKEN
         shell: bash
