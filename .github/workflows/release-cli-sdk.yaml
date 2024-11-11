@@ -1,0 +1,43 @@
+name: CLI SDK Release
+on:
+    workflow_call:
+        inputs:
+            tag:
+                required: true
+                type: string
+                description: 'The tag to release the sdk with'
+        secrets:
+            NPM_TOKEN:
+                description: 'NPM token'
+                required: true
+    workflow_dispatch:
+      inputs:
+        tag:
+          required: true
+          type: string
+          description: 'The tag to release the images with'
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
+      - name: Install pre-requisites
+        uses: ./.github/actions/setup
+      
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
+      - name: Publish to npm
+        working-directory: sdk/typescript
+        shell: bash
+        run: |
+            set -e
+            ../../gradlew build
+            npm publish --tag ${{ inputs.tag }} --dry-run
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

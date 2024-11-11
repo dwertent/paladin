@@ -1,0 +1,72 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - v*
+  workflow_dispatch:
+    inputs:
+      latest:
+        required: false
+        type: boolean
+        default: false
+        description: 'Whether to also tag the images with "latest"'
+      tag:
+        required: true
+        type: string
+        description: 'The tag to release the chart and images with'
+
+jobs:
+  set-variables:
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.set-vars.outputs.tag }}
+      latest: ${{ steps.set-vars.outputs.latest }}
+    steps:
+      - id: set-vars
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF: ${{ github.ref }}
+          INPUT_TAG: ${{ github.event.inputs.tag }}
+          INPUT_LATEST: ${{ github.event.inputs.latest }}
+        run: |
+          if [[ "$EVENT_NAME" == "push" && "$REF" == refs/tags/v* ]]; then
+            echo "Tag push event"
+            TAG=${REF##*/}
+            LATEST=true
+          else
+            echo "Workflow dispatch or other event"
+            TAG="$INPUT_TAG"
+            LATEST=$INPUT_LATEST
+          fi
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "latest=$LATEST" >> $GITHUB_OUTPUT
+
+  release-images:
+    needs: set-variables
+    uses: ./.github/workflows/release-images.yaml
+    with:
+      tag: ${{ needs.set-variables.outputs.tag }}
+      latest: ${{ needs.set-variables.outputs.latest }}
+    secrets:
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  release-charts:
+    needs: [set-variables, release-images]
+    uses: ./.github/workflows/release-charts.yaml
+    with:
+      chart_tag: ${{ needs.set-variables.outputs.tag }}
+      images_tag: ${{ needs.set-variables.outputs.tag }}
+      latest: ${{ needs.set-variables.outputs.latest }}
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release-cli-sdk:
+    needs: [set-variables, release-charts]
+    uses: ./.github/workflows/release-cli-sdk.yaml
+    with:
+      tag: ${{ needs.set-variables.outputs.tag }}
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
