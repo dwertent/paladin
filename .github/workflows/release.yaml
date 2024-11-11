@@ -31,7 +31,7 @@ jobs:
           INPUT_TAG: ${{ github.event.inputs.tag }}
           INPUT_LATEST: ${{ github.event.inputs.latest }}
         run: |
-          if [[ "$EVENT_NAME" == "push" && "$REF" == refs/tags/v*" ]]; then
+          if [[ "$EVENT_NAME" == "push" && "$REF" == refs/tags/v* ]]; then
             echo "Tag push event"
             TAG="${REF##*/}"
             LATEST="true"
@@ -47,6 +47,7 @@ jobs:
           fi
           echo "tag=$TAG" >> $GITHUB_OUTPUT
           echo "latest=$LATEST" >> $GITHUB_OUTPUT
+
 
   release-images:
     needs: set-variables
