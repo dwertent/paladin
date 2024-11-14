@@ -16,4 +16,4 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Validate workflows
-        uses: ./actions/workflows-validation
+        uses: ./.github/actions/workflows-validation
