@@ -40,6 +40,8 @@ jobs:
   image-tags:
     runs-on: ubuntu-latest
     outputs:
+      dockerhub_repository: ${{ steps.dockerhub_repo.outputs.repository }}
+      ghcr_repository: ${{ steps.ghcr_repo.outputs.repository }}
       tags: ${{ steps.determine-tags.outputs.tags }}
     env:
       TAG: ${{ inputs.tag }}
@@ -59,26 +61,40 @@ jobs:
             echo "Appending 'latest' tag"
             TAGS="${TAGS},latest"
           fi
-
+          
           echo "tags=${TAGS}" >> $GITHUB_OUTPUT
 
-  # push-to-dockerhub:
-  #   needs: image-tags
-  #   uses: ./.github/workflows/cross-build-images.yaml
-  #   with:
-  #     registry: docker.io
-  #     repository: ${{ github.repository_owner }}
-  #     image_tags: ${{ needs.image-tags.outputs.tags }}
-  #   secrets:
-  #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-  #     password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Set DockerHub Repository
+        id: dockerhub_repo
+        uses: ./.github/actions/repository
+        with:
+          repository: ${{ github.repository_owner }}
+          registry: "docker.io"
+
+      - name: Set GHCR Repository
+        id: ghcr_repo
+        uses: ./.github/actions/repository
+        with:
+          repository: ${{ github.repository_owner }}
+          registry: "ghcr.io"
+ 
+  push-to-dockerhub:
+    needs: image-tags
+    uses: ./.github/workflows/cross-build-images.yaml
+    with:
+      registry: docker.io
+      repository: ${{ needs.image-tags.outputs.dockerhub_repository }}
+      image_tags: ${{ needs.image-tags.outputs.tags }}
+    secrets:
+      username: ${{ secrets.DOCKERHUB_USERNAME }}
+      password: ${{ secrets.DOCKERHUB_TOKEN }}
 
   push-to-ghcr:
     needs: image-tags
     uses: ./.github/workflows/cross-build-images.yaml
     with:
       registry: ghcr.io
-      repository: ${{ github.repository_owner }}
+      repository: ${{ needs.image-tags.outputs.ghcr_repository }}
       image_tags: ${{ needs.image-tags.outputs.tags }}
     secrets:
       username: ${{ github.actor }}

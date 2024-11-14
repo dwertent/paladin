@@ -83,12 +83,6 @@ jobs:
           registry: ${{ inputs.registry }}
           username: ${{ secrets.username }}
           password: ${{ secrets.password }}
-
-      - name: Set lower case image name
-        run: |
-          echo "IMAGE_LC=${IMAGE,,}" >>${GITHUB_ENV}
-        env:
-          IMAGE: ${{ inputs.registry }}/${{ inputs.image }}
       
       - name: Set build tag
         id: build_tag_generator
@@ -109,7 +103,7 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           push: ${{ inputs.push }}
           platforms: ${{ inputs.platforms }}
-          tags: "${{ env.IMAGE_LC }}:${{ inputs.image_tag }}"
+          tags: "${{ inputs.registry }}/${{ inputs.image }}:${{ inputs.image_tag }}"
           labels: |
             commit=${{ github.sha }}
             build_date=${{ steps.build_tag_generator.outputs.BUILD_DATE }}

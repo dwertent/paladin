@@ -79,6 +79,11 @@ jobs:
     if: github.event_name == 'pull_request'
     needs: [core-image-build, operator-image-build]
     uses: ./.github/workflows/build-chart.yaml
+    with:
+      paladin-image: paladin.io/paladin
+      paladin-image-tag: test
+      operator-image: paladin.io/paladin-operator
+      operator-image-tag: test
 
   image-release:
     # run only on pushes to main or manual triggers

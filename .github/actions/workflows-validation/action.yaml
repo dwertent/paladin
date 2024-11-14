@@ -1,0 +1,10 @@
+name: "Validate Workflows Action"
+description: "A GitHub Action to validate workflows using act."
+
+runs:
+  using: "docker"
+  image: "Dockerfile"
+
+branding:
+  color: "blue"
+  icon: "check-circle"
