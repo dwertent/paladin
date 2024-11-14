@@ -33,6 +33,7 @@ jobs:
     outputs:
       repository: ${{ steps.modify_repo.outputs.repository }}
     steps:
+      - uses: actions/checkout@v4
       - name: Set Repository Name
         id: modify_repo
         uses: ./.github/actions/repository
