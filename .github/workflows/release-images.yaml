@@ -55,7 +55,7 @@ jobs:
         run: |
           set -e
           TAGS=${{ inputs.tag }}
-          if [[ "${{ inputs.latest }}"" == 'true' ]]; then
+          if [[ "${{ inputs.latest }}" == 'true' ]]; then
             echo "Appending 'latest' tag"
             TAGS="${TAGS},latest"
           fi
