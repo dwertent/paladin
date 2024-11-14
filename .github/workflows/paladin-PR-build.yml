@@ -56,6 +56,7 @@ jobs:
       image: paladin
       image_tag: test
       push: false
+      upload-artifact: true
       platforms: linux/amd64
       runs-on: ubuntu-latest
 
@@ -69,6 +70,7 @@ jobs:
         image: paladin-operator
         image_tag: test
         push: false
+        upload-artifact: true
         platforms: linux/amd64
         runs-on: ubuntu-latest
 
