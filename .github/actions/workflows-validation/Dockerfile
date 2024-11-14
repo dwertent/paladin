@@ -3,7 +3,8 @@ FROM ubuntu:latest
 # Install necessary dependencies
 RUN apt-get update && \
     apt-get install -y curl sudo && \
-    curl https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash && \
+    curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash | bash && \
+    mv actionlint /usr/local/bin/ && \
     apt-get clean
 
 # Copy the entrypoint script

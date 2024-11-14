@@ -1,5 +1,5 @@
 name: "Validate Workflows Action"
-description: "A GitHub Action to validate workflows using act."
+description: "A GitHub Action to validate workflows."
 
 runs:
   using: "docker"
