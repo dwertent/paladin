@@ -91,6 +91,9 @@ jobs:
           echo "BUILD_TAG=$(date +"%Y%m%d")-$GITHUB_RUN_NUMBER" >> $GITHUB_OUTPUT
           echo "BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_OUTPUT
 
+      - name: Create output directory
+        run: mkdir -p /tmp/${{ inputs.image }}
+        
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
