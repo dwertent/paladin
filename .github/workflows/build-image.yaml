@@ -91,9 +91,11 @@ jobs:
           echo "BUILD_TAG=$(date +"%Y%m%d")-$GITHUB_RUN_NUMBER" >> $GITHUB_OUTPUT
           echo "BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> $GITHUB_OUTPUT
 
-      - name: Create output directory
-        run: mkdir -p /tmp/${{ inputs.image }}
-        
+      - name: Set sanitized artifact name
+        run: echo "IMAGE_NAME_SANITIZED=${IMAGE//\//-}" >> $GITHUB_ENV
+        env:
+          IMAGE: ${{ inputs.image }}
+
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
@@ -109,11 +111,11 @@ jobs:
             tag=${{ steps.build_tag_generator.outputs.BUILD_TAG }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          outputs: type=docker,dest=/tmp/${{ inputs.image }}-${{ github.sha }}.tar
+          outputs: type=docker,dest=/tmp/${{ env.IMAGE_NAME_SANITIZED }}-${{ github.sha }}.tar
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ inputs.image }}-${{ github.sha }}
-          path: /tmp/${{ inputs.image }}-${{ github.sha }}.tar
+          path: /tmp/${{ env.IMAGE_NAME_SANITIZED }}-${{ github.sha }}.tar
           retention-days: 1
