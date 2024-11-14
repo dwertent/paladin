@@ -103,7 +103,7 @@ jobs:
 
   core-docker-manifest:
     if: ${{ inputs.push }}
-    needs: [core-macos, core-ubuntu]
+    needs: [set-repository, core-macos, core-ubuntu]
     runs-on: ubuntu-latest
     env:
       IMAGE: ${{ inputs.registry }}/${{ needs.set-repository.outputs.repository }}/paladin
@@ -136,7 +136,7 @@ jobs:
 
   operator-docker-manifest:
     if: ${{ inputs.push }}
-    needs: [operator-macos, operator-ubuntu]
+    needs: [set-repository, operator-macos, operator-ubuntu]
     runs-on: ubuntu-latest
     env:
       IMAGE: ${{ inputs.registry }}/${{ needs.set-repository.outputs.repository }}/paladin-operator

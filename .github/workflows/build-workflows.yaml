@@ -1,9 +1,5 @@
 # run only when workflows are triggered by a push event
 on:
-  push:
-    paths:
-    - '.github/workflows/**'
-    - '.github/actions/**'
   pull_request:
     paths:
     - '.github/workflows/**'
@@ -17,5 +13,4 @@ jobs:
         uses: actions/checkout@v4
         
       - name: Validate workflows
-        run: "echo 'Validating workflows'"
-        # uses: ./.github/actions/workflows-validation
+        uses: ./.github/actions/workflows-validation
