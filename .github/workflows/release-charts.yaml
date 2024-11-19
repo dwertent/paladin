@@ -1,5 +1,10 @@
 name: Helm Chart release
 
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
 on:
   workflow_call:
     inputs:
@@ -140,3 +145,19 @@ jobs:
           skip_existing: true
         env: 
           CR_TOKEN: "${{ env.CR_TOKEN }}"
+
+      - name: Prepare CRs artifacts
+        run: ./gradlew prepareArtifacts
+
+      - name: Upload Basenet Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: basenet.yaml
+          path: generated-crs/basenet.yaml
+
+      - name: Upload Devnet Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: devnet.yaml
+          path: generated-crs/devnet.yaml
+  

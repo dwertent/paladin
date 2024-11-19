@@ -34,29 +34,15 @@ import (
 	"sigs.k8s.io/yaml"
 )
 
-func main() {
+// file names that are basenet specific
+var basenet = []string{"issuer", "paladindomain", "paladinregistry", "smartcontractdeployment", "transactioninvoke"}
 
-	if len(os.Args) < 2 {
-		fmt.Fprintln(os.Stderr, fmt.Errorf("usage: go run ./contractpkg generate|template [ARGS]"))
-		os.Exit(1)
-		return
-	}
-	switch os.Args[1] {
-	case "generate":
-		if err := generateSmartContracts(); err != nil {
-			fmt.Fprintln(os.Stderr, err.Error())
-			os.Exit(1)
-		}
-	case "template":
-		if err := template(); err != nil {
-			fmt.Fprintln(os.Stderr, err.Error())
-			os.Exit(1)
-		}
-	default:
-		fmt.Fprintln(os.Stderr, fmt.Errorf("usage: go run ./contractpkg generate|template [ARGS]"))
-		os.Exit(1)
-	}
-	os.Exit(0)
+// file names that are devnet specific
+var devnet = []string{"besu_node", "paladin_node", "genesis", "paladinregistration"}
+
+var scope = map[string][]string{
+	"basenet": basenet,
+	"devnet":  append(devnet, basenet...),
 }
 
 type ContractMap map[string]*ContractMapBuild
@@ -258,25 +244,26 @@ func template() error {
 		newContent := pattern.ReplaceAllString(string(content), "{{ `{{${1}}}` }}")
 
 		// Add conditional wrapper around the content
-		conditions := []string{"(eq .Values.mode \"devnet\")"}
-
-		if strings.Contains(file, "smartcontractdeployment") {
-			// Include additional condition if file contains "smartcontractdeployment"
-			conditions = append(conditions, "(eq .Values.mode \"smartcontractdeployment\")")
-		}
-
-		// Build the condition string for the template
+		vScopes := scopes(file)
+		conditions := []string{}
 		var condition string
-		if len(conditions) == 1 {
-			// Single condition doesn't need 'or'
-			condition = conditions[0]
-		} else {
-			// Multiple conditions use 'or' to combine them
-			condition = fmt.Sprintf("(or %s)", strings.Join(conditions, " "))
+		for _, s := range vScopes {
+			conditions = append(conditions, fmt.Sprintf("(eq .Values.mode \"%s\")", s))
+
+			// Build the condition string for the template
+			if len(conditions) == 1 {
+				// Single condition doesn't need 'or'
+				condition = conditions[0]
+			} else {
+				// Multiple conditions use 'or' to combine them
+				condition = fmt.Sprintf("(or %s)", strings.Join(conditions, " "))
+			}
 		}
 
 		// Wrap newContent with the conditional template
-		newContent = fmt.Sprintf("{{- if %s }}\n\n%s\n{{- end }}", condition, newContent)
+		if len(condition) != 0 {
+			newContent = fmt.Sprintf("{{- if %s }}\n\n%s\n{{- end }}", condition, newContent)
+		}
 
 		// Write the modified content back to the same file
 		err = os.WriteFile(file, []byte(newContent), fs.FileMode(0644))
@@ -288,6 +275,81 @@ func template() error {
 		fmt.Printf("Processed %s\n", file)
 	}
 	return nil
+}
+
+func combineYAMLFiles() error {
+	if len(os.Args) < 4 {
+		return fmt.Errorf("usage: go run ./contractpkg combine [srcDir] [outDir]")
+	}
+	srcDir := os.Args[2]
+	outDir := os.Args[3]
+
+	// Create the output directory if it doesn't exist
+	err := os.MkdirAll(outDir, 0755)
+	if err != nil {
+		return fmt.Errorf("Error creating directory %s: %v", outDir, err)
+	}
+
+	// For each scope, combine the YAML files
+	for scopeName := range scope {
+		combinedContent := ""
+		// Collect all files that match the scope
+		files, err := filepath.Glob(filepath.Join(srcDir, "*.yaml"))
+		if err != nil {
+			return fmt.Errorf("Error finding YAML files in %s: %v", srcDir, err)
+		}
+
+		for _, file := range files {
+			filename := filepath.Base(file)
+			// Check if the file belongs to the current scope
+			if fileBelongsToScope(filename, scopeName) {
+				content, err := os.ReadFile(file)
+				if err != nil {
+					return fmt.Errorf("Error reading file %s: %v", file, err)
+				}
+				// Add a YAML document separator if needed
+				if len(combinedContent) > 0 {
+					combinedContent += "\n---\n"
+				}
+				combinedContent += string(content)
+			}
+		}
+
+		// Write the combined content to a file
+		if combinedContent != "" {
+			outFile := filepath.Join(outDir, fmt.Sprintf("%s.yaml", scopeName))
+			err = os.WriteFile(outFile, []byte(combinedContent), 0644)
+			if err != nil {
+				return fmt.Errorf("Error writing combined YAML file %s: %v", outFile, err)
+			}
+			fmt.Printf("Combined YAML for scope '%s' written to %s\n", scopeName, outFile)
+		} else {
+			fmt.Printf("No YAML files found for scope '%s'\n", scopeName)
+		}
+	}
+
+	return nil
+}
+func fileBelongsToScope(filename, scopeName string) bool {
+	for _, s := range scopes(filename) {
+		if s == scopeName {
+			return true
+		}
+	}
+	return false
+}
+
+func scopes(filename string) []string {
+	var s []string
+	for k, v := range scope {
+		for _, f := range v {
+			if strings.Contains(filename, f) {
+				s = append(s, k)
+				break
+			}
+		}
+	}
+	return s
 }
 
 // Helper function to copy a file from src to dst
@@ -319,4 +381,35 @@ func copyFile(src, dst string) error {
 	}
 
 	return nil
+}
+
+func main() {
+
+	if len(os.Args) < 2 {
+		fmt.Fprintln(os.Stderr, fmt.Errorf("usage: go run ./contractpkg generate|template [ARGS]"))
+		os.Exit(1)
+		return
+	}
+	switch os.Args[1] {
+	case "generate":
+		if err := generateSmartContracts(); err != nil {
+			fmt.Fprintln(os.Stderr, err.Error())
+			os.Exit(1)
+		}
+	case "template":
+		if err := template(); err != nil {
+			fmt.Fprintln(os.Stderr, err.Error())
+			os.Exit(1)
+		}
+	case "combine":
+		if err := combineYAMLFiles(); err != nil {
+			fmt.Fprintln(os.Stderr, err.Error())
+			os.Exit(1)
+		}
+
+	default:
+		fmt.Fprintln(os.Stderr, fmt.Errorf("usage: go run ./contractpkg generate|template [ARGS]"))
+		os.Exit(1)
+	}
+	os.Exit(0)
 }
