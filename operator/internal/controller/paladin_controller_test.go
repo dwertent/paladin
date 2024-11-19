@@ -230,9 +230,14 @@ func TestGeneratePaladinAuthConfig(t *testing.T) {
 					Namespace: "default",
 				},
 				Spec: corev1alpha1.PaladinSpec{
-					AuthConfig: &corev1alpha1.AuthConfig{
-						AuthMethod: corev1alpha1.AuthMethodSecret,
-						AuthSecret: &corev1alpha1.AuthSecret{Name: "test-secret"},
+					BaseLedgerEndpoint: &corev1alpha1.BaseLedgerEndpoint{
+						Type: corev1alpha1.EndpointTypeNetwork,
+						Endpoint: &corev1alpha1.NetworkLedgerEndpoint{
+							AuthConfig: &corev1alpha1.AuthConfig{
+								AuthMethod: corev1alpha1.AuthMethodSecret,
+								AuthSecret: &corev1alpha1.AuthSecret{Name: "test-secret"},
+							},
+						},
 					},
 				},
 			},
@@ -274,9 +279,16 @@ func TestGeneratePaladinAuthConfig(t *testing.T) {
 					Namespace: "default",
 				},
 				Spec: corev1alpha1.PaladinSpec{
-					AuthConfig: &corev1alpha1.AuthConfig{
-						AuthMethod: corev1alpha1.AuthMethodSecret,
-						AuthSecret: &corev1alpha1.AuthSecret{Name: "test-secret"},
+					BaseLedgerEndpoint: &corev1alpha1.BaseLedgerEndpoint{
+						Type: corev1alpha1.EndpointTypeNetwork,
+						Endpoint: &corev1alpha1.NetworkLedgerEndpoint{
+							JSONRPC: "https://besu.node",
+							WS:      "wss://besu.mode",
+							AuthConfig: &corev1alpha1.AuthConfig{
+								AuthMethod: corev1alpha1.AuthMethodSecret,
+								AuthSecret: &corev1alpha1.AuthSecret{Name: "test-secret"},
+							},
+						},
 					},
 				},
 			},
@@ -291,8 +303,13 @@ func TestGeneratePaladinAuthConfig(t *testing.T) {
 					Namespace: "default",
 				},
 				Spec: corev1alpha1.PaladinSpec{
-					AuthConfig: &corev1alpha1.AuthConfig{
-						AuthMethod: corev1alpha1.AuthMethodSecret,
+					BaseLedgerEndpoint: &corev1alpha1.BaseLedgerEndpoint{
+						Type: corev1alpha1.EndpointTypeNetwork,
+						Endpoint: &corev1alpha1.NetworkLedgerEndpoint{
+							AuthConfig: &corev1alpha1.AuthConfig{
+								AuthMethod: corev1alpha1.AuthMethodSecret,
+							},
+						},
 					},
 				},
 			},
@@ -303,9 +320,14 @@ func TestGeneratePaladinAuthConfig(t *testing.T) {
 			name: "Secret with no data",
 			node: &corev1alpha1.Paladin{
 				Spec: corev1alpha1.PaladinSpec{
-					AuthConfig: &corev1alpha1.AuthConfig{
-						AuthMethod: corev1alpha1.AuthMethodSecret,
-						AuthSecret: &corev1alpha1.AuthSecret{Name: "empty-secret"},
+					BaseLedgerEndpoint: &corev1alpha1.BaseLedgerEndpoint{
+						Type: corev1alpha1.EndpointTypeNetwork,
+						Endpoint: &corev1alpha1.NetworkLedgerEndpoint{
+							AuthConfig: &corev1alpha1.AuthConfig{
+								AuthMethod: corev1alpha1.AuthMethodSecret,
+								AuthSecret: &corev1alpha1.AuthSecret{Name: "empty-secret"},
+							},
+						},
 					},
 				},
 			},
@@ -339,7 +361,8 @@ func TestGeneratePaladinAuthConfig(t *testing.T) {
 
 			// Call the method under test
 			pldConf := &pldconf.PaladinConfig{}
-			err := reconciler.generatePaladinAuthConfig(ctx, tt.node, pldConf)
+
+			err := reconciler.generatePaladinAuthConfig(ctx, tt.node, tt.node.Spec.BaseLedgerEndpoint.Endpoint.AuthConfig, pldConf)
 
 			// Verify the results
 			if tt.wantErr {
