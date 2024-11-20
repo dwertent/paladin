@@ -17,6 +17,8 @@ limitations under the License.
 package main
 
 import (
+	"archive/tar"
+	"compress/gzip"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -53,9 +55,15 @@ type ContractMapBuild struct {
 	Params     any               `json:"params"`
 }
 
+var cmd = map[string]func() error{
+	"generate":  generateSmartContracts,
+	"template":  template,
+	"artifacts": generateArtifacts,
+}
+
 func generateSmartContracts() error {
 	if len(os.Args) < 3 {
-		return fmt.Errorf("usage: go run ./contractpkg generate [path/to/contractMap.json]")
+		return fmt.Errorf("usage: go run ./%s %s [path/to/contractMap.json]", filepath.Base(os.Args[0]), os.Args[1])
 	}
 
 	var buildMap ContractMap
@@ -183,7 +191,7 @@ func (m *ContractMap) process(name string, b *ContractMapBuild) error {
 // adjust all .yaml files in the directory to use the new template syntax
 func template() error {
 	if len(os.Args) < 4 {
-		return fmt.Errorf("usage: go run ./contractpkg template [src] [dist]")
+		return fmt.Errorf("usage: go run ./%s %s [src] [dist]", filepath.Base(os.Args[0]), os.Args[1])
 	}
 	srcDir := os.Args[2]
 	destDir := os.Args[3]
@@ -277,9 +285,9 @@ func template() error {
 	return nil
 }
 
-func combineYAMLFiles() error {
+func generateArtifacts() error {
 	if len(os.Args) < 4 {
-		return fmt.Errorf("usage: go run ./contractpkg combine [srcDir] [outDir]")
+		return fmt.Errorf("usage: go run ./%s %s [srcDir] [outDir]", filepath.Base(os.Args[0]), os.Args[1])
 	}
 	srcDir := os.Args[2]
 	outDir := os.Args[3]
@@ -326,6 +334,75 @@ func combineYAMLFiles() error {
 		} else {
 			fmt.Printf("No YAML files found for scope '%s'\n", scopeName)
 		}
+	}
+
+	// Create a .tar.gz archive for all YAML files in the source directory
+	err = createTarGz(srcDir, filepath.Join(outDir, "artifacts.tar.gz"))
+	if err != nil {
+		return fmt.Errorf("Error creating tar.gz archive: %v", err)
+	}
+
+	fmt.Printf("Tar.gz archive created at %s\n", filepath.Join(outDir, "artifacts.tar.gz"))
+	return nil
+}
+
+// createTarGz compresses all YAML files in the source directory into a .tar.gz archive
+func createTarGz(srcDir, destFile string) error {
+	// Create the output file
+	outFile, err := os.Create(destFile)
+	if err != nil {
+		return fmt.Errorf("Error creating tar.gz file %s: %v", destFile, err)
+	}
+	defer outFile.Close()
+
+	// Create a gzip writer
+	gw := gzip.NewWriter(outFile)
+	defer gw.Close()
+
+	// Create a tar writer
+	tw := tar.NewWriter(gw)
+	defer tw.Close()
+
+	// Walk through the source directory and add .yaml files to the archive
+	err = filepath.Walk(srcDir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		// Skip directories
+		if info.IsDir() {
+			return nil
+		}
+
+		// Only add YAML files
+		if filepath.Ext(path) == ".yaml" {
+			file, err := os.Open(path)
+			if err != nil {
+				return fmt.Errorf("Error opening file %s: %v", path, err)
+			}
+			defer file.Close()
+
+			// Create a tar header for the file
+			header := &tar.Header{
+				Name:    filepath.Base(path),
+				Size:    info.Size(),
+				Mode:    int64(info.Mode()),
+				ModTime: info.ModTime(),
+			}
+			if err := tw.WriteHeader(header); err != nil {
+				return fmt.Errorf("Error writing tar header for file %s: %v", path, err)
+			}
+
+			// Copy the file content to the tar writer
+			_, err = io.Copy(tw, file)
+			if err != nil {
+				return fmt.Errorf("Error writing file %s to tar: %v", path, err)
+			}
+		}
+		return nil
+	})
+	if err != nil {
+		return fmt.Errorf("Error walking the directory %s: %v", srcDir, err)
 	}
 
 	return nil
@@ -383,33 +460,27 @@ func copyFile(src, dst string) error {
 	return nil
 }
 
+func usageMessage() string {
+	commands := []string{}
+	for k := range cmd {
+		commands = append(commands, k)
+	}
+	return fmt.Sprintf("usage: go run ./%s %s [ARGS]", filepath.Base(os.Args[0]), strings.Join(commands, "|"))
+}
+
 func main() {
 
 	if len(os.Args) < 2 {
-		fmt.Fprintln(os.Stderr, fmt.Errorf("usage: go run ./contractpkg generate|template [ARGS]"))
+		fmt.Fprintln(os.Stderr, fmt.Errorf(usageMessage()))
 		os.Exit(1)
+	}
+	if f, ok := cmd[os.Args[1]]; ok {
+		if err := f(); err != nil {
+			fmt.Fprintln(os.Stderr, err.Error())
+			os.Exit(1)
+		}
 		return
 	}
-	switch os.Args[1] {
-	case "generate":
-		if err := generateSmartContracts(); err != nil {
-			fmt.Fprintln(os.Stderr, err.Error())
-			os.Exit(1)
-		}
-	case "template":
-		if err := template(); err != nil {
-			fmt.Fprintln(os.Stderr, err.Error())
-			os.Exit(1)
-		}
-	case "combine":
-		if err := combineYAMLFiles(); err != nil {
-			fmt.Fprintln(os.Stderr, err.Error())
-			os.Exit(1)
-		}
-
-	default:
-		fmt.Fprintln(os.Stderr, fmt.Errorf("usage: go run ./contractpkg generate|template [ARGS]"))
-		os.Exit(1)
-	}
-	os.Exit(0)
+	fmt.Fprintln(os.Stderr, fmt.Errorf(usageMessage()))
+	os.Exit(1)
 }

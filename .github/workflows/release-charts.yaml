@@ -147,17 +147,23 @@ jobs:
           CR_TOKEN: "${{ env.CR_TOKEN }}"
 
       - name: Prepare CRs artifacts
-        run: ./gradlew prepareArtifacts
+        run: ./gradlew prepareArtifacts -PartifactDir=artifacts
 
-      - name: Upload Basenet Artifact
+      - name: Upload basenet artifact
         uses: actions/upload-artifact@v4
         with:
           name: basenet.yaml
-          path: generated-crs/basenet.yaml
+          path: artifacts/basenet.yaml
 
-      - name: Upload Devnet Artifact
+      - name: Upload devnet artifact
         uses: actions/upload-artifact@v4
         with:
           name: devnet.yaml
-          path: generated-crs/devnet.yaml
+          path: artifacts/devnet.yaml
+
+      - name: Upload all artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: artifacts.tar.gz
+          path: artifacts/artifacts.tar.gz
   

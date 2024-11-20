@@ -38,4 +38,6 @@ manager
 **/charts/paladin-operator/templates/samples/*.yaml
 **/charts/paladin-operator-crd/templates/*.yaml
 
-**/generated-crs/*.yaml
+**/artifacts/**
+
+**/__snapshot__/**

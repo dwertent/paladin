@@ -61,6 +61,8 @@ ext {
     operatorImageTag = project.hasProperty('operatorImageTag') ? project.operatorImageTag : 'test'
     paladinImageName = project.hasProperty('paladinImageName') ? project.paladinImageName : 'paladin'
     paladinImageTag = project.hasProperty('paladinImageTag') ? project.paladinImageTag : 'test'
+
+    artifactDir = project.hasProperty('artifactDir') ? project.artifactDir : 'artifacts'
 }
 
 def printClusterStatus(String namespace) {
@@ -217,7 +219,7 @@ task prepareOperatorChart(type: Exec, dependsOn: [buildContractSamples]) {
 }
 
 task prepareArtifacts(type: Exec, dependsOn: [buildContractSamples]) {
-    commandLine "go", "run", "./contractpkg", "combine", "config/samples", "generated-crs"
+    commandLine "go", "run", "./contractpkg", "artifacts", "config/samples", "${artifactDir}"
 }
 
 // Task to install the operator using Helm
