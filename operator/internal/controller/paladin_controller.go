@@ -756,7 +756,7 @@ func (r *PaladinReconciler) generatePaladinBlockchainConfig(ctx context.Context,
 		pldConf.Blockchain.HTTP.URL = fmt.Sprintf("http://%s:8545", generateBesuServiceHostname(lEndpoint.NodeName, node.Namespace))
 		pldConf.Blockchain.WS.URL = fmt.Sprintf("ws://%s:8546", generateBesuServiceHostname(lEndpoint.NodeName, node.Namespace))
 	case corev1alpha1.EndpointTypeNetwork:
-		nEndpoint := endpoint.Network
+		nEndpoint := endpoint.Endpoint
 		if nEndpoint == nil {
 			return fmt.Errorf("network endpoint is nil")
 		}

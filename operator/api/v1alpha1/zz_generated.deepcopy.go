@@ -69,8 +69,8 @@ func (in *BaseLedgerEndpoint) DeepCopyInto(out *BaseLedgerEndpoint) {
 		*out = new(LocalLedgerEndpoint)
 		**out = **in
 	}
-	if in.Network != nil {
-		in, out := &in.Network, &out.Network
+	if in.Endpoint != nil {
+		in, out := &in.Endpoint, &out.Endpoint
 		*out = new(NetworkLedgerEndpoint)
 		(*in).DeepCopyInto(*out)
 	}

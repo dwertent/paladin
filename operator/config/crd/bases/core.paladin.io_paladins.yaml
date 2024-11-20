@@ -72,24 +72,7 @@ spec:
                 description: BaseLedgerEndpoint specifies the base endpoint for the
                   ledger
                 properties:
-                  local:
-                    description: Local specifies the configuration when the type is
-                      'local'.
-                    properties:
-                      nodeName:
-                        description: NodeName specifies the name of the local node.
-                        type: string
-                    required:
-                    - nodeName
-                    type: object
-                    x-kubernetes-validations:
-                    - message: For 'type' equal to 'local', 'local' must be set and
-                        'network' must be null. For 'type' equal to 'network', 'network'
-                        must be set and 'local' must be null.
-                      rule: 'self.type == ''local'' ? self.local != null && self.network
-                        == null : self.type == ''network'' ? self.network != null
-                        && self.local == null : false'
-                  network:
+                  endpoint:
                     description: Network specifies the configuration when the type
                       is 'network'.
                     properties:
@@ -120,6 +103,16 @@ spec:
                     required:
                     - jsonrpc
                     - ws
+                    type: object
+                  local:
+                    description: Local specifies the configuration when the type is
+                      'local'.
+                    properties:
+                      nodeName:
+                        description: NodeName specifies the name of the local node.
+                        type: string
+                    required:
+                    - nodeName
                     type: object
                   type:
                     description: Type specifies the type of the endpoint.

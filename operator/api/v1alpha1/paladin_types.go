@@ -67,7 +67,7 @@ type BaseLedgerEndpointType string
 
 const (
 	EndpointTypeLocal   BaseLedgerEndpointType = "local"
-	EndpointTypeNetwork BaseLedgerEndpointType = "network"
+	EndpointTypeNetwork BaseLedgerEndpointType = "endpoint"
 )
 
 type BaseLedgerEndpoint struct {
@@ -81,10 +81,8 @@ type BaseLedgerEndpoint struct {
 
 	// Network specifies the configuration when the type is 'network'.
 	// +optional
-	Network *NetworkLedgerEndpoint `json:"network,omitempty"`
+	Endpoint *NetworkLedgerEndpoint `json:"endpoint,omitempty"`
 }
-
-// +kubebuilder:validation:XValidation:rule="self.type == 'local' ? self.local != null && self.network == null : self.type == 'network' ? self.network != null && self.local == null : false",message="For 'type' equal to 'local', 'local' must be set and 'network' must be null. For 'type' equal to 'network', 'network' must be set and 'local' must be null."
 
 // LocalLedgerEndpoint defines the configuration for local endpoints.
 type LocalLedgerEndpoint struct {
