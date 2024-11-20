@@ -147,23 +147,29 @@ jobs:
           CR_TOKEN: "${{ env.CR_TOKEN }}"
 
       - name: Prepare CRs artifacts
-        run: ./gradlew prepareArtifacts -PartifactDir=artifacts
+        run: ./gradlew prepareArtifacts -PartifactDir=${{ github.workspace }}/artifacts
 
+      - name: List generated artifacts
+        run: ls -l ${{ github.workspace }}/artifacts
+      
       - name: Upload basenet artifact
         uses: actions/upload-artifact@v4
         with:
           name: basenet.yaml
-          path: artifacts/basenet.yaml
+          path: ${{ github.workspace }}/artifacts/basenet.yaml
+          if-no-files-found: error
 
       - name: Upload devnet artifact
         uses: actions/upload-artifact@v4
         with:
           name: devnet.yaml
-          path: artifacts/devnet.yaml
+          path: ${{ github.workspace }}/artifacts/devnet.yaml
+          if-no-files-found: error
 
       - name: Upload all artifacts
         uses: actions/upload-artifact@v4
         with:
           name: artifacts.tar.gz
-          path: artifacts/artifacts.tar.gz
+          path: ${{ github.workspace }}/artifacts/artifacts.tar.gz
+          if-no-files-found: error
   
