@@ -77,15 +77,15 @@ jobs:
       - name: Load image
         run: |
           docker load --input /tmp/paladin-operator-${{ github.sha }}.tar
-          docker load --input /tmp/paladin-${{ github.sha }}.tar
+          docker pull ${{ inputs.paladin-image }}:${{ inputs.paladin-image-tag }}
           docker image ls -a  
       
       # The makefile uses kustomize
       - uses: imranismail/setup-kustomize@v2
 
-      - name: Deploy Operator
+      - name: E2E Test
         run: |
-          ./gradlew deploy \
+          ./gradlew --no-daemon --parallel e2e \
             -PclusterName=${{ env.CLUSTER_NAME }} \
             -Pnamespace=${{ env.NAMESPACE }} \
             -PbuildOperator=${{ inputs.build-operator }} \
@@ -93,11 +93,30 @@ jobs:
             -PoperatorImageName=${{ inputs.operator-image }} \
             -PoperatorImageTag=${{ inputs.operator-image-tag }} \
             -PpaladinImageName=${{ inputs.paladin-image }} \
-            -PpaladinImageTag=${{ inputs.paladin-image-tag }} 
+            -PpaladinImageTag=${{ inputs.paladin-image-tag }} \
+            -PdeleteCluster=false
 
-      - name: Uninstall Operator
+      - name: Save logs
+        if: failure()
         run: |
-          ./gradlew clean \
-            -PclusterName=${{ env.CLUSTER_NAME }} \
-            -Pnamespace=${{ env.NAMESPACE }} \
-            -PdeleteCluster=true
+          kubectl logs deployment/paladin-operator -n ${{ env.NAMESPACE }} > operator.log
+          kubectl logs statefulset/paladin-node1 -n ${{ env.NAMESPACE }} > sfs-1.log
+          kubectl logs statefulset/paladin-node2 -n ${{ env.NAMESPACE }} > sfs-2.log
+          kubectl logs statefulset/paladin-node3 -n ${{ env.NAMESPACE }} > sfs-3.log
+          kubectl get paladin node1 -n ${{ env.NAMESPACE }} -o json > paladin-1.json
+          kubectl get paladin node2 -n ${{ env.NAMESPACE }} -o json > paladin-2.json
+          kubectl get paladin node3 -n ${{ env.NAMESPACE }} -o json > paladin-3.json
+
+      - name: Upload logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: paladin-logs
+          path: |
+            operator.log
+            sfs-1.log
+            sfs-2.log
+            sfs-3.log
+            paladin-1.json
+            paladin-2.json
+            paladin-3.json
