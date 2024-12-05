@@ -959,23 +959,14 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      Overview
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Overview">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#history-of-evm-private-smart-contracts" class="md-nav__link">
     <span class="md-ellipsis">
       History of EVM Private Smart Contracts
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="History of EVM Private Smart Contracts">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#problems-with-the-existing-model" class="md-nav__link">
@@ -986,10 +977,25 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#the-updated-model-in-pente" class="md-nav__link">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paladin-privacy-groups" class="md-nav__link">
     <span class="md-ellipsis">
-      The updated model in Pente
+      Paladin privacy groups
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Paladin privacy groups">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#on-chain-state-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      On-chain state verification
     </span>
   </a>
   
@@ -2751,23 +2757,14 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#overview" class="md-nav__link">
-    <span class="md-ellipsis">
-      Overview
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Overview">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#history-of-evm-private-smart-contracts" class="md-nav__link">
     <span class="md-ellipsis">
       History of EVM Private Smart Contracts
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="History of EVM Private Smart Contracts">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#problems-with-the-existing-model" class="md-nav__link">
@@ -2778,10 +2775,25 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#the-updated-model-in-pente" class="md-nav__link">
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#paladin-privacy-groups" class="md-nav__link">
     <span class="md-ellipsis">
-      The updated model in Pente
+      Paladin privacy groups
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Paladin privacy groups">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#on-chain-state-verification" class="md-nav__link">
+    <span class="md-ellipsis">
+      On-chain state verification
     </span>
   </a>
   
@@ -2916,8 +2928,7 @@
 <li>The data required for each transition is confidential</li>
 <li>These state transitions can be verified as part of atomic transactions with other tokens</li>
 </ul>
-<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<h3 id="history-of-evm-private-smart-contracts">History of EVM Private Smart Contracts<a class="headerlink" href="#history-of-evm-private-smart-contracts" title="Permanent link">&para;</a></h3>
+<h2 id="history-of-evm-private-smart-contracts">History of EVM Private Smart Contracts<a class="headerlink" href="#history-of-evm-private-smart-contracts" title="Permanent link">&para;</a></h2>
 <p>The concept of Private EVM Smart Contracts is not new.</p>
 <p>In Nov 2016 the first implementation was released called <a href="https://github.com/Consensys/constellation">Constellation</a>, attributed to Samer Falah, Patrick Mylund Nielsen and others at JP Morgan Chase.</p>
 <p>This combined a modified version of Go-ethereum (as part of the Quorum project) with a Haskell based private transaction manager.</p>
@@ -2925,24 +2936,32 @@
 <p>When the block was confirmed by a node which already had the private input data, it would process the private transaction. Other nodes would skip the transaction, assuming they were not a party to it.</p>
 <p>This model was evolved through a number of updates over the years, most significantly:</p>
 <ul>
-<li>The re-building of the Haskell private state management runtime in Java</li>
+<li>The re-building of the Constellation (Haskell) private state management runtime in Java:<ul>
 <li><a href="https://github.com/consensys/orion">Orion</a>: Started in 2019, abandoned in Sep 2021</li>
-<li><a href="https://github.com/consensys/tessera">Tessera</a>: Started in 2018, still maintained in 2024</li>
-<li>Support for private smart contract submission in Hyperledger Besu (additional to Quorum)</li>
+<li><a href="https://github.com/consensys/tessera">Tessera</a>: Started in 2018, <a href="https://www.lfdecentralizedtrust.org/blog/sunsetting-tessera-and-simplifying-hyperledger-besu">deprecated in 2024</a></li>
+</ul>
+</li>
+<li>Support for private smart contract submission in Hyperledger Besu (additional to Quorum)<ul>
 <li>The modification to the base EVM was reduced, by avoiding modification of the <code>V</code> value of transactions, and rather using a special pre-compiled smart contract address</li>
 <li>A different approach to Private transaction nonce management was adopted in Besu, where a separate nonce is managed in each privacy group</li>
-<li>Quorum added "Private state validation" (not supported in Besu)</li>
+</ul>
+</li>
+<li>Quorum added "Private state validation" (not supported in Besu)<ul>
 <li>Provides a validation mode that helps ensure that all transactions for a given private smart contract are always sent to the same participants</li>
+</ul>
+</li>
 </ul>
 <p>However, the model has not fundamentally changed in this time.</p>
 <p>Read here about the <a href="https://docs.goquorum.consensys.io/concepts/privacy/private-transaction-lifecycle">Private transaction lifecycle</a> for Quorum and Besu when used with the Tessera private transaction manager.</p>
 <h3 id="problems-with-the-existing-model">Problems with the existing model<a class="headerlink" href="#problems-with-the-existing-model" title="Permanent link">&para;</a></h3>
 <p>There are two closely related problems with the EVM Private Smart Contract model as implemented in these generations of the technology.</p>
 <ol>
-<li>When used correctly, state is locked inside of a Private Smart Contract</li>
+<li>When used correctly, state is locked inside of a Private Smart Contract<ul>
 <li>This is fundamental to the programming model of EVM. A Smart Contract holds a single and complete set of state, visible to all parties in the privacy group.</li>
 <li>Transacting across smart contracts is problematic</li>
 <li>Implementing something like an ERC-20/ERC-721 token does not make sense in many scenarios, as the token can never be traded outside of the privacy group (noting that private positions modelled with ERC-20 tokens are a good exception to this statement)</li>
+</ul>
+</li>
 <li>The system does not provide feedback when this model is broken, intentionally, or via an operational/system error<ul>
 <li>Because <em>only the inputs</em> are recorded to the blockchain for each transaction, via hash, and private smart contracts share a global address space, it is possible to have multiple overlapping sets of privacy groups transacting against the same smart contract</li>
 <li>This means <strong>the states diverge</strong> so there is no single source of truth of the state of the private smart contract. Different parties have different data. So the fundamental assurances of a Smart Contract of agreed computation are not net.</li>
@@ -2951,30 +2970,57 @@
 </ul>
 </li>
 </ol>
-<h3 id="the-updated-model-in-pente">The updated model in Pente<a class="headerlink" href="#the-updated-model-in-pente" title="Permanent link">&para;</a></h3>
-<p>Pente combined with the sophisticated state management engine of Paladin improves upon the model by using a Confidential-UTXO model to manage the private smart contracts.</p>
+<h2 id="paladin-privacy-groups">Paladin privacy groups<a class="headerlink" href="#paladin-privacy-groups" title="Permanent link">&para;</a></h2>
+<p>The Pente domain uses the state management engine of Paladin to improve upon the existing model.</p>
+<p>Pre-submission endorsement of the full transaction execution is performed, combined with on-chain signature verification of the commitments to the input and output states, and double-spend protection on the account states enforced on-chain.</p>
+<p><img alt="Pente EVM Privacy Groups - on-chain verification model" src="../../images/paladin_evm_privacy_groups_verification_model.svg" /></p>
+<h3 id="on-chain-state-verification">On-chain state verification<a class="headerlink" href="#on-chain-state-verification" title="Permanent link">&para;</a></h3>
 <p>The guiding principals are:</p>
 <ul>
+<li>On-chain transactions on the base EVM are the source of truth<ul>
+<li>Every transaction execution is enforced <strong>on-chain</strong>, via threshold signature verification</li>
+<li>Pre-verification / endorsement of transactions happens off-chain prior to submission</li>
+<li>The exact signed transaction, inputs and outputs, are verified &amp; signed by endorsers</li>
+<li>The transaction and execution result are masked as <code>commitments</code> on-chain<ul>
+<li>Salted hashes of the signed input transaction, and input/output/read account states</li>
+</ul>
+</li>
+</ul>
+</li>
 <li>No modification to the base EVM<ul>
 <li>No <code>V</code> value changes</li>
 <li>No special execution during block execution / confirmation</li>
 <li>The base EVM ledger transaction is a pure EVM transaction</li>
 </ul>
 </li>
-<li>Each Private Smart Contract exists entirely within a privacy group<ul>
-<li>The address of the smart contract is tied to the uniqueness of the UTXO of the deployment</li>
+<li>Each privacy group is a unique EVM smart contact on the base ledger<ul>
+<li>Private Smart Contract exists entirely within a privacy group</li>
+<li>A privacy group is just like a mini-blockchain, hosted inside of one smart contract</li>
 </ul>
 </li>
-<li>Submitter nonce management is managed within each privacy group<ul>
-<li>Now deterministic because the nonce spending is managed inside of the UTXO states</li>
+<li>Submitter account and nonce management is managed within each privacy group<ul>
+<li>Accounts are UTXO states stored in this contract<ul>
+<li>Externally owned accounts (EOAs)</li>
+<li>Contract accounts</li>
 </ul>
 </li>
-<li>The Hyperledger Besu EVM is used <em>as a module</em> to executed un-modified EVM transactions<ul>
-<li>These are executed in the Paladin runtime (not in the base Hyperledger Besu runtime)</li>
-<li>State is managed via the UTXO state storage of Paladin (not the Bonsai/Forrest state store of Besu)</li>
+<li>State/code/nonce transitions are all deterministic</li>
+<li>Endorsements of exact transitions are verified on-chain via EIP-712 signatures</li>
 </ul>
 </li>
-<li>Pente Private Smart Contract transactions are atomically interoperable via the Paladin framework<ul>
+<li>Besu EVMs are used to pre-execute EVM transactions<ul>
+<li>Just the EVM is loaded as a Java code module, on-demand when required</li>
+<li>These "ephemeral EVMs" are executed in the Paladin runtime<ul>
+<li>There is no requirement for a local Besu runtime co-located with Paladin</li>
+</ul>
+</li>
+<li>State is managed via the UTXO state storage of Paladin<ul>
+<li>No use is made of the Bonsai/Forrest state store of Besu</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Private Smart Contract transactions are atomically interoperable via the Paladin framework<ul>
 <li>This is the single most important enhancement. Because Pente is just another privacy preserving smart contract in Paladin, it can atomically interoperate with Token smart contracts. </li>
 <li>See the <a href="../atomic_interop/">Atomic Interop</a> section for how this enables sophisticated DvP scenarios to be programmed via Private EVM</li>
 </ul>
@@ -3082,7 +3128,7 @@ and can be accessed by calling <code>ptx_sendTransaction</code> with <code>"type
 <li><strong>outputs</strong> - ABI method outputs for the contract (only valid for <code>ptx_call</code>, must be filled in to match the contract).</li>
 </ul>
 <h2 id="public-abi">Public ABI<a class="headerlink" href="#public-abi" title="Permanent link">&para;</a></h2>
-<p>The public ABI of Pente is implemented in Solidity by <a href="../../solidity/contracts/domains/pente/PentePrivacyGroup.sol">PentePrivacyGroup.sol</a>,
+<p>The public ABI of Pente is implemented in Solidity by <a href="../../../solidity/contracts/domains/pente/PentePrivacyGroup.sol">PentePrivacyGroup.sol</a>,
 and can be accessed by calling <code>ptx_sendTransaction</code> with <code>"type": "public"</code>. However, it is not often required
 to invoke the public ABI directly.</p>
 <h3 id="transition">transition<a class="headerlink" href="#transition" title="Permanent link">&para;</a></h3>

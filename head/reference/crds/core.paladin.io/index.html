@@ -2727,6 +2727,128 @@
 <li><a href="#transactioninvoke">TransactionInvoke</a></li>
 <li><a href="#transactioninvokelist">TransactionInvokeList</a></li>
 </ul>
+<h4 id="auth">Auth<a class="headerlink" href="#auth" title="Permanent link">&para;</a></h4>
+<p><em>Appears in:</em>
+- <a href="#networkledgerendpoint">NetworkLedgerEndpoint</a>
+- <a href="#paladinspec">PaladinSpec</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+<th>Default</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>type</code> <em><a href="#authtype">AuthType</a></em></td>
+<td>auth method to use for the connection</td>
+<td></td>
+<td>Enum: [secret] <br /></td>
+</tr>
+<tr>
+<td><code>secretRef</code> <em><a href="#authsecret">AuthSecret</a></em></td>
+<td>Secret is used to provide the name of the secret to use for authentication</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h4 id="authsecret">AuthSecret<a class="headerlink" href="#authsecret" title="Permanent link">&para;</a></h4>
+<p><em>Appears in:</em>
+- <a href="#auth">Auth</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+<th>Default</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code> <em>string</em></td>
+<td>The name of the secret to use for authentication</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h4 id="authtype">AuthType<a class="headerlink" href="#authtype" title="Permanent link">&para;</a></h4>
+<p><em>Underlying type:</em> <em>string</em></p>
+<p><em>Appears in:</em>
+- <a href="#auth">Auth</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>secret</code></td>
+<td>AuthTypeSecret is used to authenticate with a secret<br />The secret must contain keys "username" and "password"<br /></td>
+</tr>
+</tbody>
+</table>
+<h4 id="baseledgerendpoint">BaseLedgerEndpoint<a class="headerlink" href="#baseledgerendpoint" title="Permanent link">&para;</a></h4>
+<p><em>Appears in:</em>
+- <a href="#paladinspec">PaladinSpec</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+<th>Default</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>type</code> <em><a href="#baseledgerendpointtype">BaseLedgerEndpointType</a></em></td>
+<td>Type specifies the type of the endpoint.</td>
+<td></td>
+<td>Enum: [local endpoint] <br /></td>
+</tr>
+<tr>
+<td><code>local</code> <em><a href="#localledgerendpoint">LocalLedgerEndpoint</a></em></td>
+<td>Local specifies the configuration when the type is 'local'.</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>endpoint</code> <em><a href="#networkledgerendpoint">NetworkLedgerEndpoint</a></em></td>
+<td>Network specifies the configuration when the type is 'endpoint'.</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h4 id="baseledgerendpointtype">BaseLedgerEndpointType<a class="headerlink" href="#baseledgerendpointtype" title="Permanent link">&para;</a></h4>
+<p><em>Underlying type:</em> <em>string</em></p>
+<p><em>Appears in:</em>
+- <a href="#baseledgerendpoint">BaseLedgerEndpoint</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>local</code></td>
+<td></td>
+</tr>
+<tr>
+<td><code>endpoint</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
 <h4 id="besu">Besu<a class="headerlink" href="#besu" title="Permanent link">&para;</a></h4>
 <p>Besu is the Schema for the besus API</p>
 <p><em>Appears in:</em>
@@ -3117,6 +3239,62 @@ Most common to use a simple one-reference-per-domain approach.</p>
 <tr>
 <td><code>labelSelector</code> <em><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.31/#labelselector-v1-meta">LabelSelector</a></em></td>
 <td>Label selectors provide a flexible many-to-many mapping between nodes and domains in a namespace.<br />The domain CRs you reference must be labelled to match. For example you could use a label like "paladin.io/domain-name" to select by name.</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h4 id="localledgerendpoint">LocalLedgerEndpoint<a class="headerlink" href="#localledgerendpoint" title="Permanent link">&para;</a></h4>
+<p>LocalLedgerEndpoint defines the configuration for local endpoints.</p>
+<p><em>Appears in:</em>
+- <a href="#baseledgerendpoint">BaseLedgerEndpoint</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+<th>Default</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>nodeName</code> <em>string</em></td>
+<td>NodeName specifies the name of the local node.</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h4 id="networkledgerendpoint">NetworkLedgerEndpoint<a class="headerlink" href="#networkledgerendpoint" title="Permanent link">&para;</a></h4>
+<p>NetworkLedgerEndpoint defines the configuration for network endpoints.</p>
+<p><em>Appears in:</em>
+- <a href="#baseledgerendpoint">BaseLedgerEndpoint</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+<th>Default</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>jsonrpc</code> <em>string</em></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>ws</code> <em>string</em></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>auth</code> <em><a href="#auth">Auth</a></em></td>
+<td></td>
 <td></td>
 <td></td>
 </tr>
@@ -3612,7 +3790,19 @@ Most common to use a simple one-reference-per-domain approach.</p>
 </tr>
 <tr>
 <td><code>besuNode</code> <em>string</em></td>
-<td>Optionally bind to a local besu node deployed with this operator<br />(vs. configuring a connection to a production blockchain network)</td>
+<td>Deprecated: Use 'baseLedgerEndpoint' instead. Example:<br />{ "baseLedgerEndpoint": {"type": "local", "local": {"nodeName": "node-name"}} }<br /><br />Optionally bind to a local Besu node deployed with this operator<br />(vs. configuring a connection to a production blockchain network).</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>authConfig</code> <em><a href="#auth">Auth</a></em></td>
+<td>Deprecated: Use 'baseLedgerEndpoint' instead. Example:<br />{ "baseLedgerEndpoint": {"type": "network", "network": {"auth": {}}} }</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>baseLedgerEndpoint</code> <em><a href="#baseledgerendpoint">BaseLedgerEndpoint</a></em></td>
+<td>BaseLedgerEndpoint specifies the base endpoint for the ledger</td>
 <td></td>
 <td></td>
 </tr>
