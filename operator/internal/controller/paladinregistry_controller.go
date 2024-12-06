@@ -26,7 +26,6 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
@@ -99,9 +98,16 @@ func (r *PaladinRegistryReconciler) reconcileSmartContractDeployment(ctx context
 	reqs := make([]ctrl.Request, 0, len(regs.Items))
 
 	for _, reg := range regs.Items {
-		if reg.Spec.EVM.SmartContractDeployment == scd.Name {
-			reqs = append(reqs, ctrl.Request{NamespacedName: client.ObjectKeyFromObject(&reg)})
+		if reg.Spec.EVM.ContractAddress != "" {
+			if reg.Spec.EVM.ContractAddress != scd.Status.ContractAddress {
+				continue
+			}
+		} else {
+			if reg.Spec.EVM.SmartContractDeployment != scd.Name {
+				continue
+			}
 		}
+		reqs = append(reqs, ctrl.Request{NamespacedName: client.ObjectKeyFromObject(&reg)})
 	}
 	return reqs
 }
@@ -126,7 +132,7 @@ func (r *PaladinRegistryReconciler) trackContractDeploymentAndRequeue(ctx contex
 		return ctrl.Result{}, err
 	}
 	if scd.Status.ContractAddress == "" {
-		log.FromContext(ctx).Info(fmt.Sprintf("Waiting for successful deployment of smart contract deployment '%s'", scd.Name))
+		log.FromContext(ctx).Info(fmt.Sprintf("Registry: '%s'. Waiting for successful deployment of smart contract deployment '%s'", reg.Name, scd.Name))
 		return ctrl.Result{RequeueAfter: 1 * time.Second}, nil
 	}
 
@@ -141,8 +147,5 @@ func (r *PaladinRegistryReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&corev1alpha1.PaladinRegistry{}).
 		// Reconcile when any contract deployment changes status
 		Watches(&corev1alpha1.SmartContractDeployment{}, handler.EnqueueRequestsFromMapFunc(r.reconcileSmartContractDeployment), reconcileEveryChange()).
-		WithOptions(controller.Options{
-			MaxConcurrentReconciles: 2,
-		}).
 		Complete(r)
 }

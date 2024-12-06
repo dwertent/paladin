@@ -26,7 +26,6 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	corev1alpha1 "github.com/kaleido-io/paladin/operator/api/v1alpha1"
@@ -97,7 +96,7 @@ func (r *PaladinDomainReconciler) trackContractDeploymentAndRequeue(ctx context.
 		return ctrl.Result{}, err
 	}
 	if scd.Status.ContractAddress == "" {
-		log.FromContext(ctx).Info(fmt.Sprintf("Waiting for successful deployment of smart contract deployment '%s'", scd.Name))
+		log.FromContext(ctx).Info(fmt.Sprintf("Domain: '%s'. Waiting for successful deployment of smart contract deployment '%s'", domain.Name, scd.Name))
 		return ctrl.Result{RequeueAfter: 1 * time.Second}, nil
 	}
 
@@ -112,8 +111,5 @@ func (r *PaladinDomainReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		For(&corev1alpha1.PaladinDomain{}).
 		// Reconcile when any contract deployment changes status
 		Watches(&corev1alpha1.SmartContractDeployment{}, reconcileAll(PaladinDomainCRMap, r.Client), reconcileEveryChange()).
-		WithOptions(controller.Options{
-			MaxConcurrentReconciles: 2,
-		}).
 		Complete(r)
 }
