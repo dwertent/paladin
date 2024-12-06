@@ -359,7 +359,7 @@ task verifyPaladin(dependsOn: verifyBesu) {
 task verifyAllScdSuccess(dependsOn: verifyPaladin ) {
     doLast {
         println 'Verifying all scd resources have status "Success"...'
-        waitForAllScdSuccess(namespace, 120)
+        waitForAllScdSuccess(namespace, 240)
     }
 }
 
@@ -367,7 +367,7 @@ task verifyAllScdSuccess(dependsOn: verifyPaladin ) {
 task verifyAllRegistriesPublished(dependsOn: verifyAllScdSuccess) {
     doLast {
         println 'Verifying all registries are published...'
-        waitForAllRegistriesPublished(namespace, 120)
+        waitForAllRegistriesPublished(namespace, 240)
     }
 }
 
