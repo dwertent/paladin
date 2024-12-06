@@ -71,6 +71,11 @@ def printClusterStatus(String namespace) {
     def getAllProcess = getAllCommand.execute()
     getAllProcess.waitFor()
     println getAllProcess.in.text.trim()
+
+    def getYAMLCommand = ["kubectl", "get", "reg", "-n", namespace, "-oyaml"]
+    def getYAMLProcess = getYAMLCommand.execute()
+    getYAMLProcess.waitFor()
+    println getYAMLProcess.in.text.trim()
 } 
 
 def verifyResourceCreated(String namespace, String resourceType, String resourceName, String desiredReplicas = "1", int timeoutSeconds = 60) {
