@@ -103,7 +103,7 @@ func (r *PaladinReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 
 	defer func() {
 		// Update the overall phase based on conditions
-		if err := r.Status().Update(ctx, &node); err != nil {
+		if err := r.Status().Update(ctx, &node); err != nil && !errors.IsConflict(err) {
 			log.Error(err, "Failed to update Paladin status")
 		}
 	}()
@@ -114,7 +114,6 @@ func (r *PaladinReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		setCondition(&node.Status.Conditions, corev1alpha1.ConditionSVC, metav1.ConditionFalse, corev1alpha1.ReasonSVCCreationFailed, err.Error())
 		return ctrl.Result{}, err
 	}
-	log.Info("Created Paladin Service", "Name", name)
 
 	// Create Pod Disruption Budget
 	if _, err := r.createPDB(ctx, &node, name); err != nil {
@@ -122,7 +121,6 @@ func (r *PaladinReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		setCondition(&node.Status.Conditions, corev1alpha1.ConditionPDB, metav1.ConditionFalse, corev1alpha1.ReasonPDBCreationFailed, err.Error())
 		return ctrl.Result{}, err
 	}
-	log.Info("Created Paladin pod disruption budget", "Name", name)
 
 	// Create ConfigMap
 	configSum, tlsSecrets, _, err := r.createConfigMap(ctx, &node, name)
@@ -131,7 +129,6 @@ func (r *PaladinReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		setCondition(&node.Status.Conditions, corev1alpha1.ConditionCM, metav1.ConditionFalse, corev1alpha1.ReasonCMCreationFailed, err.Error())
 		return ctrl.Result{}, err
 	}
-	log.Info("Created Paladin config map", "Name", name)
 
 	// first we need to detect if the STS and the configsum differs
 	resourceID := fmt.Sprintf("paladin/%s", name)
@@ -153,7 +150,7 @@ func (r *PaladinReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 			// if the configsum differs, we need to queue up the change for later
 			if previousConfigSum != configSum {
 				_ = r.Changes.Insert(resourceID)
-				return ctrl.Result{RequeueAfter: 30 * time.Second}, nil
+				return ctrl.Result{RequeueAfter: 5 * time.Second}, nil
 			} else {
 				// configsums are the same, so we can proceed in case different changes need to be made
 				changeable = true
@@ -165,13 +162,12 @@ func (r *PaladinReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 
 	if !existing || changeable {
 		// Create StatefulSet
-		ss, err := r.createStatefulSet(ctx, &node, name, tlsSecrets, configSum)
+		_, err := r.createStatefulSet(ctx, &node, name, tlsSecrets, configSum)
 		if err != nil {
 			log.Error(err, "Failed to create Paladin StatefulSet")
 			setCondition(&node.Status.Conditions, corev1alpha1.ConditionSS, metav1.ConditionFalse, corev1alpha1.ReasonSSCreationFailed, err.Error())
 			return ctrl.Result{}, err
 		}
-		log.Info("Created Paladin StatefulSet", "Name", ss.Name, "Namespace", ss.Namespace)
 		if changeable {
 			r.Changes.Delete(resourceID)
 		}
@@ -255,26 +251,32 @@ func (r *PaladinReconciler) createStatefulSet(ctx context.Context, node *corev1a
 
 	// Check if the StatefulSet already exists, create if not
 	var foundStatefulSet appsv1.StatefulSet
-	if err := r.Get(ctx, types.NamespacedName{Name: statefulSet.Name, Namespace: statefulSet.Namespace}, &foundStatefulSet); err != nil && errors.IsNotFound(err) {
+	if err := r.Get(ctx, types.NamespacedName{Name: statefulSet.Name, Namespace: statefulSet.Namespace}, &foundStatefulSet); err != nil {
+		if !errors.IsNotFound(err) {
+			return statefulSet, err
+		}
 		err = r.Create(ctx, statefulSet)
 		if err != nil {
 			return statefulSet, err
 		}
 		setCondition(&node.Status.Conditions, corev1alpha1.ConditionSS, metav1.ConditionTrue, corev1alpha1.ReasonSSCreated, fmt.Sprintf("Name: %s", statefulSet.Name))
-	} else if err != nil {
-		return statefulSet, err
+		log.FromContext(ctx).Info("Created Paladin StatefulSet", "Name", statefulSet.Name, "Namespace", statefulSet.Namespace)
 	} else {
 		// Only update safe things
 		foundStatefulSet.Spec.Template.Spec.Containers = statefulSet.Spec.Template.Spec.Containers
 		foundStatefulSet.Spec.Template.Spec.Volumes = statefulSet.Spec.Template.Spec.Volumes
 		foundStatefulSet.Spec.Template.Annotations = statefulSet.Spec.Template.Annotations
 		foundStatefulSet.Spec.Template.Labels = statefulSet.Spec.Template.Labels
+		rv := foundStatefulSet.ResourceVersion
 		// TODO: Other things that can be merged?
 		if err := r.Update(ctx, &foundStatefulSet); err != nil {
 			return statefulSet, err
 		}
-		setCondition(&node.Status.Conditions, corev1alpha1.ConditionSS, metav1.ConditionTrue, corev1alpha1.ReasonSSUpdated, fmt.Sprintf("Name: %s", statefulSet.Name))
 		statefulSet = &foundStatefulSet
+		if statefulSet.ResourceVersion != rv {
+			setCondition(&node.Status.Conditions, corev1alpha1.ConditionSS, metav1.ConditionTrue, corev1alpha1.ReasonSSUpdated, fmt.Sprintf("Name: %s", statefulSet.Name))
+			log.FromContext(ctx).Info("Updated Paladin StatefulSet", "Name", statefulSet.Name, "Namespace", statefulSet.Namespace)
+		}
 	}
 	return statefulSet, nil
 }
@@ -322,16 +324,16 @@ func (r *PaladinReconciler) createPDB(ctx context.Context, node *corev1alpha1.Pa
 	}
 
 	var foundPDB policyv1.PodDisruptionBudget
-	if err := r.Get(ctx, types.NamespacedName{Name: name, Namespace: pdb.Namespace}, &foundPDB); err != nil && errors.IsNotFound(err) {
+	if err := r.Get(ctx, types.NamespacedName{Name: name, Namespace: pdb.Namespace}, &foundPDB); err != nil {
+		if !errors.IsNotFound(err) {
+			return nil, err
+		}
 		err = r.Create(ctx, pdb)
 		if err != nil {
 			return pdb, err
 		}
 		setCondition(&node.Status.Conditions, corev1alpha1.ConditionPDB, metav1.ConditionTrue, corev1alpha1.ReasonPDBCreated, fmt.Sprintf("Name: %s", pdb.Name))
-	} else if err != nil {
-		return nil, err
-	} else {
-		setCondition(&node.Status.Conditions, corev1alpha1.ConditionPDB, metav1.ConditionTrue, corev1alpha1.ReasonPDBCreated, fmt.Sprintf("Name: %s", pdb.Name))
+		log.FromContext(ctx).Info("Created Paladin pod disruption budget", "Name", name)
 	}
 	return &foundPDB, nil
 }
@@ -405,8 +407,10 @@ func (r *PaladinReconciler) generateStatefulSetTemplate(node *corev1alpha1.Palad
 							},
 							ReadinessProbe: &corev1.Probe{
 								ProbeHandler: corev1.ProbeHandler{
-									TCPSocket: &corev1.TCPSocketAction{
-										Port: intstr.FromInt(8548),
+									HTTPGet: &corev1.HTTPGetAction{
+										Path:   "/readiness",
+										Port:   intstr.FromInt(8548),
+										Scheme: corev1.URISchemeHTTP,
 									},
 								},
 								InitialDelaySeconds: 5,
@@ -624,21 +628,27 @@ func (r *PaladinReconciler) createConfigMap(ctx context.Context, node *corev1alp
 	}
 
 	var foundConfigMap corev1.ConfigMap
-	if err := r.Get(ctx, types.NamespacedName{Name: configMap.Name, Namespace: configMap.Namespace}, &foundConfigMap); err != nil && errors.IsNotFound(err) {
+	if err := r.Get(ctx, types.NamespacedName{Name: configMap.Name, Namespace: configMap.Namespace}, &foundConfigMap); err != nil {
+		if !errors.IsNotFound(err) {
+			return "", nil, nil, err
+		}
 		err = r.Create(ctx, configMap)
 		if err != nil {
 			return "", nil, nil, err
 		}
 		setCondition(&node.Status.Conditions, corev1alpha1.ConditionCM, metav1.ConditionTrue, corev1alpha1.ReasonCMCreated, fmt.Sprintf("Name: %s", configMap.Name))
-	} else if err != nil {
-		return "", nil, nil, err
+		log.FromContext(ctx).Info("Created Paladin config map", "Name", name)
 	} else {
+		rv := foundConfigMap.ResourceVersion
 		foundConfigMap.Data = configMap.Data
 		if err := r.Update(ctx, &foundConfigMap); err != nil {
 			return "", nil, nil, err
 		}
-		setCondition(&node.Status.Conditions, corev1alpha1.ConditionCM, metav1.ConditionTrue, corev1alpha1.ReasonCMUpdated, fmt.Sprintf("Name: %s", configMap.Name))
 		configMap = &foundConfigMap
+		if foundConfigMap.ResourceVersion != rv {
+			setCondition(&node.Status.Conditions, corev1alpha1.ConditionCM, metav1.ConditionTrue, corev1alpha1.ReasonCMUpdated, fmt.Sprintf("Name: %s", configMap.Name))
+			log.FromContext(ctx).Info("Updated Paladin config map", "Name", name)
+		}
 	}
 	return configSum, tlsSecrets, configMap, nil
 }
@@ -1221,6 +1231,7 @@ func (r *PaladinReconciler) createService(ctx context.Context, node *corev1alpha
 			return svc, fmt.Errorf("failed to create service: %s", err)
 		}
 		setCondition(&node.Status.Conditions, corev1alpha1.ConditionSVC, metav1.ConditionTrue, corev1alpha1.ReasonSVCCreated, fmt.Sprintf("Name: %s", name))
+		log.FromContext(ctx).Info("Created Paladin Service", "Name", name)
 		return svc, nil
 	} else if err != nil {
 		return svc, err

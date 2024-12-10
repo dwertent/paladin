@@ -75,7 +75,7 @@ func (r *BesuGenesisReconciler) Reconcile(ctx context.Context, req ctrl.Request)
 
 	defer func() {
 		// Update the overall phase based on conditions
-		if err := r.Status().Update(ctx, &genesis); err != nil {
+		if err := r.Status().Update(ctx, &genesis); err != nil && !errors.IsConflict(err) {
 			log.Error(err, "Failed to update Besu status")
 		}
 	}()

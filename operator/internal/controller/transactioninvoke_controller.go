@@ -107,7 +107,7 @@ func (r *TransactionInvokeReconciler) Reconcile(ctx context.Context, req ctrl.Re
 }
 
 func (r *TransactionInvokeReconciler) updateStatusAndRequeue(ctx context.Context, txi *corev1alpha1.TransactionInvoke) (ctrl.Result, error) {
-	if err := r.Status().Update(ctx, txi); err != nil {
+	if err := r.Status().Update(ctx, txi); err != nil && !errors.IsConflict(err) {
 		log.FromContext(ctx).Error(err, "Failed to update smart contract deployment status")
 		return ctrl.Result{}, err
 	}
