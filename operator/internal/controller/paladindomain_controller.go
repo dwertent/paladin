@@ -77,7 +77,7 @@ func (r *PaladinDomainReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 }
 
 func (r *PaladinDomainReconciler) updateStatusAndRequeue(ctx context.Context, domain *corev1alpha1.PaladinDomain) (ctrl.Result, error) {
-	if err := r.Status().Update(ctx, domain); err != nil {
+	if err := r.Status().Update(ctx, domain); err != nil && !errors.IsConflict(err) {
 		log.FromContext(ctx).Error(err, "Failed to update Paladin domain status")
 		return ctrl.Result{}, err
 	}

@@ -103,7 +103,7 @@ func (r *PaladinReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 
 	defer func() {
 		// Update the overall phase based on conditions
-		if err := r.Status().Update(ctx, &node); err != nil {
+		if err := r.Status().Update(ctx, &node); err != nil && !errors.IsConflict(err) {
 			log.Error(err, "Failed to update Paladin status")
 		}
 	}()

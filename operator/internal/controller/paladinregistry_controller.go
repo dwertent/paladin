@@ -113,7 +113,7 @@ func (r *PaladinRegistryReconciler) reconcileSmartContractDeployment(ctx context
 }
 
 func (r *PaladinRegistryReconciler) updateStatusAndRequeue(ctx context.Context, reg *corev1alpha1.PaladinRegistry) (ctrl.Result, error) {
-	if err := r.Status().Update(ctx, reg); err != nil {
+	if err := r.Status().Update(ctx, reg); err != nil && !errors.IsConflict(err) {
 		log.FromContext(ctx).Error(err, "Failed to update Paladin registry status")
 		return ctrl.Result{}, err
 	}

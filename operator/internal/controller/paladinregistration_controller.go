@@ -139,6 +139,7 @@ func (r *PaladinRegistrationReconciler) Reconcile(ctx context.Context, req ctrl.
 		if err != nil {
 			// There is nothing we can do, try the next transport
 			log.Error(err, "Failed to reconcile transport transaction", "transport", transportName)
+			requeueAfter = time.Second // retry
 			continue
 		} else if regTx.statusChanged {
 			reg.Status.PublishTxs[transportName] = transportPublishStatus
@@ -150,6 +151,7 @@ func (r *PaladinRegistrationReconciler) Reconcile(ctx context.Context, req ctrl.
 			// what if one transaction failed and the other succeeded?
 			// continue to try the other transactions
 			log.Error(fmt.Errorf("transaction failed"), "Failed to reconcile transport transaction", "transport", transportName)
+			// if transaction failed do not requeue
 			continue
 		} else if !regTx.succeeded {
 			// wait before requeueing
@@ -162,7 +164,6 @@ func (r *PaladinRegistrationReconciler) Reconcile(ctx context.Context, req ctrl.
 		return r.updateStatusAndRequeue(ctx, &reg, publishCount)
 	}
 
-	// Nothing left to do
 	return ctrl.Result{RequeueAfter: requeueAfter}, nil
 }
 func (r *PaladinRegistrationReconciler) reconcileRegistry(ctx context.Context, obj client.Object) []ctrl.Request {
@@ -190,7 +191,8 @@ func (r *PaladinRegistrationReconciler) reconcileRegistry(ctx context.Context, o
 
 func (r *PaladinRegistrationReconciler) updateStatusAndRequeue(ctx context.Context, reg *corev1alpha1.PaladinRegistration, publishCount int) (ctrl.Result, error) {
 	reg.Status.PublishCount = publishCount
-	if err := r.Status().Update(ctx, reg); err != nil {
+	err := r.Status().Update(ctx, reg)
+	if err != nil && !errors.IsConflict(err) {
 		log.FromContext(ctx).Error(err, "Failed to update Paladin registration status")
 		return ctrl.Result{}, err
 	}

@@ -110,7 +110,7 @@ func (r *SmartContractDeploymentReconciler) Reconcile(ctx context.Context, req c
 }
 
 func (r *SmartContractDeploymentReconciler) updateStatusAndRequeue(ctx context.Context, scd *corev1alpha1.SmartContractDeployment) (ctrl.Result, error) {
-	if err := r.Status().Update(ctx, scd); err != nil {
+	if err := r.Status().Update(ctx, scd); err != nil && !errors.IsConflict(err) {
 		log.FromContext(ctx).Error(err, "Failed to update smart contract deployment status")
 		return ctrl.Result{}, err
 	}
