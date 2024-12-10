@@ -274,6 +274,7 @@ func (r *PaladinReconciler) createStatefulSet(ctx context.Context, node *corev1a
 		}
 		statefulSet = &foundStatefulSet
 		if statefulSet.ResourceVersion != rv {
+			setCondition(&node.Status.Conditions, corev1alpha1.ConditionSS, metav1.ConditionTrue, corev1alpha1.ReasonSSUpdated, fmt.Sprintf("Name: %s", statefulSet.Name))
 			log.FromContext(ctx).Info("Updated Paladin StatefulSet", "Name", statefulSet.Name, "Namespace", statefulSet.Namespace)
 		}
 	}
@@ -645,6 +646,7 @@ func (r *PaladinReconciler) createConfigMap(ctx context.Context, node *corev1alp
 		}
 		configMap = &foundConfigMap
 		if foundConfigMap.ResourceVersion != rv {
+			setCondition(&node.Status.Conditions, corev1alpha1.ConditionCM, metav1.ConditionTrue, corev1alpha1.ReasonCMUpdated, fmt.Sprintf("Name: %s", configMap.Name))
 			log.FromContext(ctx).Info("Updated Paladin config map", "Name", name)
 		}
 	}
