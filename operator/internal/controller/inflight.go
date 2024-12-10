@@ -13,11 +13,11 @@ type InFlight struct {
 }
 
 // NewInFlight instanciates a InFlight structures.
-func NewInFlight() *InFlight {
+func NewInFlight(changeWaitDuration time.Duration) *InFlight {
 	return &InFlight{
 		mux:                &sync.RWMutex{},
 		inFlight:           make(map[string]time.Time),
-		changeWaitDuration: 30 * time.Second,
+		changeWaitDuration: changeWaitDuration,
 	}
 }
 
