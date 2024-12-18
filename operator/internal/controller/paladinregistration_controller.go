@@ -155,8 +155,8 @@ func (r *PaladinRegistrationReconciler) Reconcile(ctx context.Context, req ctrl.
 				return r.buildTransportTX(ctx, &reg, registryAddr, transportName)
 			},
 		)
-		err := regTx.reconcile(ctx)
 		log.Info(fmt.Sprintf("'%s' E steps", req.Name))
+		err := regTx.reconcile(ctx)
 		if err != nil {
 			if strings.Contains(err.Error(), "context deadline exceeded") {
 				r.restartSS(ctx, &reg)
@@ -234,7 +234,7 @@ func (r *PaladinRegistrationReconciler) restartSS(ctx context.Context, reg *core
 	sfs := &appsv1.StatefulSetList{}
 	if err := r.Client.List(ctx, sfs, client.InNamespace(reg.Namespace)); err == nil {
 		for _, ss := range sfs.Items {
-			if strings.Contains(ss.Name, reg.Name) {
+			if strings.Contains(ss.Name, reg.Name) && strings.Contains(ss.Name, "paladin") {
 				r.Mux.Lock()
 				v, ok := r.Node[reg.Name]
 				if !ok {
