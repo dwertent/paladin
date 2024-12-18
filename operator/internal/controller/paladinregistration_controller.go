@@ -203,7 +203,7 @@ func (r *PaladinRegistrationReconciler) Reconcile(ctx context.Context, req ctrl.
 		log.Info(fmt.Sprintf("'%s' G steps", req.Name))
 		return r.updateStatusAndRequeue(ctx, &reg, publishCount)
 	}
-	log.Info(fmt.Sprintf("'%s' H steps", req.Name))
+	log.Info(fmt.Sprintf("'%s' H steps, requeueAfter: %s", req.Name, requeueAfter.String()))
 
 	return ctrl.Result{RequeueAfter: requeueAfter}, nil
 }
