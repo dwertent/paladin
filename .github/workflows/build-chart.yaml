@@ -107,18 +107,16 @@ jobs:
           kubectl get paladin node2 -n ${{ env.NAMESPACE }} -o json > paladin-2.json
           kubectl get paladin node3 -n ${{ env.NAMESPACE }} -o json > paladin-3.json
 
-          # Get trace from paladin-node1
-          kubectl exec statefulset/paladin-node1 -n ${{ env.NAMESPACE }} -- kill -QUIT 1
-          kubectl logs statefulset/paladin-node1 -n ${{ env.NAMESPACE }} > trace-node1.log
-
-          # Get trace from paladin-node2
-          kubectl exec statefulset/paladin-node2 -n ${{ env.NAMESPACE }} -- kill -QUIT 1
-          kubectl logs statefulset/paladin-node2 -n ${{ env.NAMESPACE }} > trace-node2.log
-
-          # Get trace from paladin-node3
-          kubectl exec statefulset/paladin-node3 -n ${{ env.NAMESPACE }} -- kill -QUIT 1
-          kubectl logs statefulset/paladin-node3 -n ${{ env.NAMESPACE }} > trace-node3.log
-
+      - name: Port-forward pprof endpoints
+        if: failure()
+        run: |
+          for i in 1 2 3; do
+            POD_NAME=$(kubectl get pod -l statefulset.kubernetes.io/pod-name=paladin-node$i -o jsonpath="{.metadata.name}" -n ${{ env.NAMESPACE }})
+            kubectl port-forward $POD_NAME $((6060 + i)):6060 -n ${{ env.NAMESPACE }} &
+            curl "http://localhost:$((6060 + i))/debug/pprof/goroutine?debug=2" > goroutine_dump_node$i.txt
+            curl "http://localhost:$((6060 + i))/debug/pprof/heap" > heap_profile_node$i.txt
+          done
+ 
       - name: Upload logs
         if: failure()
         uses: actions/upload-artifact@v4
@@ -132,6 +130,9 @@ jobs:
             paladin-1.json
             paladin-2.json
             paladin-3.json
-            trace-node1.log
-            trace-node2.log
-            trace-node3.log
+            goroutine_dump_node1.txt
+            goroutine_dump_node2.txt
+            goroutine_dump_node3.txt
+            heap_profile_node1.txt
+            heap_profile_node2.txt
+            heap_profile_node3.txt
