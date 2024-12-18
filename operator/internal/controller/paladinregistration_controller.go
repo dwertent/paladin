@@ -159,10 +159,11 @@ func (r *PaladinRegistrationReconciler) Reconcile(ctx context.Context, req ctrl.
 		err := regTx.reconcile(ctx)
 		if err != nil {
 			if strings.Contains(err.Error(), "context deadline exceeded") {
-				r.restartSS(ctx, &reg)
+				// r.restartSS(ctx, &reg)
 				log.Info(fmt.Sprintf("'%s' E steps ERROR CONTEXT", req.Name))
+			} else {
+				log.Info(fmt.Sprintf("'%s' E steps ERROR", req.Name))
 			}
-			log.Info(fmt.Sprintf("'%s' E steps ERROR", req.Name))
 			// log.Info(err, "Failed to reconcile transport transaction", "transport", transportName)
 			requeueAfter = 5 * time.Second // retry
 			continue
@@ -355,14 +356,14 @@ func (r *PaladinRegistrationReconciler) buildTransportTX(ctx context.Context, re
 	if err != nil || regNodeRPC == nil {
 		return false, nil, err // not ready, or error
 	}
-	var transportDetails string
-	if err := regNodeRPC.CallRPC(context.Background(), &transportDetails, "transport_localTransportDetails", transportName); err != nil || transportDetails == "" {
-		// log.FromContext(ctx).Error(err, "transport_localTransportDetails")
+
+	transportDetails, err := regNodeRPC.Transport().LocalTransportDetails(context.Background(), transportName)
+	if err != nil || transportDetails == "" {
 		return false, nil, err
 	}
-	var nodeName string
-	if err := regNodeRPC.CallRPC(context.Background(), &nodeName, "transport_nodeName"); err != nil || nodeName == "" {
-		// log.FromContext(ctx).Error(err, "transport_nodeName")
+
+	nodeName, err := regNodeRPC.Transport().NodeName(context.Background())
+	if err != nil || nodeName == "" {
 		return false, nil, err
 	}
 

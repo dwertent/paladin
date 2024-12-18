@@ -107,6 +107,18 @@ jobs:
           kubectl get paladin node2 -n ${{ env.NAMESPACE }} -o json > paladin-2.json
           kubectl get paladin node3 -n ${{ env.NAMESPACE }} -o json > paladin-3.json
 
+          # Get trace from paladin-node1
+          kubectl exec statefulset/paladin-node1 -n ${{ env.NAMESPACE }} -- kill -QUIT 1
+          kubectl logs statefulset/paladin-node1 -n ${{ env.NAMESPACE }} > trace-node1.log
+
+          # Get trace from paladin-node2
+          kubectl exec statefulset/paladin-node2 -n ${{ env.NAMESPACE }} -- kill -QUIT 1
+          kubectl logs statefulset/paladin-node2 -n ${{ env.NAMESPACE }} > trace-node2.log
+
+          # Get trace from paladin-node3
+          kubectl exec statefulset/paladin-node3 -n ${{ env.NAMESPACE }} -- kill -QUIT 1
+          kubectl logs statefulset/paladin-node3 -n ${{ env.NAMESPACE }} > trace-node3.log
+
       - name: Upload logs
         if: failure()
         uses: actions/upload-artifact@v4
@@ -120,3 +132,6 @@ jobs:
             paladin-1.json
             paladin-2.json
             paladin-3.json
+            trace-node1.log
+            trace-node2.log
+            trace-node3.log
