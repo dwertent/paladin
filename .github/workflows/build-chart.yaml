@@ -114,9 +114,9 @@ jobs:
           kubectl get paladin node1 -n ${{ env.NAMESPACE }} -o json > paladin-1.json
           kubectl get paladin node2 -n ${{ env.NAMESPACE }} -o json > paladin-2.json
           kubectl get paladin node3 -n ${{ env.NAMESPACE }} -o json > paladin-3.json
-          kubectl get cm node1 -n ${{ env.NAMESPACE }} -o json > cm-1.json
-          kubectl get cm node2 -n ${{ env.NAMESPACE }} -o json > cm-2.json
-          kubectl get cm node3 -n ${{ env.NAMESPACE }} -o json > cm-3.json
+          kubectl get cm paladin-node1 -n ${{ env.NAMESPACE }} -o json > cm-1.json
+          kubectl get cm paladin-node2 -n ${{ env.NAMESPACE }} -o json > cm-2.json
+          kubectl get cm paladin-node3 -n ${{ env.NAMESPACE }} -o json > cm-3.json
 
 
       - name: Port-forward pprof endpoints
