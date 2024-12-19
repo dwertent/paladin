@@ -412,7 +412,7 @@ func (r *PaladinRegistrationReconciler) SetupWithManager(mgr ctrl.Manager) error
 		For(&corev1alpha1.PaladinRegistration{}).
 		// Reconcile when any node status changes
 		Watches(&corev1alpha1.PaladinRegistry{}, handler.EnqueueRequestsFromMapFunc(r.reconcileRegistry), reconcileEveryChange()).
-		// Watches(&corev1alpha1.Paladin{}, handler.EnqueueRequestsFromMapFunc(r.reconcilePaladin), reconcileEveryChange()).
+		Watches(&corev1alpha1.Paladin{}, handler.EnqueueRequestsFromMapFunc(r.reconcilePaladin), reconcileEveryChange()).
 		WithOptions(controller.Options{
 			MaxConcurrentReconciles: 1,
 		}).

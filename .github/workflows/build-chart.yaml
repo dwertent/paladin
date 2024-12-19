@@ -73,17 +73,17 @@ jobs:
           path: /tmp # download all docker images to /tmp
           pattern: paladin-*
           merge-multiple: true
-      - name: Load image
-        run: |
-          docker load --input /tmp/paladin-operator-${{ github.sha }}.tar
-          docker load --input /tmp/paladin-${{ github.sha }}.tar
-          docker image ls -a  
-        
       # - name: Load image
       #   run: |
       #     docker load --input /tmp/paladin-operator-${{ github.sha }}.tar
-      #     docker pull ${{ inputs.paladin-image }}:${{ inputs.paladin-image-tag }}
+      #     docker load --input /tmp/paladin-${{ github.sha }}.tar
       #     docker image ls -a  
+        
+      - name: Load image
+        run: |
+          docker load --input /tmp/paladin-operator-${{ github.sha }}.tar
+          docker pull ${{ inputs.paladin-image }}:${{ inputs.paladin-image-tag }}
+          docker image ls -a  
       
       # The makefile uses kustomize
       - uses: imranismail/setup-kustomize@v2
@@ -114,6 +114,10 @@ jobs:
           kubectl get paladin node1 -n ${{ env.NAMESPACE }} -o json > paladin-1.json
           kubectl get paladin node2 -n ${{ env.NAMESPACE }} -o json > paladin-2.json
           kubectl get paladin node3 -n ${{ env.NAMESPACE }} -o json > paladin-3.json
+          kubectl get cm node1 -n ${{ env.NAMESPACE }} -o json > cm-1.json
+          kubectl get cm node2 -n ${{ env.NAMESPACE }} -o json > cm-2.json
+          kubectl get cm node3 -n ${{ env.NAMESPACE }} -o json > cm-3.json
+
 
       - name: Port-forward pprof endpoints
         if: failure()
@@ -147,6 +151,9 @@ jobs:
             paladin-1.json
             paladin-2.json
             paladin-3.json
+            cm-1.json
+            cm-2.json
+            cm-3.json
             goroutine_dump_node1.txt
             goroutine_dump_node2.txt
             goroutine_dump_node3.txt
