@@ -2745,11 +2745,44 @@
 <td><code>type</code> <em><a href="#authtype">AuthType</a></em></td>
 <td>auth method to use for the connection</td>
 <td></td>
-<td>Enum: [secret] <br /></td>
+<td>Enum: [secret inline] <br /></td>
 </tr>
 <tr>
 <td><code>secretRef</code> <em><a href="#authsecret">AuthSecret</a></em></td>
 <td>Secret is used to provide the name of the secret to use for authentication</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>inline</code> <em><a href="#authinline">AuthInline</a></em></td>
+<td>Auth details are provided inline (not recommended)</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h4 id="authinline">AuthInline<a class="headerlink" href="#authinline" title="Permanent link">&para;</a></h4>
+<p><em>Appears in:</em>
+- <a href="#auth">Auth</a></p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+<th>Default</th>
+<th>Validation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>username</code> <em>string</em></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td><code>password</code> <em>string</em></td>
+<td></td>
 <td></td>
 <td></td>
 </tr>
@@ -2791,6 +2824,10 @@
 <tr>
 <td><code>secret</code></td>
 <td>AuthTypeSecret is used to authenticate with a secret<br />The secret must contain keys "username" and "password"<br /></td>
+</tr>
+<tr>
+<td><code>inline</code></td>
+<td></td>
 </tr>
 </tbody>
 </table>
