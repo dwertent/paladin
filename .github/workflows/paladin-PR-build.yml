@@ -91,8 +91,8 @@ jobs:
   chart-build:
     # run only if pull_request and the path operator/** was changed
     if: github.event_name == 'pull_request'
-    needs: [operator-image-build]
-    # needs: [core-image-build, operator-image-build]
+    # needs: [operator-image-build]
+    needs: [core-image-build, operator-image-build]
     uses: ./.github/workflows/build-chart.yaml
     with:
       paladin-image: paladin.io/paladin
