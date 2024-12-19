@@ -108,6 +108,9 @@ jobs:
           kubectl logs statefulset/paladin-node1 -n ${{ env.NAMESPACE }} > sfs-1.log
           kubectl logs statefulset/paladin-node2 -n ${{ env.NAMESPACE }} > sfs-2.log
           kubectl logs statefulset/paladin-node3 -n ${{ env.NAMESPACE }} > sfs-3.log
+          kubectl logs statefulset/besu-node1 -n ${{ env.NAMESPACE }} > besu-1.log
+          kubectl logs statefulset/besu-node2 -n ${{ env.NAMESPACE }} > besu-2.log
+          kubectl logs statefulset/besu-node3 -n ${{ env.NAMESPACE }} > besu-3.log
           kubectl get paladin node1 -n ${{ env.NAMESPACE }} -o json > paladin-1.json
           kubectl get paladin node2 -n ${{ env.NAMESPACE }} -o json > paladin-2.json
           kubectl get paladin node3 -n ${{ env.NAMESPACE }} -o json > paladin-3.json
@@ -126,7 +129,6 @@ jobs:
           for i in 1 2 3; do
             POD_NAME="paladin-node$i-0"
             curl "http://localhost:$((6060 + i))/debug/pprof/goroutine?debug=2" > goroutine_dump_node$i.txt
-            curl "http://localhost:$((6060 + i))/debug/pprof/heap" > heap_profile_node$i.txt
           done
  
       - name: Upload logs
@@ -139,12 +141,13 @@ jobs:
             sfs-1.log
             sfs-2.log
             sfs-3.log
+            besu-1.log
+            besu-2.log
+            besu-3.log
             paladin-1.json
             paladin-2.json
             paladin-3.json
             goroutine_dump_node1.txt
             goroutine_dump_node2.txt
             goroutine_dump_node3.txt
-            heap_profile_node1.txt
-            heap_profile_node2.txt
-            heap_profile_node3.txt
+            
