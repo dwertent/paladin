@@ -20,45 +20,48 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  # build:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
-  #         submodules: recursive
 
-  #     - name: Install pre-requisites
-  #       uses: ./.github/actions/setup
+# Start =================================================================================================
 
-  #     # Build with Gradle
-  #     # This does not build any docker images, and does not run any dockerized tests.
-  #     # It does run Go/Java/Solidity component and integration tests that use PostgreSQL and Besu
-  #     - name: Build with Gradle
-  #       run: ./gradlew -PcomposeLogs=true -PverboseTests=true --no-daemon --parallel --max-workers=5 build
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          submodules: recursive
 
-  #     - name: Upload logs
-  #       uses: actions/upload-artifact@v4
-  #       if: always()      
-  #       with:
-  #         name: testbed-logs
-  #         path: |
-  #           **/testbed.*.log
+      - name: Install pre-requisites
+        uses: ./.github/actions/setup
 
-  # core-image-build:
-  #   # run only on PRs
-  #   if: github.event_name == 'pull_request'
-  #   uses: ./.github/workflows/build-image.yaml
-  #   with:
-  #     dockerfile: ./Dockerfile
-  #     registry: paladin.io
-  #     image: paladin
-  #     image_tag: ${{ github.sha }}
-  #     push: false
-  #     upload-artifact: true
-  #     platforms: linux/amd64
-  #     runs-on: ubuntu-latest
+      # Build with Gradle
+      # This does not build any docker images, and does not run any dockerized tests.
+      # It does run Go/Java/Solidity component and integration tests that use PostgreSQL and Besu
+      - name: Build with Gradle
+        run: ./gradlew -PcomposeLogs=true -PverboseTests=true --no-daemon --parallel --max-workers=5 build
 
+      - name: Upload logs
+        uses: actions/upload-artifact@v4
+        if: always()      
+        with:
+          name: testbed-logs
+          path: |
+            **/testbed.*.log
+
+  core-image-build:
+    # run only on PRs
+    if: github.event_name == 'pull_request'
+    uses: ./.github/workflows/build-image.yaml
+    with:
+      dockerfile: ./Dockerfile
+      registry: paladin.io
+      image: paladin
+      image_tag: ${{ github.sha }}
+      push: false
+      upload-artifact: true
+      platforms: linux/amd64
+      runs-on: ubuntu-latest
+# END =================================================================================================
   operator-image-build:
       # run only on PRs
       if: github.event_name == 'pull_request'
@@ -73,6 +76,18 @@ jobs:
         platforms: linux/amd64
         runs-on: ubuntu-latest
 
+  # chart-build:
+  #   # run only if pull_request and the path operator/** was changed
+  #   if: github.event_name == 'pull_request'
+  #   needs: [operator-image-build]
+  #   # needs: [core-image-build, operator-image-build]
+  #   uses: ./.github/workflows/build-chart.yaml
+  #   with:
+  #     paladin-image: dwertent/paladin
+  #     paladin-image-tag: latest
+  #     operator-image: paladin.io/paladin-operator
+  #     operator-image-tag: ${{ github.sha }}
+
   chart-build:
     # run only if pull_request and the path operator/** was changed
     if: github.event_name == 'pull_request'
@@ -80,8 +95,8 @@ jobs:
     # needs: [core-image-build, operator-image-build]
     uses: ./.github/workflows/build-chart.yaml
     with:
-      paladin-image: dwertent/paladin
-      paladin-image-tag: latest
+      paladin-image: paladin.io/paladin
+      paladin-image-tag: ${{ github.sha }}
       operator-image: paladin.io/paladin-operator
       operator-image-tag: ${{ github.sha }}
 
