@@ -114,7 +114,12 @@ jobs:
             POD_NAME="paladin-node$i-0"
             echo "Port-forwarding $POD_NAME on port $((6060 + i))"
             kubectl port-forward pod/$POD_NAME $((6060 + i)):6060 -n ${{ env.NAMESPACE }} &
+          done
+          
+          sleep 10
 
+          for i in 1 2 3; do
+            POD_NAME="paladin-node$i-0"
             curl "http://localhost:$((6060 + i))/debug/pprof/goroutine?debug=2" > goroutine_dump_node$i.txt
             curl "http://localhost:$((6060 + i))/debug/pprof/heap" > heap_profile_node$i.txt
           done
