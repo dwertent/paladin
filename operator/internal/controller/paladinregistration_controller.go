@@ -150,7 +150,7 @@ func (r *PaladinRegistrationReconciler) Reconcile(ctx context.Context, req ctrl.
 			"reg."+reg.Name+"."+transportName,
 			reg.Spec.Node /* the node owns their transports */, reg.Namespace,
 			&transportPublishStatus,
-			"30s",
+			"10s",
 			func() (bool, *pldapi.TransactionInput, error) {
 				return r.buildTransportTX(ctx, &reg, registryAddr, transportName)
 			},
@@ -165,7 +165,7 @@ func (r *PaladinRegistrationReconciler) Reconcile(ctx context.Context, req ctrl.
 				log.Info(fmt.Sprintf("'%s' E steps ERROR", req.Name))
 			}
 			// log.Info(err, "Failed to reconcile transport transaction", "transport", transportName)
-			requeueAfter = 5 * time.Second // retry
+			requeueAfter = 100 * time.Millisecond // retry
 			continue
 		} else if regTx.statusChanged {
 			log.Info(fmt.Sprintf("'%s' E steps Changed (%s)", req.Name, transportPublishStatus.TransactionStatus))
@@ -414,7 +414,7 @@ func (r *PaladinRegistrationReconciler) SetupWithManager(mgr ctrl.Manager) error
 		Watches(&corev1alpha1.PaladinRegistry{}, handler.EnqueueRequestsFromMapFunc(r.reconcileRegistry), reconcileEveryChange()).
 		Watches(&corev1alpha1.Paladin{}, handler.EnqueueRequestsFromMapFunc(r.reconcilePaladin), reconcileEveryChange()).
 		WithOptions(controller.Options{
-			MaxConcurrentReconciles: 1,
+			MaxConcurrentReconciles: 3,
 		}).
 		Complete(r)
 }
