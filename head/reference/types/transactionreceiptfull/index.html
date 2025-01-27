@@ -9,10 +9,10 @@
       
       
       
-        <link rel="prev" href="../transactionreceipt/">
+        <link rel="prev" href="../transactionreceiptfilters/">
       
       
-        <link rel="next" href="../transactionstates/">
+        <link rel="next" href="../transactionreceiptlistener/">
       
       
       <link rel="icon" href="../../../assets/paladin-icon-light.png">
@@ -1558,6 +1558,14 @@
       
         
       
+        
+      
+        
+      
+        
+      
+        
+      
     
     
       
@@ -1727,6 +1735,27 @@
   
   <span class="md-ellipsis">
     OnChainLocation
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../peerinfo/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    PeerInfo
   </span>
   
 
@@ -2181,6 +2210,27 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../transactionreceiptfilters/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TransactionReceiptFilters
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -2247,6 +2297,48 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../transactionreceiptlistener/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TransactionReceiptListener
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../transactionreceiptlisteneroptions/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    TransactionReceiptListenerOptions
+  </span>
+  
+
+      </a>
     </li>
   
 
@@ -2691,6 +2783,11 @@
 <td><a href="../simpletypes/#timestamp"><code>Timestamp</code></a></td>
 </tr>
 <tr>
+<td><code>sequence</code></td>
+<td>A local order of this receipt compared to other receipts on the node, used for ordering of receipts when delivering to receipt listeners</td>
+<td><code>uint64</code></td>
+</tr>
+<tr>
 <td><code>domain</code></td>
 <td>The domain that executed the transaction, for private transactions only</td>
 <td><code>string</code></td>
@@ -2791,7 +2888,7 @@
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="../transactionreceipt/" class="md-footer__link md-footer__link--prev" aria-label="Previous: TransactionReceipt">
+          <a href="../transactionreceiptfilters/" class="md-footer__link md-footer__link--prev" aria-label="Previous: TransactionReceiptFilters">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -2801,20 +2898,20 @@
                 Previous
               </span>
               <div class="md-ellipsis">
-                TransactionReceipt
+                TransactionReceiptFilters
               </div>
             </div>
           </a>
         
         
           
-          <a href="../transactionstates/" class="md-footer__link md-footer__link--next" aria-label="Next: TransactionStates">
+          <a href="../transactionreceiptlistener/" class="md-footer__link md-footer__link--next" aria-label="Next: TransactionReceiptListener">
             <div class="md-footer__title">
               <span class="md-footer__direction">
                 Next
               </span>
               <div class="md-ellipsis">
-                TransactionStates
+                TransactionReceiptListener
               </div>
             </div>
             <div class="md-footer__button md-icon">
