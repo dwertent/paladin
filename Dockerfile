@@ -117,9 +117,9 @@ ENV CGO_LDFLAGS="-O2"
 # - Installing gradle with the wrapper
 # - Compiling the groovy buildSrc
 # - Installing a bunch of base Go pre-reqs
-RUN gradle --no-daemon :solidity:compile
+RUN gradle --no-daemon :solidity:compile --info
 
-RUN gradle --no-daemon :toolkit:go:assemble
+RUN gradle --no-daemon :toolkit:go:assemble --info
 
 # Stage 2... Full build - currently core/zeto/noto/core are all cop-req'd together
 # (If we untangle this we can get more parallelism and less re-build in our docker build)
@@ -139,7 +139,7 @@ COPY ui/client ui/client
 # No build of these two, but we need to go.mod to make the go.work valid
 COPY testinfra/go.mod testinfra/go.mod
 COPY operator/go.mod operator/go.mod
-RUN gradle --no-daemon assemble
+RUN gradle --no-daemon assemble --info
 
 # Stage 3: Pull together runtime
 FROM ubuntu:24.04 AS runtime
