@@ -11,6 +11,7 @@ COPY . .
 #       wait to implement until the domain specific signer plugin interface 
 #       is enabled, such that Zeto can remove non-cross-compilable ZKP libs
 #       from the core build.
+ENV CGO_ENABLED=0
 RUN cd operator; go build -a -o manager cmd/main.go
 
 # TODO: Use distroless as minimal base image to package the manager binary
