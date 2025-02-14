@@ -140,7 +140,7 @@ COPY ui/client ui/client
 COPY testinfra/go.mod testinfra/go.mod
 COPY operator/go.mod operator/go.mod
 COPY perf/go.mod perf/go.mod
-RUN gradle --no-daemon --parallel assemble
+RUN gradle --no-daemon --parallel assemble --info
 
 # Stage 3: Pull together runtime
 FROM ubuntu:24.04 AS runtime
