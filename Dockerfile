@@ -136,10 +136,11 @@ COPY registries/static registries/static
 COPY registries/evm registries/evm
 COPY transports/grpc transports/grpc
 COPY ui/client ui/client
-# No build of these two, but we need to go.mod to make the go.work valid
+# No build of these three, but we need to go.mod to make the go.work valid
 COPY testinfra/go.mod testinfra/go.mod
 COPY operator/go.mod operator/go.mod
-RUN gradle --no-daemon assemble --info
+COPY perf/go.mod perf/go.mod
+RUN gradle --no-daemon --parallel assemble
 
 # Stage 3: Pull together runtime
 FROM ubuntu:24.04 AS runtime
