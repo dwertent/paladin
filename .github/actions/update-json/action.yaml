@@ -25,7 +25,7 @@ runs:
         set -e
         echo "Updating ${{ inputs.file }}"
         
-        jq --arg value "${{ inputs.value }}" '.[$key] = $value' "${{ inputs.file }}" > temp.json && mv temp.json "${{ inputs.file }}"
+        jq --arg key "${{ inputs.key }}" --arg value "${{ inputs.value }}" '.[$key] = $value' "${{ inputs.file }}" > temp.json && mv temp.json "${{ inputs.file }}"
 
         echo "Updated ${{ inputs.file }}:"
         cat "${{ inputs.file }}"
