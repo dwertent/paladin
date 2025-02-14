@@ -1,0 +1,26 @@
+name: Paladin Build - TMP
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+# Ensure this workflow only runs for the most recent commit of a pull-request
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  image-release:
+    uses: ./.github/workflows/cross-build-images.yaml
+    with:
+      registry: ghcr.io
+      repository: ${{ github.repository_owner }}
+      image_tags: ${{ github.ref_name }}
+    secrets:
+      username: ${{ github.actor }}
+      password: ${{ secrets.GITHUB_TOKEN }}
