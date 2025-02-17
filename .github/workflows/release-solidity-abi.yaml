@@ -1,0 +1,34 @@
+name: Solidity ABI Release
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    permissions:
+      contents: read
+      id-token: write
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        submodules: recursive
+
+    - name: Install pre-requisites
+      uses: ./.github/actions/setup
+
+    - name: Build
+      working-directory: solidity
+      run: ../gradlew build 
+
+    - name: Copy Solidity artifacts to abi directory
+      run: |
+        mkdir -p abi
+        find solidity/artifacts/contracts -type f -name "*.json" ! -name "*.dbg.json" -exec cp {} abi/ \;
+         
+    - name: Upload artifacts for inspection (optional)
+      uses: actions/upload-artifact@v4
+      with:
+        name: solidity-abi
+        path: abi/
