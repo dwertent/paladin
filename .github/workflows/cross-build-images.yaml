@@ -95,7 +95,7 @@ jobs:
       image: ${{ needs.set-repository.outputs.repository }}/paladin-operator
       image_tag: ${{ github.sha }}-arm64
       push: ${{ inputs.push }}
-      platforms: linux/arm64
+      platforms: linux/amd64
       runs-on: ubuntu-latest
     secrets:
       username: ${{ secrets.username }}
