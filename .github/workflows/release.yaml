@@ -82,8 +82,8 @@ jobs:
       - name: Download Solidity artifacts
         uses: actions/download-artifact@v4
         with:
-          name: solidity-abi
-          path: solidity-abi/
+          name: contracts
+          path: contracts/
 
       - name: List downloaded artifacts
         run: |
@@ -100,7 +100,7 @@ jobs:
             helm-artifacts/basenet.yaml
             helm-artifacts/devnet.yaml
             helm-artifacts/artifacts.tar.gz
-            solidity-abi/*
+            contracts/contracts.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

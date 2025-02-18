@@ -22,13 +22,17 @@ jobs:
       working-directory: solidity
       run: ../gradlew build 
 
-    - name: Copy Solidity artifacts to abi directory
+    - name: Copy Solidity artifacts to contracts directory
       run: |
-        mkdir -p abi
-        find solidity/artifacts/contracts -type f -name "*.json" ! -name "*.dbg.json" -exec cp {} abi/ \;
-         
+        mkdir -p contracts
+        find solidity/artifacts/contracts -type f -name "*.json" ! -name "*.dbg.json" -exec cp {} contracts/ \;
+
+    - name: Archive ABI directory
+      run: |
+        tar -czvf contracts.tar.gz -C contracts .
+
     - name: Upload artifacts for inspection (optional)
       uses: actions/upload-artifact@v4
       with:
-        name: solidity-abi
-        path: abi/
+        name: contracts
+        path: contracts.tar.gz
