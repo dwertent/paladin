@@ -202,6 +202,7 @@ helm-install-dependencies: ## Install operator using Helm.
 
 .PHONY: helm-install
 helm-install: helm-install-dependencies ## Install operator using Helm.
+	$(HELM) dependency update ${CHART_PATH_OPERATOR} || true
 	$(HELM) dependency build ${CHART_PATH_OPERATOR} || true
 	$(HELM) upgrade --install ${CHART_NAME_OPERATOR} ${CHART_PATH_OPERATOR} \
 		-n ${NAMESPACE} --create-namespace \
