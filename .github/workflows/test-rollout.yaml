@@ -67,7 +67,7 @@ jobs:
           npm --version
 
       - name: Install Kind
-        uses: dwertent/kind-action@v1
+        uses: dwertent/kind-action@v2
         with:
           install_only: true # only install kind, the cluster creation is managed by the next step
           ignore_failed_clean: true
