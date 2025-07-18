@@ -1,5 +1,13 @@
 name: 'Test Release Candidate Rollout'
 on:
+  push:
+    paths:
+      - 'scripts/**'
+      - 'sdk/typescript/**'
+      - 'example/**'
+      - 'workflows/test-rollout.yaml'
+    branches:
+      - release-rollout
   workflow_dispatch: 
     inputs:
       tag:
@@ -12,6 +20,10 @@ on:
         description: 'The tag to test'
         required: true
         type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 jobs:
   e2e-tests:
