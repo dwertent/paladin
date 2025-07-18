@@ -1,4 +1,4 @@
-name: 'Test Release Candidate Rollout'
+name: 'Test Examples with SDK'
 on:
   push:
     paths:
@@ -6,14 +6,8 @@ on:
       - 'sdk/typescript/**'
       - 'example/**'
       - '.github/workflows/test-rollout.yaml'
-    branches:
-      - release-rollout
   workflow_dispatch: 
     inputs:
-      tag:
-        description: 'The tag to test'
-        required: true
-        type: string
       build_local_sdk:
         description: 'Build local TypeScript SDK instead of using published package'
         required: false
@@ -21,10 +15,6 @@ on:
         default: false
   workflow_call:
     inputs:
-      tag:
-        description: 'The tag to test'
-        required: true
-        type: string
       build_local_sdk:
         description: 'Build local TypeScript SDK instead of using published package'
         required: false
@@ -36,18 +26,15 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  e2e-tests:
+  run-examples:
+    # here are the steps:
+    # 1. create a cluster with kind
+    # 2. install the helm charts (latest version)
+    # 3. run the examples as the user will run them
+        # 3.1. Download the solidity files
+        # 3.2. Run the examples
+    # 7. destroy the cluster
     runs-on: ubuntu-latest
-    # here are the e2e steps:
-        # .1 create a cluster with kind
-        # .2 install the helm charts (latest version)
-        # .3 run the examples as the user will run them
-            # Download the solidity files
-            # Run the examples
-        # 4. Update the helm charts to the current release candidate version
-        # 5. Run the examples again
-        # 6. run the examples with the addresses from the previous run
-        # 7. destroy the cluster
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -99,7 +86,8 @@ jobs:
           mkdir -p contracts
           tar -xzf abis.tar.gz -C contracts/
 
-      - name: Use published SDK (default)
+      - name: Build example/common with published TypeScript SDK
+        if: ${{ !inputs.build_local_sdk }}
         run: |
           echo "Using published SDK: @lfdecentralizedtrust-labs/paladin-sdk"
           echo "Latest version: $(npm view @lfdecentralizedtrust-labs/paladin-sdk version)"
@@ -110,8 +98,8 @@ jobs:
           npm install @lfdecentralizedtrust-labs/paladin-sdk@latest
           npm run build
 
-      - name: Build TypeScript SDK (optional)
-        if: ${{ inputs.build_local_sdk == 'true' }}
+      - name: Build example/common with local TypeScript SDK
+        if: ${{ inputs.build_local_sdk }}
         run: |
           echo "Building local TypeScript SDK..."
           cd sdk/typescript
