@@ -1,0 +1,75 @@
+name: 'Test Release Candidate Rollout'
+on:
+  workflow_dispatch: 
+    inputs:
+      tag:
+        description: 'The tag to test'
+        required: true
+        type: string
+  workflow_call:
+    inputs:
+      tag:
+        description: 'The tag to test'
+        required: true
+        type: string
+
+jobs:
+  e2e-tests:
+    runs-on: ubuntu-latest
+    # here are the e2e steps:
+        # .1 create a cluster with kind
+        # .2 install the helm charts (latest version)
+        # .3 run the examples as the user will run them
+            # Download the solidity files
+            # Run the examples
+        # 4. Update the helm charts to the current release candidate version
+        # 5. Run the examples again
+        # 6. run the examples with the addresses from the previous run
+        # 7. destroy the cluster
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Kind
+        uses: helm/kind-action@v1
+        with:
+          install_only: true # only install kind, the cluster creation is managed by the next step
+          ignore_failed_clean: true
+
+      - name: Create cluster
+        run: |
+          # Download the kind configuration
+          curl https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/paladin/refs/heads/main/operator/paladin-kind.yaml -L -O
+          
+          # Create the cluster
+          kind create cluster --name paladin --config paladin-kind.yaml
+          
+          # Wait for cluster to be ready
+          kubectl wait --for=condition=Ready nodes --all --timeout=300s
+
+      - name: Install latest Paladin charts
+        run: |
+          # Step 1: Install the CRD Chart
+          helm repo add paladin https://LF-Decentralized-Trust-labs.github.io/paladin --force-update
+          helm upgrade --install paladin-crds paladin/paladin-operator-crd
+          
+          # Step 2: Install cert-manager CRDs
+          helm repo add jetstack https://charts.jetstack.io --force-update
+          helm install cert-manager --namespace cert-manager --version v1.16.1 jetstack/cert-manager --create-namespace --set crds.enabled=true
+          
+          # Wait for cert-manager to be ready
+          kubectl wait --for=condition=Ready pods --all -n cert-manager --timeout=300s
+          
+          # Step 3: Install the Paladin Operator Chart
+          helm upgrade --install paladin paladin/paladin-operator -n paladin --create-namespace
+
+      - name: Validate installation
+        run: |
+          # Run the validation script with explicit namespace
+          ./scripts/default-installation-validation.sh paladin
+
+      - name: Cleanup cluster
+        if: always()
+        run: |
+          kind delete cluster --name paladin
+      
