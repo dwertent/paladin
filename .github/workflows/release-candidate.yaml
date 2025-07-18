@@ -84,13 +84,6 @@ jobs:
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }} 
 
-  # # Run the e2e tests
-  # e2e-tests:
-  #   needs: [set-variables, release-charts, release-solidity-contracts, release-typescript-sdk]
-  #   uses: ./.github/workflows/e2e-tests.yaml
-  #   with:
-  #     tag: ${{ needs.set-variables.outputs.tag }}
-
   release:
     needs: [set-variables, release-charts, release-solidity-contracts, release-typescript-sdk]
     runs-on: ubuntu-latest
