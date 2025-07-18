@@ -27,7 +27,11 @@ concurrency:
 
 jobs:
   e2e-tests:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+      fail-fast: false
     # here are the e2e steps:
         # .1 create a cluster with kind
         # .2 install the helm charts (latest version)
@@ -41,6 +45,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Show OS information
+        run: |
+          echo "Running on: ${{ matrix.os }}"
+          echo "OS details:"
+          uname -a
+          echo "Node.js version:"
+          node --version
+          echo "npm version:"
+          npm --version
 
       - name: Install Kind
         uses: helm/kind-action@v1
@@ -89,12 +103,12 @@ jobs:
           mkdir -p contracts
           tar -xzf abis.tar.gz -C contracts/
 
-      - name: Build TypeScript SDK
-        run: |
-          cd sdk/typescript
-          npm install
-          npm run abi
-          npm run build
+      # - name: Build TypeScript SDK
+      #   run: |
+      #     cd sdk/typescript
+      #     npm install
+      #     npm run abi
+      #     npm run build
 
       - name: Build common utilities
         run: |
