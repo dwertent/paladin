@@ -14,12 +14,22 @@ on:
         description: 'The tag to test'
         required: true
         type: string
+      build_local_sdk:
+        description: 'Build local TypeScript SDK instead of using published package'
+        required: false
+        type: boolean
+        default: false
   workflow_call:
     inputs:
       tag:
         description: 'The tag to test'
         required: true
         type: string
+      build_local_sdk:
+        description: 'Build local TypeScript SDK instead of using published package'
+        required: false
+        type: boolean
+        default: false
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
@@ -57,7 +67,7 @@ jobs:
           npm --version
 
       - name: Install Kind
-        uses: helm/kind-action@v1
+        uses: dwertent/kind-action@v1
         with:
           install_only: true # only install kind, the cluster creation is managed by the next step
           ignore_failed_clean: true
@@ -103,20 +113,35 @@ jobs:
           mkdir -p contracts
           tar -xzf abis.tar.gz -C contracts/
 
-      # - name: Build TypeScript SDK
-      #   run: |
-      #     cd sdk/typescript
-      #     npm install
-      #     npm run abi
-      #     npm run build
-
-      - name: Build common utilities
+      - name: Use published SDK (default)
         run: |
+          echo "Using published SDK: @lfdecentralizedtrust-labs/paladin-sdk"
+          echo "Latest version: $(npm view @lfdecentralizedtrust-labs/paladin-sdk version)"
+          
+          # Update common utilities to use published SDK
           cd example/common
+          npm uninstall @lfdecentralizedtrust-labs/paladin-sdk
+          npm install @lfdecentralizedtrust-labs/paladin-sdk@latest
+          npm run build
+
+      - name: Build TypeScript SDK (optional)
+        if: ${{ inputs.build_local_sdk == 'true' }}
+        run: |
+          echo "Building local TypeScript SDK..."
+          cd sdk/typescript
           npm install
+          npm run abi
+          npm run build
+          
+          # Update common utilities to use local SDK
+          cd ../../example/common
+          npm uninstall @lfdecentralizedtrust-labs/paladin-sdk
+          npm install ../../sdk/typescript
           npm run build
 
       - name: Run all examples
+        env:
+          USE_PUBLISHED_SDK: ${{ !inputs.build_local_sdk }}
         run: |
           # Run the examples script
           ./scripts/run-examples.sh

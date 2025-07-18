@@ -64,6 +64,13 @@ run_example() {
         return 1
     fi
     
+    # Switch to published SDK if not using local SDK
+    if [ "$USE_PUBLISHED_SDK" = "true" ]; then
+        print_status "Switching to published SDK for $example_name..."
+        npm uninstall @lfdecentralizedtrust-labs/paladin-sdk 2>/dev/null || true
+        npm install @lfdecentralizedtrust-labs/paladin-sdk@latest
+    fi
+    
     # Install dependencies
     print_status "Installing dependencies for $example_name..."
     if ! npm install; then
