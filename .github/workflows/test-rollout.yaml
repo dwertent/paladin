@@ -1,5 +1,13 @@
 name: 'Test Release Candidate Rollout'
 on:
+  push:
+    paths:
+      - 'scripts/**'
+      - 'sdk/typescript/**'
+      - 'example/**'
+      - 'workflows/test-rollout.yaml'
+    branches:
+      - release-rollout
   workflow_dispatch: 
     inputs:
       tag:
@@ -13,9 +21,17 @@ on:
         required: true
         type: string
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
 jobs:
   e2e-tests:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+      fail-fast: false
     # here are the e2e steps:
         # .1 create a cluster with kind
         # .2 install the helm charts (latest version)
@@ -29,6 +45,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Show OS information
+        run: |
+          echo "Running on: ${{ matrix.os }}"
+          echo "OS details:"
+          uname -a
+          echo "Node.js version:"
+          node --version
+          echo "npm version:"
+          npm --version
 
       - name: Install Kind
         uses: helm/kind-action@v1
@@ -67,6 +93,33 @@ jobs:
         run: |
           # Run the validation script with explicit namespace
           ./scripts/default-installation-validation.sh paladin
+
+      - name: Download Solidity contracts
+        run: |
+          # Download the latest stable solidity contracts
+          curl -L -o abis.tar.gz https://github.com/LF-Decentralized-Trust-labs/paladin/releases/latest/download/abis.tar.gz
+          
+          # Extract contracts to a central location
+          mkdir -p contracts
+          tar -xzf abis.tar.gz -C contracts/
+
+      # - name: Build TypeScript SDK
+      #   run: |
+      #     cd sdk/typescript
+      #     npm install
+      #     npm run abi
+      #     npm run build
+
+      - name: Build common utilities
+        run: |
+          cd example/common
+          npm install
+          npm run build
+
+      - name: Run all examples
+        run: |
+          # Run the examples script
+          ./scripts/run-examples.sh
 
       - name: Cleanup cluster
         if: always()
