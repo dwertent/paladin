@@ -7,6 +7,8 @@ permissions:
 
 on:
   push:
+    branches:
+      - main
     paths:
       - 'scripts/**'
       - 'example/**'
@@ -26,4 +28,4 @@ jobs:
   test-examples:
     uses: ./.github/workflows/test-examples.yaml
     with:
-      build_local_sdk: false # we don't want to build the local SDK for this workflow
+      build_local_sdk: false # this workflow is meant to test the examples with the published SDK

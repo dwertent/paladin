@@ -7,6 +7,8 @@ permissions:
 
 on:
   push:
+    branches:
+      - main
     paths:
       - 'sdk/typescript/**'
       - '.github/workflows/on-pr-push-ts-sdk.yaml'
@@ -24,4 +26,4 @@ jobs:
   test-examples:
     uses: ./.github/workflows/test-examples.yaml
     with:
-      build_local_sdk: true # we want to build the local SDK for this workflow
+      build_local_sdk: true # this workflow is meant to test the examples with the local (modified) SDK
