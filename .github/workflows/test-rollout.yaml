@@ -5,7 +5,7 @@ on:
       - 'scripts/**'
       - 'sdk/typescript/**'
       - 'example/**'
-      - 'workflows/test-rollout.yaml'
+      - '.github/workflows/test-rollout.yaml'
     branches:
       - release-rollout
   workflow_dispatch: 
