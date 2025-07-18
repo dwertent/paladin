@@ -68,6 +68,33 @@ jobs:
           # Run the validation script with explicit namespace
           ./scripts/default-installation-validation.sh paladin
 
+      - name: Download Solidity contracts
+        run: |
+          # Download the latest stable solidity contracts
+          curl -L -o abis.tar.gz https://github.com/LF-Decentralized-Trust-labs/paladin/releases/latest/download/abis.tar.gz
+          
+          # Extract contracts to a central location
+          mkdir -p contracts
+          tar -xzf abis.tar.gz -C contracts/
+
+      - name: Build TypeScript SDK
+        run: |
+          cd sdk/typescript
+          npm install
+          npm run abi
+          npm run build
+
+      - name: Build common utilities
+        run: |
+          cd example/common
+          npm install
+          npm run build
+
+      - name: Run all examples
+        run: |
+          # Run the examples script
+          ./scripts/run-examples.sh
+
       - name: Cleanup cluster
         if: always()
         run: |
