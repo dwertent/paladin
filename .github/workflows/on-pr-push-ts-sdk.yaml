@@ -19,11 +19,11 @@ on:
 
 # Ensure this workflow only runs for the most recent commit of a pull-request
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
   test-examples:
-    uses: ./.github/workflows/test-examples.yaml
+    uses: ./.github/workflows/test-tutorials.yaml
     with:
       build_local_sdk: true # this workflow is meant to test the examples with the local (modified) SDK

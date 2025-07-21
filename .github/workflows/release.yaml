@@ -136,6 +136,8 @@ jobs:
 
   release-solidity-contracts:
     uses: ./.github/workflows/release-solidity-contracts.yaml
+    with:
+      upload: true
 
   release:
     needs: [set-variables, release-charts, release-solidity-contracts]

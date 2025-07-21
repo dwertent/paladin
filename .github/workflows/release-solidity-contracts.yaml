@@ -1,10 +1,32 @@
-name: Publish Solidity Contracts
+name: Upload Solidity Artifacts
 on:
   workflow_call:
+    inputs:
+      upload:
+        required: false
+        type: boolean
+        default: true
+        description: 'Whether to upload the solidity artifacts'
   workflow_dispatch:
+    inputs:
+      upload:
+        required: false
+        type: boolean
+        default: true
+        description: 'Whether to upload the solidity artifacts'
+
+  pull_request:
+    paths:
+      - '.github/workflows/release-solidity-contracts.yaml'
+      - 'solidity/**'
+      - 'domains/zeto/build.gradle'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  publish:
+  upload:
     permissions:
       contents: read
       id-token: write
@@ -18,21 +40,39 @@ jobs:
     - name: Install pre-requisites
       uses: ./.github/actions/setup
 
-    - name: Build
+    - name: Build Solidity Contracts
       working-directory: solidity
       run: ../gradlew build 
 
     - name: Copy Solidity artifacts to contracts directory
+      shell: bash
       run: |
         mkdir -p contracts
         find solidity/artifacts/contracts -type f -name "*.json" ! -name "*.dbg.json" -exec cp {} contracts/ \;
 
+    - name: Download Zeto contracts
+      working-directory: domains/zeto
+      shell: bash
+      run: |
+        # Download zeto contracts (downloads to domains/zeto/tools/zeto-contracts-v0.2.0.tar.gz)
+        ../../gradlew downloadZetoCompiledContracts
+
+        mkdir -p tools/contracts
+
+        # Unzip zeto contracts
+        # TODO: remove hardcoded version from name (should be available after zeto release v0.3.0)
+        tar -xzf tools/zeto-contracts-v0.2.0.tar.gz -C tools/contracts
+
+        # Copy zeto contracts to contracts directory
+        find tools/contracts -type f -name "*.json" ! -name "*.dbg.json" -exec cp {} ../../contracts \;
+    
     - name: Archive ABI directory
       run: |
         tar -czvf abis.tar.gz -C contracts .
 
-    - name: Upload artifacts for inspection (optional)
+    - name: Upload artifacts
       uses: actions/upload-artifact@v4
+      if: ${{ inputs.upload }}
       with:
         name: contracts
         path: abis.tar.gz

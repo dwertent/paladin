@@ -1,11 +1,6 @@
-name: 'Test Examples with SDK'
+name: 'Run the tutorials'
+
 on:
-  push:
-    paths:
-      - 'scripts/**'
-      - 'sdk/typescript/**'
-      - 'example/**'
-      - '.github/workflows/test-rollout.yaml'
   workflow_dispatch: 
     inputs:
       build_local_sdk:
@@ -20,10 +15,6 @@ on:
         required: false
         type: boolean
         default: true
-
-concurrency:
-  group: ${{ github.event.pull_request.number }}
-  cancel-in-progress: true
 
 jobs:
   run-examples:
@@ -85,25 +76,11 @@ jobs:
           mkdir -p contracts
           tar -xzf abis.tar.gz -C contracts/
 
-      - name: Download Zeto contracts
-        run: |
-          # Download the latest stable solidity contracts
-          # curl -L -o zeto-contracts.tar.gz https://github.com/hyperledger-labs/zeto/releases/latest/download/zeto-contracts.tar.gz
-          curl -L -o zeto-contracts.tar.gz https://github.com/hyperledger-labs/zeto/releases/download/v0.2.0/zeto-contracts-v0.2.0.tar.gz
-          
-          mkdir -p contracts
-          tar -xzf zeto-contracts.tar.gz -C contracts/
-
-      - name: Build example/common with published TypeScript SDK
+      - name: Build example/common
         if: ${{ !inputs.build_local_sdk }}
+        working-directory: example/common
         run: |
-          echo "Using published SDK: @lfdecentralizedtrust-labs/paladin-sdk"
-          echo "Latest version: $(npm view @lfdecentralizedtrust-labs/paladin-sdk version)"
-          
-          # Update common utilities to use published SDK
-          cd example/common
-          npm uninstall @lfdecentralizedtrust-labs/paladin-sdk
-          npm install @lfdecentralizedtrust-labs/paladin-sdk@latest
+          npm install
           npm run build
 
       - name: Build example/common with local TypeScript SDK

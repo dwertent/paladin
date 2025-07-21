@@ -1,0 +1,36 @@
+# This workflow tests the examples ensuring they are aligned with the latest SDK
+name: Test Tutorials changes
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
+on:
+  push:
+    # branches:
+    #   - main
+    paths:
+      - 'scripts/**'
+      - 'example/**'
+      - '.github/workflows/on-pr-push-tutorials.yaml'
+  pull_request:
+    paths:
+      - 'scripts/**'
+      - 'example/**'
+      - '.github/workflows/on-pr-push-examples.yaml'
+
+# Ensure this workflow only runs for the most recent commit of a pull-request
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-tutorials:
+    uses: ./.github/workflows/test-tutorials.yaml
+    with:
+      build_local_sdk: false # this workflow is meant to test the examples with the published SDK
+
+  test-sdk: # temporary workflow to test the SDK changes
+    uses: ./.github/workflows/test-tutorials.yaml
+    with:
+      build_local_sdk: true
