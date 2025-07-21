@@ -74,7 +74,7 @@ jobs:
 
       - name: Validate installation
         run: |
-          # Run the validation script with explicit namespace
+          # Run the validation script
           ./scripts/default-installation-validation.sh paladin
 
       - name: Download Solidity contracts
@@ -82,9 +82,17 @@ jobs:
           # Download the latest stable solidity contracts
           curl -L -o abis.tar.gz https://github.com/LF-Decentralized-Trust-labs/paladin/releases/latest/download/abis.tar.gz
           
-          # Extract contracts to a central location
           mkdir -p contracts
           tar -xzf abis.tar.gz -C contracts/
+
+      - name: Download Zeto contracts
+        run: |
+          # Download the latest stable solidity contracts
+          # curl -L -o zeto-contracts.tar.gz https://github.com/hyperledger-labs/zeto/releases/latest/download/zeto-contracts.tar.gz
+          curl -L -o zeto-contracts.tar.gz https://github.com/hyperledger-labs/zeto/releases/download/v0.2.0/zeto-contracts-v0.2.0.tar.gz
+          
+          mkdir -p contracts
+          tar -xzf zeto-contracts.tar.gz -C contracts/
 
       - name: Build example/common with published TypeScript SDK
         if: ${{ !inputs.build_local_sdk }}

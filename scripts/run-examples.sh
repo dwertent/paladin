@@ -63,16 +63,23 @@ run_example() {
         cd ../..
         return 1
     fi
-    
-    # Switch to published SDK if not using local SDK
-    if [ "$USE_PUBLISHED_SDK" = "true" ]; then
-        print_status "Switching to published SDK for $example_name..."
-        npm uninstall @lfdecentralizedtrust-labs/paladin-sdk 2>/dev/null || true
-        npm install @lfdecentralizedtrust-labs/paladin-sdk@latest
-    fi
-    
+
     # Install dependencies
     print_status "Installing dependencies for $example_name..."
+
+    # change private-stablecoin to use the local SDK
+    # TODO: Remove this after release v0.10.0
+    if [ "$example_name" == "private-stablecoin" ]; then
+        print_status "Switching to local SDK for $example_name..."
+        USE_PUBLISHED_SDK=false
+    fi
+
+    if [ "$USE_PUBLISHED_SDK" = "false" ]; then
+        print_status "Switching to local SDK for $example_name..."
+        npm uninstall @lfdecentralizedtrust-labs/paladin-sdk 2>/dev/null || true
+        npm install file:../../sdk/typescript
+    fi
+    
     if ! npm install; then
         print_error "Failed to install dependencies for $example_name"
         cd ../..
@@ -96,7 +103,7 @@ run_example() {
 # Main execution
 main() {
     print_status "Starting Paladin examples execution..."
-    
+
     # Check if we're in the right directory
     if [ ! -d "example" ]; then
         print_error "example directory not found. Please run this script from the paladin root directory."
@@ -121,6 +128,7 @@ main() {
     
     local failed_examples=()
     local successful_examples=()
+    local skipped_examples=()
     
     for example_dir in $examples; do
         example_name=$(basename "$example_dir")
@@ -138,6 +146,8 @@ main() {
         fi
     done
     
+    print_status "USE_PUBLISHED_SDK: $USE_PUBLISHED_SDK"
+
     # Summary
     echo "=========================================="
     print_status "Examples execution summary:"
