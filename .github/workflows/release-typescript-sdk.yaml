@@ -7,18 +7,33 @@ on:
         required: true
     inputs:
       sdk_version:
-        description: 'The version to publish'
+        description: 'The version to publish (e.g. 1.0.0)'
+        required: true
+        type: string
+      sdk_tag:
+        description: 'The tag to publish (e.g. latest, rc, stable)'
         required: true
         type: string
   workflow_dispatch:
     inputs:
       sdk_version:
-        description: 'The version to publish'
+        description: 'The version to publish (e.g. 1.0.0)'
+        required: true
+        type: string
+      sdk_tag:
+        description: 'The tag to publish (e.g. latest, rc, stable)'
         required: true
         type: string
 
 jobs:
+  test:
+    # make sure the released candidate SDK is not breaking the tutorials
+    uses: ./.github/workflows/test-tutorials.yaml
+    with:
+      build_local_abi: false # we are using the published abi
+      build_local_sdk: true # we are using the local sdk
   publish:
+    needs: test
     permissions:
       contents: read
       id-token: write
@@ -53,7 +68,7 @@ jobs:
         run: |
           set -e
           ../../gradlew build
-          npm publish --provenance --access public
+          npm publish --provenance --access public --tag ${{ inputs.sdk_tag }}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           

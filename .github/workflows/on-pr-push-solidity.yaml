@@ -1,0 +1,33 @@
+# This workflow tests the examples ensuring they are aligned with the latest SDK
+name: Test Solidity changes
+permissions:
+  contents: write
+  packages: write
+  id-token: write
+
+on:
+  push:
+    paths:
+      - 'scripts/**'
+      - 'solidity/**'
+      - '.github/workflows/on-pr-push-solidity.yaml'
+      - '.github/workflows/test-tutorials.yaml'
+
+  pull_request:
+    paths:
+      - 'scripts/**'
+      - 'solidity/**'
+      - '.github/workflows/on-pr-push-solidity.yaml'
+      - '.github/workflows/test-tutorials.yaml'
+
+# Ensure this workflow only runs for the most recent commit of a pull-request
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-tutorials:
+    uses: ./.github/workflows/test-tutorials.yaml
+    with:
+      build_local_abi: true
+      build_local_sdk: false

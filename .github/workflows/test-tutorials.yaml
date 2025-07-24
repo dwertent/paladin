@@ -1,0 +1,92 @@
+name: 'Run the tutorials'
+
+on:
+  workflow_dispatch: 
+    inputs:
+      build_local_sdk:
+        description: 'Build local TypeScript SDK instead of using published package'
+        required: false
+        type: boolean
+        default: false
+      build_local_abi:
+        description: 'Build the abi contracts locally'
+        required: false
+        type: boolean
+        default: false
+  workflow_call:
+    inputs:
+      build_local_sdk:
+        description: 'Build local TypeScript SDK instead of using published package'
+        required: false
+        type: boolean
+        default: true
+      build_local_abi:
+        description: 'Build the abi contracts'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  run-tutorials:
+    # here are the steps:
+    # 1. create a cluster with kind
+    # 2. install the helm charts (latest version)
+    # 3. run the tutorials as the user will run them
+        # 3.1. Download the solidity files
+        # 3.2. Run the tutorials
+    # 7. destroy the cluster
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Kind
+        uses: helm/kind-action@v1
+        with:
+          install_only: true # only install kind, the cluster creation is managed by the next step
+          ignore_failed_clean: true
+
+      - name: Create cluster
+        run: |
+          # Download the kind configuration
+          curl https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/paladin/refs/heads/main/operator/paladin-kind.yaml -L -O
+          
+          # Create the cluster
+          kind create cluster --name paladin --config paladin-kind.yaml
+          
+          # Wait for cluster to be ready
+          kubectl wait --for=condition=Ready nodes --all --timeout=300s
+
+      - name: Install latest Paladin charts
+        run: |
+          # Step 1: Install the CRD Chart
+          helm repo add paladin https://LF-Decentralized-Trust-labs.github.io/paladin --force-update
+          helm upgrade --install paladin-crds paladin/paladin-operator-crd
+          
+          # Step 2: Install cert-manager CRDs
+          helm repo add jetstack https://charts.jetstack.io --force-update
+          helm install cert-manager --namespace cert-manager --version v1.16.1 jetstack/cert-manager --create-namespace --set crds.enabled=true
+          
+          # Wait for cert-manager to be ready
+          kubectl wait --for=condition=Ready pods --all -n cert-manager --timeout=300s
+          
+          # Step 3: Install the Paladin Operator Chart
+          helm upgrade --install paladin paladin/paladin-operator -n paladin --create-namespace
+
+      - name: Validate installation
+        run: |
+          # Run the validation script
+          ./scripts/default-installation-validation.sh paladin
+
+      - name: Run all tutorials
+        env:
+          BUILD_PALADIN_SDK: ${{ inputs.build_local_sdk }}
+          BUILD_PALADIN_ABI: ${{ inputs.build_local_abi }}
+        run: |
+          # Run the tutorials script
+          ./scripts/run-tutorials.sh
+
+      - name: Cleanup cluster
+        if: always()
+        run: |
+          kind delete cluster --name paladin
