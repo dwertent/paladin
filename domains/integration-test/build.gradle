@@ -110,8 +110,7 @@ task test(type: Exec, dependsOn: [":core:go:makeMocks", copySolidity]) {
     args '-v'
     args '-cover'
     args '-covermode=atomic'
-    args '-timeout=480s'  // Reduced from 480s to 240s (4 minutes)
-    args '-parallel=4'    // Enable parallel test execution
+    args '-timeout=480s'
     args "-test.gocoverdir=${projectDir}/coverage"
 
     // Only start test infrastructure if not already running
@@ -122,11 +121,6 @@ task test(type: Exec, dependsOn: [":core:go:makeMocks", copySolidity]) {
     // This allows other tasks to run while this one is executing
     outputs.cacheIf { true }
     
-    // Allow this task to run in parallel with other tasks
-    // This prevents it from blocking the entire build
-    doFirst {
-        println "Starting integration tests (timeout: 240s, parallel: 4)"
-    }
 }
 
 task build {
