@@ -1,10 +1,10 @@
 paladin:
   nodeNamePrefix: worker
-  baseNodePort: 39548
+  baseNodePort: 30448
 
 besu:
   nodeNamePrefix: evm
-  baseNodePort: 39545
+  baseNodePort: 30445
 
 nodeCount: 2
 besuNodeCount: 1
