@@ -1,4 +1,5 @@
-import { ITransactionReceipt, PaladinClient } from "@lfdecentralizedtrust-labs/paladin-sdk";
+import { ITransactionReceipt } from "@lfdecentralizedtrust-labs/paladin-sdk";
+import PaladinClient from "@lfdecentralizedtrust-labs/paladin-sdk";
 
 const logger = console;
 
