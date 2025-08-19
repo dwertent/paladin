@@ -51,7 +51,7 @@ dependencies {
 }
 
 ext {
-    clusterName = project.hasProperty('clusterName') ? project.clusterName : 'paladin' 
+    clusterName = project.hasProperty('clusterName') ? project.clusterName : 'paladin'
     namespace = project.hasProperty('namespace') ? project.namespace : 'default' // Default namespace is 'default'
     deleteCluster = project.hasProperty('deleteCluster') ? project.deleteCluster.toBoolean() : false // delete the kind cluster after the run. Default is false.
     uninstallChart = project.hasProperty('uninstallChart') ? project.uninstallChart.toBoolean() : false // uninstall paladin chart after the run. Default is false.
@@ -65,6 +65,8 @@ ext {
     paladinImageTag = project.hasProperty('paladinImageTag') ? project.paladinImageTag : 'test'
 
     artifactDir = project.hasProperty('artifactDir') ? project.artifactDir : 'artifacts'
+
+    dumpLogsOnFailure = project.hasProperty('dumpLogsOnFailure') ? project.dumpLogsOnFailure.toBoolean() : false
 }
 
 def printClusterStatus(String namespace) {
@@ -79,12 +81,27 @@ def printClusterStatus(String namespace) {
     getOperatorPodProcess.waitFor()
 } 
 
+def dumpLogs(String paladinNamespace, String besuNamespace, String failureContext) {
+    if (!dumpLogsOnFailure) {
+        println "Log dumping is disabled. Set -PdumpLogsOnFailure=true to enable."
+        return
+    }
+    println "Dumping logs and diagnostic information due to failure in: ${failureContext}"
+    def script = new File(new File(project.rootDir, "scripts"), "dump-logs.sh")
+    if (!script.exists()) {
+        println "Error: dump-logs.sh script not found!"
+        return
+    }
 
-def restartOperator(String namespace) {
-    def restartCommand = ["kubectl", "rollout", "restart", "deployment", "paladin-operator", "-n", namespace]
-    def restart = restartCommand.execute()
-    restart.waitFor()
-} 
+    def command = [script.absolutePath, failureContext, paladinNamespace, besuNamespace]
+    def process = command.execute(null, project.projectDir)
+    // Stream the script's output to the Gradle console
+    process.waitForProcessOutput(System.out, System.err)
+    if (process.exitValue() != 0) {
+        println "Warning: Log dumping script failed with exit code ${process.exitValue()}"
+    }
+}
+
 
 def verifyResourceCreated(String namespace, String resourceType, String resourceName, String desiredReplicas = "1", int timeoutSeconds = 60) {
     def startTime = System.currentTimeMillis()
@@ -111,7 +128,7 @@ def verifyResourceCreated(String namespace, String resourceType, String resource
         println "${resourceType} ${resourceName} in namespace ${namespace} is ready with ${desiredReplicas} replicas. Time: ${((System.currentTimeMillis() - startTime) / 1000.0)} seconds."
     }
 }
- 
+
 def waitForAllRegistriesPublished(String namespace, int timeoutSeconds = 240) {
     def startTime = System.currentTimeMillis()
     def endTime = startTime + (timeoutSeconds * 1000)
@@ -190,7 +207,7 @@ def waitForAllSuccess(String namespace, String kind, int timeoutSeconds = 180) {
                 def status = columns[1]
                 if (status != "Success") {
                     allSuccess = false
-                }  
+                }
             } else {
                 allSuccess = false
             }
@@ -386,54 +403,66 @@ task helmUnitTest(type: Exec, dependsOn: [prepareOperatorChart]) {
 // Task to install the operator using Helm
 task installOperatorDefault(dependsOn: [installCrds, promoteKindImages, helmUnitTest]) {
     doLast {
-        installOperator(namespace, 'charts/paladin-operator/values.yaml')
-        
-        println 'Waiting for operator deployment to become ready...'
-        waitForOperatorRunning(namespace)
-        
-        println 'Waiting for besu statefulSets to become ready...'
-        waitForBesuRunning(namespace, 3, "node")
-        
-        println 'Waiting for paladin statefulSets to become ready...'
-        waitForPaladinRunning(namespace, 3, "node")
-        
-        println 'Verifying all scd resources have status "Success"...'
-        waitForAllSuccess(namespace, "scd", 120)
-        
-        println 'Verifying all txn resources have status "Success"...'
-        waitForAllSuccess(namespace, "txn", 60)
-        
-        println 'Verifying all registries are published...'
-        waitForAllRegistriesPublished(namespace, 120)
+        try {
+            installOperator(namespace, 'charts/paladin-operator/values.yaml')
+            
+            println 'Waiting for operator deployment to become ready...'
+            waitForOperatorRunning(namespace)
+            
+            println 'Waiting for besu statefulSets to become ready...'
+            waitForBesuRunning(namespace, 3, "node")
+            
+            println 'Waiting for paladin statefulSets to become ready...'
+            waitForPaladinRunning(namespace, 3, "node")
+            
+            println 'Verifying all scd resources have status "Success"...'
+            waitForAllSuccess(namespace, "scd", 120)
+            
+            println 'Verifying all txn resources have status "Success"...'
+            waitForAllSuccess(namespace, "txn", 60)
+            
+            println 'Verifying all registries are published...'
+            waitForAllRegistriesPublished(namespace, 120)
 
-        printClusterStatus(namespace)
+            printClusterStatus(namespace)
+        } catch (Exception e) {
+            dumpLogs("default-installation", namespace, namespace)
+            throw e // Rethrow to fail the build
+        }
     }
 }
 
 task installOperatorDevnet(dependsOn: [installCrds, promoteKindImages, prepareOperatorChart]) {
     doLast {
         def namespace = "ci-devnet"
-        installOperator(namespace, 'charts/paladin-operator/ci/values-devnet.yaml')
         
-        println 'Waiting for operator deployment to become ready...'
-        waitForOperatorRunning(namespace)
-        
-        println 'Waiting for besu statefulSets to become ready...'
-        waitForBesuRunning(namespace, 1, "evm")
-        
-        println 'Waiting for paladin statefulSets to become ready...'
-        waitForPaladinRunning(namespace, 2, "worker")
-        
-        println 'Verifying all scd resources have status "Success"...'
-        waitForAllSuccess(namespace, "scd", 120)
-        
-        println 'Verifying all txn resources have status "Success"...'
-        waitForAllSuccess(namespace, "txn", 60)
-        
-        println 'Verifying all registries are published...'
-        waitForAllRegistriesPublished(namespace, 120)
+        try {
+            installOperator(namespace, 'charts/paladin-operator/ci/values-devnet.yaml')
+            
+            println 'Waiting for operator deployment to become ready...'
+            waitForOperatorRunning(namespace)
+            
+            println 'Waiting for besu statefulSets to become ready...'
+            waitForBesuRunning(namespace, 1, "evm")
+            
+            println 'Waiting for paladin statefulSets to become ready...'
+            waitForPaladinRunning(namespace, 2, "worker")
+            
+            println 'Verifying all scd resources have status "Success"...'
+            waitForAllSuccess(namespace, "scd", 120)
+            
+            println 'Verifying all txn resources have status "Success"...'
+            waitForAllSuccess(namespace, "txn", 60)
+            
+            println 'Verifying all registries are published...'
+            waitForAllRegistriesPublished(namespace, 120)
 
-        printClusterStatus(namespace)
+            printClusterStatus(namespace)
+            
+        } catch (Exception e) {
+            dumpLogs("ci-devnet", namespace, namespace)
+            throw e // Rethrow to fail the build
+        }
     }
 }
 
