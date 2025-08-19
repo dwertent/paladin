@@ -325,9 +325,7 @@ task unitTestPostgres(type: UnitTests, dependsOn: [
         goGet,
     ]) {
     args '-tags', "testdbpostgres"
-    // Only start test infrastructure if not already running
     dependsOn ':testinfra:startTestInfra'
-    // Remove sequential dependency - these can run in parallel with different databases
 }
 
 task componentTestSQLite(type: ComponentTest, dependsOn: [
@@ -336,9 +334,7 @@ task componentTestSQLite(type: ComponentTest, dependsOn: [
         goGet,
         copyContracts, // Ensure this task depends on copying the test contracts
     ]) {
-    // Only start test infrastructure if not already running
     dependsOn ':testinfra:startTestInfra'
-    // Remove sequential dependency - these can run in parallel
 }
 
 task buildCoverageTxt(type: Exec, dependsOn: [
