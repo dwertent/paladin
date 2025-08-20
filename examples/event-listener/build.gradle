@@ -86,13 +86,15 @@ task start(type: Exec, dependsOn: [build]) {
 }
 
 task e2e(type: Exec, dependsOn: [start]) {
-
     executable 'npm'
     args 'run'
     args 'verify'
 }
 
-task ci(dependsOn: [e2e]) {}
+task ci(dependsOn: [e2e]) {
+    // Use the centralized CI configuration from the root project
+    rootProject.helpers.wrapCI(project, "event-listener-example")
+}
 
 task clean(type: Delete) {
     delete 'node_modules'
