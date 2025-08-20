@@ -478,6 +478,9 @@ task clean {
 // The 'e2e' task runs the whole flow.
 task e2e(type: Exec, dependsOn: [deploy]) {
 
+    // Use the centralized CI configuration to handle failures and dump logs
+    project.helpers.wrapCI(this, "e2e", namespace, namespace)
+
     inputs.files(configurations.toolkitGo)
     inputs.files(configurations.notoGo)
     inputs.files(configurations.zetoGo)
@@ -494,7 +497,7 @@ task e2e(type: Exec, dependsOn: [deploy]) {
 }
  
 // The CI task runs the different CI permutations of the chart installation
-task ci() {
+task ci() {    
     doFirst {
         project.ext.uninstallChart = true // no need for the chart to run after the tests
         project.ext.deleteCluster = false // deleting the cluster can effect other CI flows
