@@ -67,7 +67,7 @@ ext.helpers = [
     
     dumpChartInfo: { task, taskName, paladinNamespace="default", besuNamespace="default" ->
         // Helper to wrap any task with automatic log dumping on failure
-        def dumpLogsEnabled = project.hasProperty('dumpChartInfoFailure') ? project.dumpChartInfoFailure.toBoolean() : false
+        def dumpChartInfoOnFailure = project.hasProperty('dumpChartInfoOnFailure') ? project.dumpChartInfoOnFailure.toBoolean() : false
         
         // Find the task to wrap
         def targetTask = project.tasks.findByName(taskName)
@@ -79,8 +79,8 @@ ext.helpers = [
                     println "Task '${taskName}' failed with exit code ${execResult.exitValue}. Dumping logs..."
                     
                     // Check if log dumping is enabled
-                    if (!dumpChartInfoFailure) {
-                        println "Log dumping is disabled. Set -PdumpChartInfoFailure=true to enable."
+                    if (!dumpChartInfoOnFailure) {
+                        println "Log dumping is disabled. Set -PdumpChartInfoOnFailure=true to enable."
                     } else {
                         println "Dumping logs and diagnostic information for '${taskName}'"
                         def script = new File(new File(project.rootProject.projectDir, "scripts"), "dump-logs.sh")

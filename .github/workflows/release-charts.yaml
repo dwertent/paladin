@@ -143,7 +143,7 @@ jobs:
             -PoperatorImageTag=${{ inputs.images_tag }} \
             -PpaladinImageName=${{ env.IMG_PALADIN }} \
             -PpaladinImageTag=${{ inputs.images_tag }} \
-            -PdumpChartInfoFailure=true
+            -PdumpChartInfoOnFailure=true
             
       - name: Upload Diagnostic Logs on Failure
         if: failure()

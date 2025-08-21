@@ -94,12 +94,13 @@ jobs:
             -PoperatorImageTag=${{ inputs.operator-image-tag }} \
             -PpaladinImageName=${{ inputs.paladin-image }} \
             -PpaladinImageTag=${{ inputs.paladin-image-tag }} \
-            -PdumpChartInfoFailure=true
+            -PdumpChartInfoOnFailure=true
 
       - name: List files in dump-logs
+        shell: bash
         run: |
           ls -la 
-          ls -la dump-*
+          ls -la dump-*/
 
       - name: Upload Diagnostic Logs on Failure
         if: failure()
