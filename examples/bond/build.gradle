@@ -80,22 +80,25 @@ task build(type: Exec, dependsOn: [install, copyABI]) {
 
 task start(type: Exec, dependsOn: [build]) {
     dependsOn ':operator:e2e'
-
+    
     executable 'npm'
     args 'run'
     args 'start'
+
+    // Apply the log dumping configuration
+    rootProject.helpers.dumpChartInfo(it, "start")
 }
 
 task e2e(type: Exec, dependsOn: [start]) {
-
     executable 'npm'
     args 'run'
     args 'verify'
+
+    // Apply the log dumping configuration
+    rootProject.helpers.dumpChartInfo(it, "e2e")
 }
 
 task ci(dependsOn: [e2e]) {
-    // Use the centralized helper to set up CI with automatic log dumping
-    project.helpers.wrapCI(this, "bond-example")
 }
 
 task clean(type: Delete) {

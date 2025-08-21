@@ -83,17 +83,19 @@ task start(type: Exec, dependsOn: [build]) {
     executable 'npm'
     args 'run'
     args 'start'
+
+    rootProject.helpers.dumpChartInfo(it, "start", "default", "default")
 }
 
 task e2e(type: Exec, dependsOn: [start]) {
     executable 'npm'
     args 'run'
     args 'verify'
+
+    rootProject.helpers.dumpChartInfo(it, "e2e", "default", "default")
 }
 
 task ci(dependsOn: [e2e]) {
-    // Use the centralized CI configuration from the root project
-    rootProject.helpers.wrapCI(project, "event-listener-example")
 }
 
 task clean(type: Delete) {
