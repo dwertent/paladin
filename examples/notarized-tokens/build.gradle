@@ -29,6 +29,10 @@ dependencies {
     buildSDK project(path: ':sdk:typescript', configuration: 'buildSDK')
 }
 
+ext {
+    namespace = project.hasProperty('namespace') ? project.namespace : 'default' // Default namespace is 'default'
+}
+
 task install_sdk(type: Exec) {
     executable 'npm'
     args 'install' 

@@ -30,6 +30,10 @@ dependencies {
     buildCommon project(path: ':examples:common', configuration: 'buildCommon')
 }
 
+ext {
+    namespace = project.hasProperty('namespace') ? project.namespace : 'default' // Default namespace is 'default'
+}
+
 task copyContracts(type: Copy, dependsOn: [":domains:zeto:extractZetoArtifacts"]) {
     from fileTree("../../domains/zeto/zkp/artifacts/contracts") {
         include '**/SampleERC20.json'
