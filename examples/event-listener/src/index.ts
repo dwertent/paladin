@@ -23,7 +23,7 @@ async function main(): Promise<boolean> {
   
   logger.log("Initializing Paladin client from the environment configuration...");
   const paladin = new PaladinClient(nodeConnections[0].clientOptions);
-  const [verifierNode1] = paladin.getVerifiers(`member@${nodeConnections[0].id}`);
+  const [verifierNode1] = paladin.getVerifiers(`group_member@${nodeConnections[0].id}`);
 
   // Create a privacy group for Node1 alone
   logger.log("Creating a privacy group for Node1...");
