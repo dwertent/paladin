@@ -97,6 +97,7 @@ jobs:
             -PdumpChartInfoOnFailure=true
 
       - name: List files in dump-logs
+        if: failure()
         shell: bash
         run: |
           ls -la 
