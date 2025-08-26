@@ -76,21 +76,22 @@ task build(type: Exec, dependsOn: [install, copyABI]) {
 
 task start(type: Exec, dependsOn: [build]) {
     dependsOn ':operator:e2e'
-    
+
     executable 'npm'
     args 'run'
     args 'start'
 
-    rootProject.helpers.dumpChartInfo(it, "start")
+    rootProject.helpers.dumpChartInfo(it, "start", namespace, namespace)
+    rootProject.helpers.lockResource(it, "examples-lock")
 }
 
 task e2e(type: Exec, dependsOn: [start]) {
-
     executable 'npm'
     args 'run'
     args 'verify'
 
-    rootProject.helpers.dumpChartInfo(it, "e2e")
+    rootProject.helpers.dumpChartInfo(it, "e2e", namespace, namespace)
+    rootProject.helpers.lockResource(it, "examples-lock")
 }
 
 task ci(dependsOn: [e2e]) {
