@@ -469,6 +469,10 @@ task cleanCluster(type: Exec) {
 }
 
 task clean {
+    doFirst {
+        uninstallOperator("ci-devnet")
+        uninstallOperator("default")
+    }
     dependsOn cleanCluster
     delete 'test/e2e/abis'
     delete 'charts/paladin-operator/templates/samples'
