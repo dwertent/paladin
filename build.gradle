@@ -205,27 +205,8 @@ allprojects {
             exceptionFormat = 'full'
         }
     }
-    
-    // Enable parallel execution for Exec tasks where possible
-    tasks.withType(Exec) {
-        // Allow parallel execution for most exec tasks
-        if (name.contains('lint') || name.contains('test') || name.contains('build')) {
-            // These tasks can run in parallel
-        }
-    }
 }
-
-// Configure parallel execution for Go tasks
-subprojects { subproject ->
-    if (subproject.plugins.hasPlugin('org.gradle.native')) {
-        subproject.tasks.withType(Exec) {
-            // Enable parallel execution for Go tasks where possible
-            if (name.contains('test') || name.contains('build')) {
-                // Allow parallel execution for test and build tasks
-            }
-        }
-    }
-}
+ 
 
 // Optimize task execution order
 tasks.withType(Test) {
