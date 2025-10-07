@@ -15,12 +15,12 @@
 import PaladinClient, {
   PenteFactory,
 } from "@lfdecentralizedtrust-labs/paladin-sdk";
-import { checkDeploy } from "paladin-example-common";
+import { checkDeploy, DEFAULT_POLL_TIMEOUT } from "paladin-example-common";
 import storageJson from "./abis/Storage.json";
 import { PrivateStorage } from "./helpers/storage";
 import * as fs from 'fs';
 import * as path from 'path';
-import { nodeConnections } from "paladin-example-common";
+import { nodeConnections, getCachePath } from "paladin-example-common";
 
 const logger = console;
 
@@ -46,7 +46,7 @@ async function main(): Promise<boolean> {
     members: [verifierNode1, verifierNode2],
     evmVersion: "shanghai",
     externalCallsEnabled: true,
-  }).waitForDeploy();
+  }).waitForDeploy(DEFAULT_POLL_TIMEOUT);
   if (!checkDeploy(memberPrivacyGroup)) return false;
 
   logger.log(`Privacy group created, ID: ${memberPrivacyGroup?.group.id}`);
@@ -57,7 +57,7 @@ async function main(): Promise<boolean> {
     abi: storageJson.abi,
     bytecode: storageJson.bytecode,
     from: verifierNode1.lookup,
-  }).waitForDeploy();
+  }).waitForDeploy(DEFAULT_POLL_TIMEOUT);
   if (!contractAddress) {
     logger.error("Failed to deploy the contract. No address returned.");
     return false;
@@ -78,7 +78,7 @@ async function main(): Promise<boolean> {
     from: verifierNode1.lookup,
     function: "store",
     data: { num: valueToStore },
-  }).waitForReceipt(10000);
+  }).waitForReceipt(DEFAULT_POLL_TIMEOUT);
   
   // Validate store transaction was successful
   if (!storeReceipt?.success) {
@@ -161,7 +161,7 @@ async function main(): Promise<boolean> {
   };
 
   // Use command-line argument for data directory if provided, otherwise use default
-  const dataDir = process.argv[2] || path.join(__dirname, '..', 'data');
+  const dataDir = getCachePath();
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true });
   }

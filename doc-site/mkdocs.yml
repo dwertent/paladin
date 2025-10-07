@@ -117,7 +117,6 @@ nav:
       - Advanced Installation: getting-started/installation-advanced.md
       - Manual Installation: getting-started/installation-manual.md
     - User Interface: getting-started/user-interface.md
-    - L1 and L2 Chains: getting-started/l1-and-l2-chains.md
     - Troubleshooting: getting-started/troubleshooting.md
   - Tutorials:
     - Introduction: tutorials/index.md
@@ -133,6 +132,7 @@ nav:
     - Certificate Management: guides/certificate_management.md
     - Administering Peers: guides/administering_peers.md
     - L1 and L2 Chains: guides/l1-and-l2-chains.md
+    - Logging: guides/logging.md
   - Reference:
     - APIs: reference/apis/*.md
     - Types: reference/types/*.md
