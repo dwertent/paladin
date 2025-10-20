@@ -606,6 +606,50 @@ func TestSendTransactionGroupGetContractFail(t *testing.T) {
 
 }
 
+func TestSendTransactionFromNotMember(t *testing.T) {
+
+	ctx, gm, mc, done := newTestGroupManager(t, false, &pldconf.GroupManagerConfig{}, mockEmptyMessageListeners)
+	defer done()
+
+	schemaID := pldtypes.RandBytes32()
+	groupID := pldtypes.RandBytes(32)
+	contractAddr := pldtypes.RandAddress()
+	// Group members do NOT include the from identity we will use
+	mockDBPrivacyGroup(mc, schemaID, groupID, contractAddr, "me@node1", "you@node2")
+
+	_, err := gm.SendTransaction(ctx, gm.p.NOTX(), &pldapi.PrivacyGroupEVMTXInput{
+		Domain: "domain1",
+		Group:  groupID,
+		PrivacyGroupEVMTX: pldapi.PrivacyGroupEVMTX{
+			From: "them@node1",
+		},
+	})
+	require.Regexp(t, "PD012524", err)
+
+}
+
+func TestCallFromNotMember(t *testing.T) {
+
+	ctx, gm, mc, done := newTestGroupManager(t, false, &pldconf.GroupManagerConfig{}, mockEmptyMessageListeners)
+	defer done()
+
+	schemaID := pldtypes.RandBytes32()
+	groupID := pldtypes.RandBytes(32)
+	contractAddr := pldtypes.RandAddress()
+	mockDBPrivacyGroup(mc, schemaID, groupID, contractAddr, "me@node1", "you@node2")
+
+	var res any
+	err := gm.Call(ctx, gm.p.NOTX(), &res, &pldapi.PrivacyGroupEVMCall{
+		Domain: "domain1",
+		Group:  groupID,
+		PrivacyGroupEVMTX: pldapi.PrivacyGroupEVMTX{
+			From: "someone@node1",
+		},
+	})
+	require.Regexp(t, "PD012524", err)
+
+}
+
 func TestSendTransactionSendPreparedTx(t *testing.T) {
 
 	ctx, gm, mc, done := newTestGroupManager(t, false, &pldconf.GroupManagerConfig{}, mockEmptyMessageListeners)

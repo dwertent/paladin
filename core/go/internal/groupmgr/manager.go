@@ -514,6 +514,20 @@ func (gm *groupManager) prepareTransaction(ctx context.Context, dbTX persistence
 		return nil, i18n.NewError(ctx, msgs.MsgPGroupsNotReady, groupID, pg.GenesisTransaction)
 	}
 
+	// Validate that the from identity is a member of the privacy group
+	if pgTX.From != "" {
+		isMember := false
+		for _, member := range pg.Members {
+			if member == pgTX.From {
+				isMember = true
+				break
+			}
+		}
+		if !isMember {
+			return nil, i18n.NewError(ctx, msgs.MsgPGroupsFromNotMember, pgTX.From, pg.ID)
+		}
+	}
+
 	// Get the domain smart contract object from domain mgr
 	psc, err := gm.domainManager.GetSmartContractByAddress(ctx, dbTX, *pg.ContractAddress)
 	if err != nil {
