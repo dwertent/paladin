@@ -173,9 +173,10 @@ async function main(): Promise<boolean> {
     retrievedValueNode1: retrievedValueNode1["value"],
     retrievedValueNode2: retrievedValueNode2["value"],
     storeTransactionHash: storeReceipt?.transactionHash,
-    node1Verifier: memberNode1.lookup,
-    node2Verifier: memberNode2.lookup,
-    node3Verifier: outsiderNode3.lookup,
+    memberAtNode1Verifier: memberNode1.lookup,
+    memberAtNode2Verifier: memberNode2.lookup,
+    outsiderAtNode1Verifier: outsiderNode1.lookup,
+    outsideAtNode3Verifier: outsiderNode3.lookup,
     timestamp: new Date().toISOString()
   };
 
