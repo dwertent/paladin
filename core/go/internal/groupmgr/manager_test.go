@@ -650,6 +650,35 @@ func TestCallFromNotMember(t *testing.T) {
 
 }
 
+func TestSendTransactionFromValidMemberUnqualified(t *testing.T) {
+
+	ctx, gm, mc, done := newTestGroupManager(t, false, &pldconf.GroupManagerConfig{}, mockEmptyMessageListeners)
+	defer done()
+
+	schemaID := pldtypes.RandBytes32()
+	groupID := pldtypes.RandBytes(32)
+	contractAddr := pldtypes.RandAddress()
+	// Group members include "me@node1" - we'll test with unqualified "me"
+	mockDBPrivacyGroup(mc, schemaID, groupID, contractAddr, "me@node1", "you@node2")
+
+	psc := componentsmocks.NewDomainSmartContract(t)
+	mc.domainManager.On("GetSmartContractByAddress", mock.Anything, mock.Anything, *contractAddr).Return(psc, nil)
+
+	psc.On("WrapPrivacyGroupEVMTX", mock.Anything, mock.Anything, mock.Anything, mock.Anything).Return(&pldapi.TransactionInput{}, nil)
+	mc.txManager.On("SendTransactions", mock.Anything, mock.Anything, mock.Anything).Return(nil, fmt.Errorf("pop"))
+
+	_, err := gm.SendTransaction(ctx, gm.p.NOTX(), &pldapi.PrivacyGroupEVMTXInput{
+		Domain: "domain1",
+		Group:  groupID,
+		PrivacyGroupEVMTX: pldapi.PrivacyGroupEVMTX{
+			From: "me", // Unqualified identity - should be resolved to "me@node1" and match
+		},
+	})
+	// Should pass membership validation and fail at transaction sending (which is expected)
+	require.Regexp(t, "pop", err)
+
+}
+
 func TestSendTransactionSendPreparedTx(t *testing.T) {
 
 	ctx, gm, mc, done := newTestGroupManager(t, false, &pldconf.GroupManagerConfig{}, mockEmptyMessageListeners)

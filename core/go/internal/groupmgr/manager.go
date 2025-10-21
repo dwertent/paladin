@@ -516,16 +516,24 @@ func (gm *groupManager) prepareTransaction(ctx context.Context, dbTX persistence
 
 	// Validate that the from identity is a member of the privacy group
 	if pgTX.From != "" {
+		// Resolve the from identity to fully qualified form
+		identifier, node, err := pldtypes.PrivateIdentityLocator(pgTX.From).Validate(ctx, gm.transportManager.LocalNodeName(), false)
+		if err != nil {
+			return nil, i18n.WrapError(ctx, err, msgs.MsgTxMgrPublicSenderNotValidLocal, pgTX.From)
+		}
+		fullyQualifiedFrom := fmt.Sprintf("%s@%s", identifier, node)
+
 		isMember := false
 		for _, member := range pg.Members {
-			if member == pgTX.From {
+			if member == fullyQualifiedFrom {
 				isMember = true
 				break
 			}
 		}
 		if !isMember {
-			return nil, i18n.NewError(ctx, msgs.MsgPGroupsFromNotMember, pgTX.From, pg.ID)
+			return nil, i18n.NewError(ctx, msgs.MsgPGroupsFromNotMember, fullyQualifiedFrom, pg.ID)
 		}
+		pgTX.From = fullyQualifiedFrom
 	}
 
 	// Get the domain smart contract object from domain mgr
