@@ -413,7 +413,7 @@ func (g *ConfigDocGenerator) writeConfigFieldsWithPathAndLinks(ctx context.Conte
 		}
 
 		// Write the table row with Key | Description | Type | Default format
-		buf.WriteString(fmt.Sprintf("| %s | %s | %s | %s |\n", jsonFieldName, description, fieldTypeStr, defaultValue))
+		fmt.Fprintf(buf, "| %s | %s | %s | %s |\n", jsonFieldName, description, fieldTypeStr, defaultValue)
 	}
 }
 
