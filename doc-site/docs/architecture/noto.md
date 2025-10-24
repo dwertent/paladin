@@ -485,7 +485,7 @@ Outputs:
 
 ## Notary logic
 
-The notary logic (implemented in the domain [Go library](../../../domains/noto)) is responsible for validating and
+The notary logic (implemented in the domain [Go library](https://github.com/LF-Decentralized-Trust-labs/paladin/tree/main/domains/noto)) is responsible for validating and
 submitting all transactions to the base shared ledger.
 
 The notary will validate the following:
