@@ -134,7 +134,7 @@ async function main(): Promise<boolean> {
     // Attempt to retrieve the value as outsider@node1 (non-member on same node as a member)
     try {
       logger.log("outsider@node1 attempting to retrieve the value...");
-      await privateStorageContract.using(paladinNode3).call({
+      await privateStorageContract.using(paladinNode1).call({
         from: outsiderNode1.lookup,
         function: "retrieve",
       });
