@@ -1,4 +1,4 @@
-## Adding New Configuration Properties
+## Adding new configuration properties
 
 ### 1. Define the property
 
@@ -14,7 +14,7 @@ type DBConfig struct {
 
 `PaladinConfig` in [`config.go`](./pkg/pldconf/config.go) is the root of the Paladin configuration struct.
 
-### 2. Add Default Values if needed
+### 2. Add default values if needed
 
 Define default values inside the `PaladinConfigDefaults` variable:
 
@@ -40,7 +40,7 @@ var PaladinConfigMapStructDefaults = map[string]any{
 }
 ```
 
-### 3. Add Internationalized Descriptions
+### 3. Add internationalized descriptions
 
 Add message keys for field descriptions in [`common/go/pkg/pldmsgs/en_descriptions.go`](../../common/go/pkg/pldmsgs/en_descriptions.go):
 
@@ -51,7 +51,7 @@ DBConfigPostgres = pdm("DBConfig.postgres", "PostgreSQL configuration")
 DBConfigSQLite   = pdm("DBConfig.sqlite", "SQLite configuration")
 ```
 
-### 4. Generate Documentation
+### 4. Generate documentation
 
 Run the documentation generation:
 
