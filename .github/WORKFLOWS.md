@@ -14,7 +14,7 @@ When a developer opens a PR, several automated checks are triggered to validate 
     > **Note:** Charts are **not published** but tested locally.
 
 - **[Test Examples](workflows/on-pr-push-examples.yaml):**
-  - **Status:** [![Test Examples](https://github.com/LF-Decentralized-Trust-labs/paladin/actions/workflows/on-pr-push-examples.yaml/badge.svg?branch=main)](https://github.com/LF-Decentralized-Trust-labs/paladin/actions/workflows/on-pr-push-examples.yaml)
+  - **Status:** [![Test Examples](https://github.com/LFDT-Paladin/paladin/actions/workflows/on-pr-push-examples.yaml/badge.svg?branch=main)](https://github.com/LFDT-Paladin/paladin/actions/workflows/on-pr-push-examples.yaml)
   - **Trigger:** Runs on pushes and pull requests to `main` that modify files under `examples/**`.
   - **Purpose:** Validates that example changes don't break existing functionality by running them against both the latest published and local versions of the SDK and contracts.
   - **Key Steps:**
@@ -56,7 +56,7 @@ Once changes are merged into the `main` branch, workflows prepare the project fo
 ## Release Time
 Paladin follows a two-stage release process to ensure quality and stability:
 
-### [Stage 1: Release Candidate (RC)](https://github.com/LF-Decentralized-Trust-labs/paladin/actions/workflows/release-candidate.yaml)
+### [Stage 1: Release Candidate (RC)](https://github.com/LFDT-Paladin/paladin/actions/workflows/release-candidate.yaml)
 Release candidates are created first for testing and validation:
 
 - **[Release Candidate Workflow](workflows/release-candidate.yaml):**  
@@ -75,7 +75,7 @@ Release candidates are created first for testing and validation:
     Packages contract ABIs and deployment artifacts for distribution.
   - **GitHub Release:** Creates a pre-release with all artifacts
  
-### [Stage 2: Final Release](https://github.com/LF-Decentralized-Trust-labs/paladin/actions/workflows/release.yaml)
+### [Stage 2: Final Release](https://github.com/LFDT-Paladin/paladin/actions/workflows/release.yaml)
 Once the RC has been tested and validated, the final release can be created:
 
 - **[Release Orchestrator](workflows/release.yaml):**  
@@ -105,14 +105,14 @@ Once the RC has been tested and validated, the final release can be created:
 Follow these steps to create a new Paladin release:
 
 #### Step 1: Create a Release Candidate
-1. Go to **[Actions → Release Candidate](https://github.com/LF-Decentralized-Trust-labs/paladin/actions/workflows/release-candidate.yaml)**
+1. Go to **[Actions → Release Candidate](https://github.com/LFDT-Paladin/paladin/actions/workflows/release-candidate.yaml)**
 2. Click **"Run workflow"**
 3. Enter the RC tag (e.g., `v1.2.3-rc.1`)
 4. Click **"Run workflow"**
 5. Wait for the workflow to complete and test the RC thoroughly
 
 #### Step 2: Create the Final Release
-1. Go to **[Actions → Release](https://github.com/LF-Decentralized-Trust-labs/paladin/actions/workflows/release.yaml)**
+1. Go to **[Actions → Release](https://github.com/LFDT-Paladin/paladin/actions/workflows/release.yaml)**
 2. Click **"Run workflow"**
 3. Fill in the required fields:
    - **tag**: Final release version (e.g., `v1.2.3`)
@@ -142,7 +142,7 @@ Paladin includes a manual workflow for pushing Docker images to both DockerHub a
 
 ### How to Run
 
-1. Navigate to **Actions → [Image Release](https://github.com/LF-Decentralized-Trust-labs/paladin/actions/workflows/release-images.yaml)**.
+1. Navigate to **Actions → [Image Release](https://github.com/LFDT-Paladin/paladin/actions/workflows/release-images.yaml)**.
 
 2. Click **"Run workflow"**.
 
@@ -193,7 +193,7 @@ Paladin includes a manual workflow for publishing Helm charts outside of the nor
 
 ### How to Run
 
-1. Navigate to **Actions → [Release Helm Chart](https://github.com/LF-Decentralized-Trust-labs/paladin/actions/workflows/release-charts.yaml)**.
+1. Navigate to **Actions → [Release Helm Chart](https://github.com/LFDT-Paladin/paladin/actions/workflows/release-charts.yaml)**.
 
 2. Click **"Run workflow"**.
 
@@ -223,7 +223,7 @@ Paladin includes a manual workflow for publishing Helm charts outside of the nor
 * The workflow rebuilds the CRDs and Operator charts.
 * Patches image references and Helm dependencies with the provided tags.
 * Runs **Helm template validation** and **E2E tests**.
-* Publishes the chart to the [GitHub Pages chart repository](https://lf-decentralized-trust-labs.github.io/paladin).
+* Publishes the chart to the [GitHub Pages chart repository](https://LFDT-Paladin.github.io/paladin).
 * Uploads deployment artifacts (`basenet.yaml`, `devnet.yaml`, `customnet.yaml`, etc.) for download.
 
 ### Example
