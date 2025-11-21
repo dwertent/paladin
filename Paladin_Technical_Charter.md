@@ -4,12 +4,12 @@
 
 This Charter sets forth the responsibilities and procedures for technical contribution to, and oversight of, the Paladin open source project, which has been established as Paladin a Series of LF Projects, LLC (the “Project”). LF Projects, LLC (“LF Projects”) is a Delaware series limited liability company. All contributors (including committers, maintainers, and other technical positions) and other participants in the Project (collectively, “Collaborators”) must comply with the terms of this Charter.
 
-### Mission and Scope of the Project
+### 1. Mission and Scope of the Project
 
 1. The mission of the Project is to develop a modular runtime for programmable privacy on EVM.
 2. The scope of the Project includes collaborative development under the Project License (as defined herein) supporting the mission, including documentation, testing, integration and the creation of other artifacts that aid the development, deployment, operation or adoption of the open source project.
 
-### Technical Steering Committee
+### 2. Technical Steering Committee
 
 1. The Technical Steering Committee (the “TSC”) will be responsible for all technical oversight of the open source Project.
 2. The TSC voting members are initially the Project’s Maintainers. At the inception of the project, the Maintainers of the Project will be as set forth within the “MAINTAINERS” file within the Project’s code repository. The TSC may choose an alternative approach for determining the voting members of the TSC, and any such alternative approach will be documented in the MAINTAINERS file. Any meetings of the Technical Steering Committee are intended to be open to the public, and can be conducted electronically, via teleconference, or in person.
@@ -31,16 +31,16 @@ This Charter sets forth the responsibilities and procedures for technical contri
      discussions, seeking consensus, and where necessary, voting on technical matters relating to the code base that affect multiple projects; and
    - coordinating any marketing, events, or communications regarding the Project.
 
-### TSC Voting
+### 3. TSC Voting
 
 1. While the Project aims to operate as a consensus-based community, if any TSC decision requires a vote to move the Project forward, the voting members of the TSC will vote on a one vote per voting member basis.
 2. Quorum for TSC meetings requires at least fifty percent of all voting members of the TSC to be present. The TSC may continue to meet if quorum is not met but will be prevented from making any decisions at the meeting.
 
-3. Except as provided in Section 7.c. and 8.a, decisions by vote at a meeting require a majority vote of those in attendance, provided quorum is met. Decisions made by electronic vote without a meeting require a majority vote of all voting members of the TSC.
+3. Except as provided in Section 7.3. and 8.1, decisions by vote at a meeting require a majority vote of those in attendance, provided quorum is met. Decisions made by electronic vote without a meeting require a majority vote of all voting members of the TSC.
 
 4. In the event a vote cannot be resolved by the TSC, any voting member of the TSC may refer the matter to the Series Manager for assistance in reaching a resolution.
 
-### Compliance with Policies
+### 4. Compliance with Policies
 
 1. This Charter is subject to the Series Agreement for the Project and the Operating Agreement of LF Projects. Contributors will comply with the policies of LF Projects as may be adopted and amended by LF Projects, including, without limitation the policies listed at https://lfprojects.org/policies/.
 
@@ -51,7 +51,7 @@ This Charter sets forth the responsibilities and procedures for technical contri
 
 5. The Project will operate in a transparent, open, collaborative, and ethical manner at all times. The output of all Project discussions, proposals, timelines, decisions, and status should be made open and easily visible to all. Any potential violations of this requirement should be reported immediately to the Series Manager.
 
-### Community Assets
+### 5. Community Assets
 
 1. LF Projects (or an associated hosting entity) will hold title to all trade or service marks used by the Project (“Project Trademarks”), whether based on common law or registered rights. Project Trademarks will be transferred and assigned to LF Projects (or, where applicable, the associated hosting entity) to hold on behalf of the Project. Any use of any Project Trademarks by Collaborators in the Project will (a) either be (i) in a way that constitutes fair use or (ii) in accordance with the license from LF Projects to the Project and the applicable trademark usage guidelines and (b) inure to the benefit of LF Projects (or the associated hosting entity).
 
@@ -59,16 +59,16 @@ This Charter sets forth the responsibilities and procedures for technical contri
 
 3. Under no circumstances will LF Projects be expected or required to undertake any action on behalf of the Project that is inconsistent with the tax-exempt status or purpose, as applicable, of the Joint Development Foundation or LF Projects, LLC.
 
-### General Rules and Operations.
+### 6. General Rules and Operations.
 
 1. The Project will:
    - engage in the work of the Project in a professional manner consistent with maintaining a cohesive community, while also maintaining the goodwill and esteem of LF Projects, Joint Development Foundation and other partner organizations in the open source community; and
    - respect the rights of all trademark owners, including any branding and trademark usage guidelines.
 
-### Intellectual Property Policy
+### 7. Intellectual Property Policy
 
 1. Collaborators acknowledge that the copyright in all new contributions will be retained by the copyright holder as independent works of authorship and that no contributor or copyright holder will be required to assign copyrights to the Project.
-2. Except as described in Section 7.c., all contributions to the Project are subject to the following:
+2. Except as described in Section 7.3., all contributions to the Project are subject to the following:
 
    - All new inbound code contributions to the Project must be made using Apache License, Version 2.0 available at http://www.apache.org/licenses/LICENSE-2.0 (the “Project License”).
    - All new inbound code contributions must also be accompanied by a Developer Certificate of Origin (http://developercertificate.org) sign-off in the source code system that is submitted through a TSC-approved contribution process which will bind the authorized contributor and, if not self-employed, their employer to the applicable license;
@@ -79,6 +79,6 @@ This Charter sets forth the responsibilities and procedures for technical contri
 3. The TSC may approve the use of an alternative license or licenses for inbound or outbound contributions on an exception basis. To request an exception, please describe the contribution, the alternative open source license(s), and the justification for using an alternative open source license for the Project. License exceptions must be approved by a two-thirds vote of the entire TSC.
 4. Contributed files should contain license information, such as SPDX short form identifiers, indicating the open source license or licenses pertaining to the file.
 
-### Amendments
+### 8. Amendments
 
-This charter may be amended by a two-thirds vote of the entire TSC and is subject to approval by LF Projects.
+1. This charter may be amended by a two-thirds vote of the entire TSC and is subject to approval by LF Projects.
