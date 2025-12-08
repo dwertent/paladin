@@ -411,7 +411,6 @@ func (s *notoTestSuite) TestNotoLock() {
 	require.NotEmpty(t, prepareUnlockReceipt.LockInfo)
 	require.NotEmpty(t, prepareUnlockReceipt.LockInfo.UnlockParams)
 	require.NotEmpty(t, prepareUnlockReceipt.LockInfo.UnlockParams.TxId)
-	// unlockTXID := pldtypes.MustParseBytes32(unlockReceipt.LockInfo.UnlockParams.TxId).UUIDFirst16()
 
 	log.L(ctx).Infof("Delegate lock to recipient2")
 	rpcerr = paladinClient.CallRPC(ctx, nil, "testbed_invoke", &pldapi.TransactionInput{
@@ -447,7 +446,7 @@ func (s *notoTestSuite) TestNotoLock() {
 	require.NoError(t, tx.Error())
 
 	unlockReceipt := <-notoReceipts
-	// require.Equal(t, prepareUnlockReceipt.txID, unlockReceipt.txID) TODO: this is not true because of the fallback TX ID
+	require.Equal(t, prepareUnlockReceipt.LockInfo.UnlockParams.TxId, pldtypes.Bytes32UUIDFirst16(unlockReceipt.txID).String())
 	require.Len(t, unlockReceipt.Transfers, 1)
 	assert.Equal(t, int64(50), unlockReceipt.Transfers[0].Amount.Int().Int64())
 	assert.Equal(t, recipient2Key, unlockReceipt.Transfers[0].To.String())
