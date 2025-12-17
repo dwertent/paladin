@@ -201,9 +201,7 @@ helm-template: ## Install operator using Helm.
 # install helm unittest
 .PHONY: helm-unittest-install
 helm-unittest-install: ## Install helm unittest.
-    # Skip verification while installing a specific version as helm-unittest plugin does not support verification.
-    # Installing latest version also has no verification, it's just not made explicit as a CLI option.
-	$(HELM) plugin install https://github.com/helm-unittest/helm-unittest.git --version 1.0.3 --verify=false || true
+	$(HELM) plugin install https://github.com/helm-unittest/helm-unittest.git --version 1.0.3 || true
 
 .PHONY: helm-unittest
 helm-unittest: helm-unittest-install ## Test operator using Helm.
