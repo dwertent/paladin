@@ -54,7 +54,7 @@ Once changes are merged into the `main` branch, workflows prepare the project fo
   Detects documentation updates and publishes the latest content to the documentation site.
 
 ## Release Time
-Paladin follows a two-stage release process to ensure quality and stability. All releases are triggered through the **[Release Entry Point](https://github.com/LFDT-Paladin/paladin/actions/workflows/release-entry.yaml)** workflow.
+Paladin follows a two-stage release process to ensure quality and stability. All releases are triggered through the **[Release Entry Point](https://github.com/LFDT-Paladin/paladin/actions/workflows/release-entry.yaml)** workflow due to the way npm trusted publishing works.
 
 ### Stage 1: Release Candidate (RC)
 Release candidates are created first for testing and validation:
