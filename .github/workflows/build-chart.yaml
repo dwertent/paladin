@@ -58,6 +58,9 @@ jobs:
           fetch-depth: 0
           submodules: recursive
 
+      - name: Free up disk space on runner
+        uses: ./.github/actions/free-up-disk-space
+
       - name: Install pre-requisites
         uses: ./.github/actions/setup
 
@@ -95,6 +98,10 @@ jobs:
             -PpaladinImageName=${{ inputs.paladin-image }} \
             -PpaladinImageTag=${{ inputs.paladin-image-tag }} \
             -PdumpChartInfoOnFailure=true
+            -PdeleteCluster=false
+     
+      - name: Print disk usage
+        uses: ./.github/actions/print-disk-usage
 
       - name: List files in dump-logs
         if: failure()

@@ -21,18 +21,18 @@ import (
 	"testing"
 	"time"
 
-	"github.com/LF-Decentralized-Trust-labs/paladin/common/go/pkg/log"
-	"github.com/LF-Decentralized-Trust-labs/paladin/core/pkg/testbed"
-	"github.com/LF-Decentralized-Trust-labs/paladin/domains/integration-test/helpers"
-	nototypes "github.com/LF-Decentralized-Trust-labs/paladin/domains/noto/pkg/types"
-	zetotypes "github.com/LF-Decentralized-Trust-labs/paladin/domains/zeto/pkg/types"
-	"github.com/LF-Decentralized-Trust-labs/paladin/domains/zeto/pkg/zetosigner/zetosignerapi"
-	"github.com/LF-Decentralized-Trust-labs/paladin/sdk/go/pkg/pldapi"
-	"github.com/LF-Decentralized-Trust-labs/paladin/sdk/go/pkg/pldtypes"
-	"github.com/LF-Decentralized-Trust-labs/paladin/sdk/go/pkg/query"
-	"github.com/LF-Decentralized-Trust-labs/paladin/sdk/go/pkg/rpcclient"
-	"github.com/LF-Decentralized-Trust-labs/paladin/toolkit/pkg/algorithms"
-	"github.com/LF-Decentralized-Trust-labs/paladin/toolkit/pkg/verifiers"
+	"github.com/LFDT-Paladin/paladin/common/go/pkg/log"
+	"github.com/LFDT-Paladin/paladin/core/pkg/testbed"
+	"github.com/LFDT-Paladin/paladin/domains/integration-test/helpers"
+	nototypes "github.com/LFDT-Paladin/paladin/domains/noto/pkg/types"
+	zetotypes "github.com/LFDT-Paladin/paladin/domains/zeto/pkg/types"
+	"github.com/LFDT-Paladin/paladin/domains/zeto/pkg/zetosigner/zetosignerapi"
+	"github.com/LFDT-Paladin/paladin/sdk/go/pkg/pldapi"
+	"github.com/LFDT-Paladin/paladin/sdk/go/pkg/pldtypes"
+	"github.com/LFDT-Paladin/paladin/sdk/go/pkg/query"
+	"github.com/LFDT-Paladin/paladin/sdk/go/pkg/rpcclient"
+	"github.com/LFDT-Paladin/paladin/toolkit/pkg/algorithms"
+	"github.com/LFDT-Paladin/paladin/toolkit/pkg/verifiers"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -121,7 +121,7 @@ func (s *pvpTestSuite) pvpNotoNoto(withHooks bool) {
 
 	log.L(ctx).Infof("Initializing testbed")
 	_, notoTestbed := newNotoDomain(t, pldtypes.MustEthAddress(s.notoFactoryAddress))
-	done, _, tb, rpc := newTestbed(t, s.hdWalletSeed, map[string]*testbed.TestbedDomain{
+	done, _, tb, rpc, _ := newTestbed(t, s.hdWalletSeed, map[string]*testbed.TestbedDomain{
 		s.notoDomainName: notoTestbed,
 	})
 	defer done()
@@ -292,7 +292,7 @@ func (s *pvpTestSuite) TestNotoForZeto() {
 	log.L(ctx).Infof("Initializing testbed")
 	waitForNoto, notoTestbed := newNotoDomain(t, pldtypes.MustEthAddress(s.notoFactoryAddress))
 	waitForZeto, zetoTestbed := newZetoDomain(t, s.zetoConfig, s.zetoContracts.FactoryAddress)
-	done, _, tb, rpc := newTestbed(t, s.hdWalletSeed, map[string]*testbed.TestbedDomain{
+	done, _, tb, rpc, _ := newTestbed(t, s.hdWalletSeed, map[string]*testbed.TestbedDomain{
 		s.notoDomainName: notoTestbed,
 		s.zetoDomainName: zetoTestbed,
 	})

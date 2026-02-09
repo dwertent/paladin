@@ -61,6 +61,9 @@ bin/
 ### Proto ###
 *.pb.go
 
+### Examples outputs ###
+examples/data
+
 **.tar.gz
 
 # e2e dump files

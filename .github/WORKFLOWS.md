@@ -14,7 +14,7 @@ When a developer opens a PR, several automated checks are triggered to validate 
     > **Note:** Charts are **not published** but tested locally.
 
 - **[Test Examples](workflows/on-pr-push-examples.yaml):**
-  - **Status:** [![Test Examples](https://github.com/LF-Decentralized-Trust-labs/paladin/actions/workflows/on-pr-push-examples.yaml/badge.svg?branch=main)](https://github.com/LF-Decentralized-Trust-labs/paladin/actions/workflows/on-pr-push-examples.yaml)
+  - **Status:** [![Test Examples](https://github.com/LFDT-Paladin/paladin/actions/workflows/on-pr-push-examples.yaml/badge.svg?branch=main)](https://github.com/LFDT-Paladin/paladin/actions/workflows/on-pr-push-examples.yaml)
   - **Trigger:** Runs on pushes and pull requests to `main` that modify files under `examples/**`.
   - **Purpose:** Validates that example changes don't break existing functionality by running them against both the latest published and local versions of the SDK and contracts.
   - **Key Steps:**
@@ -45,7 +45,7 @@ Once changes are merged into the `main` branch, workflows prepare the project fo
 
 - **[Publish Docker Images](workflows/cross-build-images.yaml):**  
   Produces production-grade, cross-platform Docker images and publishes them to the container registry:
-  - **Registry:** `ghcr.io/lf-decentralized-trust-labs`
+  - **Registry:** `ghcr.io/lfdt-paladin`
   - **Images:** `paladin`, `paladin-operator`
   - **Tagging:** Images are tagged with `main`.
   - **Platforms:** `linux/amd64`, `linux/arm64`
@@ -54,17 +54,17 @@ Once changes are merged into the `main` branch, workflows prepare the project fo
   Detects documentation updates and publishes the latest content to the documentation site.
 
 ## Release Time
-Paladin follows a two-stage release process to ensure quality and stability:
+Paladin follows a two-stage release process to ensure quality and stability. All releases are triggered through the **[Release Entry Point](https://github.com/LFDT-Paladin/paladin/actions/workflows/release-entry.yaml)** workflow due to the way npm trusted publishing works.
 
-### [Stage 1: Release Candidate (RC)](https://github.com/LF-Decentralized-Trust-labs/paladin/actions/workflows/release-candidate.yaml)
+### Stage 1: Release Candidate (RC)
 Release candidates are created first for testing and validation:
 
 - **[Release Candidate Workflow](workflows/release-candidate.yaml):**  
-  Triggered by an RC tag (e.g., `v1.2.3-rc.1`), this workflow creates pre-releases:
+  Triggered via the Release Entry Point with `release_type=rc`, this workflow creates pre-releases:
   - **[Release Docker Images](workflows/release-images.yaml):**  
     Builds and **publishes Docker images** tagged with the RC version (e.g., `v1.2.3-rc.1`).
     - **Registries:** 
-      - `ghcr.io/lf-decentralized-trust-labs`
+      - `ghcr.io/lfdt-paladin`
       - `docker.io/lfdecentralizedtrust`
     - **Images:** `paladin`, `paladin-operator`
     > RC images are **never** tagged as `latest`
@@ -75,15 +75,15 @@ Release candidates are created first for testing and validation:
     Packages contract ABIs and deployment artifacts for distribution.
   - **GitHub Release:** Creates a pre-release with all artifacts
  
-### [Stage 2: Final Release](https://github.com/LF-Decentralized-Trust-labs/paladin/actions/workflows/release.yaml)
+### Stage 2: Final Release
 Once the RC has been tested and validated, the final release can be created:
 
 - **[Release Orchestrator](workflows/release.yaml):**  
-  Triggered by a final version tag (e.g., `v1.2.3`), this workflow coordinates the final release:
+  Triggered via the Release Entry Point with `release_type=final`, this workflow coordinates the final release:
   - **[Release Docker Images](workflows/release-images.yaml):**  
     Builds and **publishes Docker images** tagged with the release version (e.g., `v1.2.3`) and `latest`.
     - **Registries:** 
-      - `ghcr.io/lf-decentralized-trust-labs`
+      - `ghcr.io/lfdt-paladin`
       - `docker.io/lfdecentralizedtrust`
     - **Images:** `paladin`, `paladin-operator`
     > `latest` is configurable 
@@ -99,14 +99,54 @@ Once the RC has been tested and validated, the final release can be created:
     Packages contract ABIs and deployment artifacts for distribution.
   - **GitHub Release:** Creates a final release with all artifacts
 
-### Releasing Options: 
-* **Release Candidate:** Trigger the [RC workflow](https://github.com/LF-Decentralized-Trust-labs/paladin/actions/workflows/release-candidate.yaml) via the GitHub Actions interface, specifying the RC version.
-* **Release:** Trigger the [release workflow](https://github.com/LF-Decentralized-Trust-labs/paladin/actions/workflows/release.yaml) via the GitHub Actions interface, specifying the final version and selecting the "latest" option if needed.
+## How to Create a Release
+
+All releases are triggered through the unified **[Release Entry Point](https://github.com/LFDT-Paladin/paladin/actions/workflows/release-entry.yaml)** workflow.
+
+### Quick Start: Release Process
+Follow these steps to create a new Paladin release:
+
+#### Step 1: Create a Release Candidate
+1. Go to **[Actions → Release Entry Point](https://github.com/LFDT-Paladin/paladin/actions/workflows/release-entry.yaml)**
+2. Click **"Run workflow"**
+3. Fill in the required fields:
+   - **release_type**: Select `rc`
+   - **tag**: RC tag (e.g., `v1.2.3-rc.1`)
+4. Click **"Run workflow"**
+5. Wait for the workflow to complete and test the RC thoroughly
+
+#### Step 2: Create the Final Release
+1. Go to **[Actions → Release Entry Point](https://github.com/LFDT-Paladin/paladin/actions/workflows/release-entry.yaml)**
+2. Click **"Run workflow"**
+3. Fill in the required fields:
+   - **release_type**: Select `final`
+   - **tag**: Final release version (e.g., `v1.2.3`)
+   - **rc_tag**: The RC tag you tested (e.g., `v1.2.3-rc.1`)
+   - **latest**: Check if this should be marked as the latest release
+4. Click **"Run workflow"**
+
+#### SDK-Only Release (Optional)
+To release only the TypeScript SDK without a full release:
+1. Go to **[Actions → Release Entry Point](https://github.com/LFDT-Paladin/paladin/actions/workflows/release-entry.yaml)**
+2. Click **"Run workflow"**
+3. Fill in the required fields:
+   - **release_type**: Select `sdk`
+   - **tag**: SDK version (e.g., `v1.2.3`)
+   - **sdk_dist_tags**: NPM dist-tags, semicolon-separated (e.g., `latest` or `rc;rc.1`)
+   - **ref**: (Optional) Commit ref for checkout, defaults to workflow branch
+4. Click **"Run workflow"**
+
+### Example Release Flow
+```
+1. Create RC:     release_type=rc, tag=v1.2.3-rc.1  → Test thoroughly
+2. Final Release: release_type=final, tag=v1.2.3, rc_tag=v1.2.3-rc.1
+```
 
 ### Important Release Process Notes:
-- **RC Required:** Final releases can only be created if a corresponding RC exists
+- **RC Required:** Final releases must be built from a tested RC tag
 - **Testing:** Always test RCs thoroughly before promoting to final release
 - **Version Consistency:** The RC version must match the final version (e.g., `v1.0.0-rc.1` → `v1.0.0`)
+- **Format:** RC tags must follow `vX.Y.Z-rc.W` format (e.g., `v1.2.3-rc.1`)
 
 ## Manual Docker Image Release
 
@@ -118,7 +158,7 @@ Paladin includes a manual workflow for pushing Docker images to both DockerHub a
 
 ### How to Run
 
-1. Navigate to **Actions → [Image Release](https://github.com/LF-Decentralized-Trust-labs/paladin/actions/workflows/release-images.yaml)**.
+1. Navigate to **Actions → [Image Release](https://github.com/LFDT-Paladin/paladin/actions/workflows/release-images.yaml)**.
 
 2. Click **"Run workflow"**.
 
@@ -141,7 +181,7 @@ Paladin includes a manual workflow for pushing Docker images to both DockerHub a
 * Pushes them to both:
 
   * **DockerHub:** `docker.io/lfdecentralizedtrust/...`
-  * **GHCR:** `ghcr.io/lf-decentralized-trust-labs/...`
+  * **GHCR:** `ghcr.io/lfdt-paladin/...`
 * Tags include the version you specified, and optionally `latest`.
 
 ### Example
@@ -154,7 +194,7 @@ If you run with:
 Images will be published as:
 
 * `docker.io/lfdecentralizedtrust/paladin:v0.1.0-hotfix.0`
-* `ghcr.io/lf-decentralized-trust-labs/paladin:v0.1.0-hotfix.0`
+* `ghcr.io/lfdt-paladin/paladin:v0.1.0-hotfix.0`
 
 If you set **Latest = true**, the same images will also be tagged as `latest`.
 
@@ -169,7 +209,7 @@ Paladin includes a manual workflow for publishing Helm charts outside of the nor
 
 ### How to Run
 
-1. Navigate to **Actions → [Release Helm Chart](https://github.com/LF-Decentralized-Trust-labs/paladin/actions/workflows/release-charts.yaml)**.
+1. Navigate to **Actions → [Release Helm Chart](https://github.com/LFDT-Paladin/paladin/actions/workflows/release-charts.yaml)**.
 
 2. Click **"Run workflow"**.
 
@@ -199,7 +239,7 @@ Paladin includes a manual workflow for publishing Helm charts outside of the nor
 * The workflow rebuilds the CRDs and Operator charts.
 * Patches image references and Helm dependencies with the provided tags.
 * Runs **Helm template validation** and **E2E tests**.
-* Publishes the chart to the [GitHub Pages chart repository](https://lf-decentralized-trust-labs.github.io/paladin).
+* Publishes the chart to the [GitHub Pages chart repository](https://LFDT-Paladin.github.io/paladin).
 * Uploads deployment artifacts (`basenet.yaml`, `devnet.yaml`, `customnet.yaml`, etc.) for download.
 
 ### Example
@@ -215,12 +255,10 @@ You will publish a Helm chart version `0.11.0-fix.0` that points to images built
 ## Manual Actions 🛠️
 Workflows can also be triggered manually when needed. Available options include:
 
+- **[Release Entry Point](workflows/release-entry.yaml)** (RC, final, and SDK releases)
 - **[Test Rollout](workflows/test-rollout.yaml)** (Version rollout testing)
-- **[Release Orchestrator](workflows/release.yaml)** (Final releases)
-- **[Release Candidate](workflows/release-candidate.yaml)** (RC releases)
 - **[Release Docker Images](workflows/release-images.yaml)**
 - **[Release Helm Chart](workflows/release-charts.yaml)**
-- **[Release TypeScript SDK](workflows/release-typescript-sdk.yaml)**
 - **[Release Solidity Contracts](workflows/release-solidity-contracts.yaml)**
 - **[Build Helm Chart](workflows/build-chart.yaml)**
 - **[Build Docker Images](workflows/build-image.yaml)**  

@@ -19,12 +19,12 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/LF-Decentralized-Trust-labs/paladin/common/go/pkg/i18n"
-	"github.com/LF-Decentralized-Trust-labs/paladin/common/go/pkg/log"
-	"github.com/LF-Decentralized-Trust-labs/paladin/core/internal/components"
-	"github.com/LF-Decentralized-Trust-labs/paladin/core/internal/msgs"
-	"github.com/LF-Decentralized-Trust-labs/paladin/sdk/go/pkg/pldtypes"
-	"github.com/LF-Decentralized-Trust-labs/paladin/toolkit/pkg/prototk"
+	"github.com/LFDT-Paladin/paladin/common/go/pkg/i18n"
+	"github.com/LFDT-Paladin/paladin/common/go/pkg/log"
+	"github.com/LFDT-Paladin/paladin/core/internal/components"
+	"github.com/LFDT-Paladin/paladin/core/internal/msgs"
+	"github.com/LFDT-Paladin/paladin/sdk/go/pkg/pldtypes"
+	"github.com/LFDT-Paladin/paladin/toolkit/pkg/prototk"
 	"github.com/google/uuid"
 )
 
@@ -135,11 +135,6 @@ func (s *Sequencer) assembleAndSign(ctx context.Context, transactionID uuid.UUID
 		switch attRequest.AttestationType {
 		case prototk.AttestationType_ENDORSE:
 		case prototk.AttestationType_SIGN:
-		case prototk.AttestationType_GENERATE_PROOF:
-			errorMessage := "AttestationType_GENERATE_PROOF is not implemented yet"
-			log.L(ctx).Error(errorMessage)
-			return nil, i18n.NewError(ctx, msgs.MsgPrivateTxManagerInternalError, errorMessage)
-
 		default:
 			errorMessage := fmt.Sprintf("Unsupported attestation type: %s", attRequest.AttestationType)
 			log.L(ctx).Error(errorMessage)

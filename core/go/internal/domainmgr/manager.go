@@ -22,26 +22,27 @@ import (
 
 	_ "embed"
 
-	"github.com/LF-Decentralized-Trust-labs/paladin/common/go/pkg/i18n"
-	"github.com/LF-Decentralized-Trust-labs/paladin/config/pkg/pldconf"
-	"github.com/LF-Decentralized-Trust-labs/paladin/core/internal/components"
-	"github.com/LF-Decentralized-Trust-labs/paladin/core/internal/filters"
-	"github.com/LF-Decentralized-Trust-labs/paladin/core/internal/msgs"
-	"github.com/LF-Decentralized-Trust-labs/paladin/core/pkg/blockindexer"
+	"github.com/LFDT-Paladin/paladin/common/go/pkg/i18n"
+	"github.com/LFDT-Paladin/paladin/config/pkg/pldconf"
+	"github.com/LFDT-Paladin/paladin/core/internal/components"
+	"github.com/LFDT-Paladin/paladin/core/internal/filters"
+	"github.com/LFDT-Paladin/paladin/core/internal/msgs"
+	"github.com/LFDT-Paladin/paladin/core/pkg/blockindexer"
 	"github.com/google/uuid"
 	"github.com/hyperledger/firefly-signer/pkg/abi"
 
-	"github.com/LF-Decentralized-Trust-labs/paladin/common/go/pkg/log"
-	"github.com/LF-Decentralized-Trust-labs/paladin/core/pkg/ethclient"
-	"github.com/LF-Decentralized-Trust-labs/paladin/core/pkg/persistence"
-	"github.com/LF-Decentralized-Trust-labs/paladin/sdk/go/pkg/pldapi"
-	"github.com/LF-Decentralized-Trust-labs/paladin/sdk/go/pkg/pldtypes"
-	"github.com/LF-Decentralized-Trust-labs/paladin/sdk/go/pkg/query"
-	"github.com/LF-Decentralized-Trust-labs/paladin/toolkit/pkg/cache"
-	"github.com/LF-Decentralized-Trust-labs/paladin/toolkit/pkg/inflight"
-	"github.com/LF-Decentralized-Trust-labs/paladin/toolkit/pkg/plugintk"
-	"github.com/LF-Decentralized-Trust-labs/paladin/toolkit/pkg/rpcserver"
-	"github.com/LF-Decentralized-Trust-labs/paladin/toolkit/pkg/signerapi"
+	"github.com/LFDT-Paladin/paladin/common/go/pkg/log"
+	"github.com/LFDT-Paladin/paladin/core/pkg/ethclient"
+	"github.com/LFDT-Paladin/paladin/core/pkg/persistence"
+	"github.com/LFDT-Paladin/paladin/sdk/go/pkg/pldapi"
+	"github.com/LFDT-Paladin/paladin/sdk/go/pkg/pldtypes"
+	"github.com/LFDT-Paladin/paladin/sdk/go/pkg/query"
+	"github.com/LFDT-Paladin/paladin/toolkit/pkg/cache"
+	"github.com/LFDT-Paladin/paladin/toolkit/pkg/inflight"
+	"github.com/LFDT-Paladin/paladin/toolkit/pkg/plugintk"
+	"github.com/LFDT-Paladin/paladin/toolkit/pkg/prototk"
+	"github.com/LFDT-Paladin/paladin/toolkit/pkg/rpcserver"
+	"github.com/LFDT-Paladin/paladin/toolkit/pkg/signerapi"
 	"gorm.io/gorm"
 )
 
@@ -61,7 +62,7 @@ var smartContractFilters = filters.FieldMap{
 	"address":       filters.HexBytesField("address"),
 }
 
-func NewDomainManager(bgCtx context.Context, conf *pldconf.DomainManagerConfig) components.DomainManager {
+func NewDomainManager(bgCtx context.Context, conf *pldconf.DomainManagerInlineConfig) components.DomainManager {
 	bgCtx = log.WithComponent(bgCtx, "domainmanager")
 	allDomains := []string{}
 	for name := range conf.Domains {
@@ -74,7 +75,7 @@ func NewDomainManager(bgCtx context.Context, conf *pldconf.DomainManagerConfig) 
 		domainsByName:    make(map[string]*domain),
 		domainsByAddress: make(map[pldtypes.EthAddress]*domain),
 		privateTxWaiter:  inflight.NewInflightManager[uuid.UUID, *components.ReceiptInput](uuid.Parse),
-		contractCache:    cache.NewCache[pldtypes.EthAddress, *domainContract](&conf.DomainManager.ContractCache, pldconf.ContractCacheDefaults),
+		contractCache:    cache.NewCache[pldtypes.EthAddress, *domainContract](&conf.DomainManager.ContractCache, &pldconf.PaladinConfigDefaults.DomainManager.ContractCache),
 	}
 }
 
@@ -82,7 +83,7 @@ type domainManager struct {
 	bgCtx context.Context
 	mux   sync.Mutex
 
-	conf             *pldconf.DomainManagerConfig
+	conf             *pldconf.DomainManagerInlineConfig
 	persistence      persistence.Persistence
 	stateStore       components.StateManager
 	privateTxManager components.PrivateTxManager
@@ -330,6 +331,15 @@ func (dm *domainManager) getSmartContractCached(ctx context.Context, dbTX persis
 	return dm.dbGetSmartContract(ctx, dbTX, func(db *gorm.DB) *gorm.DB { return db.Where("address = ?", addr) })
 }
 
+func (dm *domainManager) populateContractConfig(result *pldapi.DomainSmartContract, config *prototk.ContractConfig) {
+	if config != nil {
+		result.Config = &pldapi.ContractConfig{}
+		if config.ContractConfigJson != "" {
+			result.Config.ContractConfig = pldtypes.RawJSON(config.ContractConfigJson)
+		}
+	}
+}
+
 func (dm *domainManager) querySmartContracts(ctx context.Context, jq *query.QueryJSON) ([]*pldapi.DomainSmartContract, error) {
 	qw := &filters.QueryWrapper[PrivateSmartContract, pldapi.DomainSmartContract]{
 		P:           dm.persistence,
@@ -348,6 +358,7 @@ func (dm *domainManager) querySmartContracts(ctx context.Context, jq *query.Quer
 			}
 			if dc != nil {
 				result.DomainName = dc.Domain().Name()
+				dm.populateContractConfig(result, dc.config)
 			}
 			return result, nil
 		},

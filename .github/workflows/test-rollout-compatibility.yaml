@@ -27,6 +27,10 @@ jobs:
           # Fetch all history and tags to build the full upgrade path.
           fetch-depth: 0
           fetch-tags: true
+
+      - name: Free up disk space on runner
+        uses: ./.github/actions/free-up-disk-space
+
       - name: Get all previous release tags
         id: get_tags
         shell: bash
@@ -78,7 +82,7 @@ jobs:
 
       - name: Create Kind Cluster
         run: |
-          curl -sL https://raw.githubusercontent.com/LF-Decentralized-Trust-labs/paladin/main/operator/paladin-kind.yaml -o paladin-kind.yaml
+          curl -sL https://raw.githubusercontent.com/LFDT-Paladin/paladin/main/operator/paladin-kind.yaml -o paladin-kind.yaml
           kind create cluster --name paladin --config paladin-kind.yaml
           kubectl wait --for=condition=Ready nodes --all --timeout=300s
 
@@ -94,7 +98,7 @@ jobs:
 
       - name: Add Helm Repositories
         run: |
-          helm repo add paladin https://LF-Decentralized-Trust-labs.github.io/paladin --force-update
+          helm repo add paladin https://LFDT-Paladin.github.io/paladin --force-update
           helm repo add jetstack https://charts.jetstack.io --force-update
           helm repo update
           
@@ -190,6 +194,9 @@ jobs:
           
           echo "Completed testing for RC $NEW_TAG"
 
+      - name: Print disk usage
+        uses: ./.github/actions/print-disk-usage
+
       - name: Cleanup cluster
         if: always()
-        run: kind delete cluster --name paladin
+        run: kind delete cluster --name paladin  

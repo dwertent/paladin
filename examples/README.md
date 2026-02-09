@@ -4,13 +4,13 @@ These examples demonstrate the various areas of functionality provided by Paladi
 
 Every example has its own README and setup instructions. The following setup is common to most examples and sets up the SDKs and common requirements ready to run any of the examples.
 
-See the [tutorials](https://lf-decentralized-trust-labs.github.io/paladin/head/tutorials/) for more information.
+See the [tutorials](https://LFDT-Paladin.github.io/paladin/head/tutorials/) for more information.
 
 ## Prerequisites
 
 ### Set up a local Paladin network
 
-All of the samples require a local 3-node Paladin network running on `localhost:31548`, `localhost:31648`, and `localhost:31748`. You can get one set up by referring to the [Getting Started](https://lf-decentralized-trust-labs.github.io/paladin/head/getting-started/installation/) guide.
+All of the samples require a local 3-node Paladin network running on `localhost:31548`, `localhost:31648`, and `localhost:31748`. You can get one set up by referring to the [Getting Started](https://LFDT-Paladin.github.io/paladin/head/getting-started/installation/) guide.
 
 This should provision a local Kubernetes (based on Kind) cluster and provision a Besu and Paladin network including these pods:
 
@@ -31,7 +31,6 @@ paladin-operator-bc788db4f-mzbs7   1/1     Running   0          19m
 ```shell
 cd <paladin-root>/examples/common
 npm install                        # install dependencies
-npm install @lfdecentralizedtrust-labs/paladin-sdk@latest
 npm run download-abi               # download ABIs
 npm run build                      # build the 'common' package
 ```
@@ -45,7 +44,6 @@ Most examples can be run using the default local configuration:
 ```sh
 cd <paladin-root>/examples/<example>
 npm install
-npm install @lfdecentralizedtrust-labs/paladin-sdk@latest
 npm run copy-abi
 npm run start
 ```
@@ -59,7 +57,6 @@ To run an example against a remote Paladin network, provide a custom configurati
 ```sh
 cd <paladin-root>/examples/<example>
 npm install
-npm install @lfdecentralizedtrust-labs/paladin-sdk@latest
 npm run copy-abi
 npm run start -- -c /path/to/your/config.json
 ```
